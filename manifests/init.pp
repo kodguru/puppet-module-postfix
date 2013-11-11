@@ -145,7 +145,7 @@ class postfix (
   if is_domain_name($main_relayhost_real) == false { fail("main_relayhost must be a domain name and is set to <${$main_relayhost_real}>") }
   if empty($main_setgid_group_real) == true { fail("main_setgid_group must contain a valid value and is set to <${main_setgid_group_real}>") }
   if empty($packages_real) == true { fail("packages must contain a valid value and is set to <${packages_real}>") }
-  validate_re($service_enable_real, '^(true|false)$', "service_enable may be either 'true' or 'false' and is set to <${service_enable_real}>")
+  validate_re($service_enable_real, '^(true|false|manual)$', "service_enable may be either 'true', 'false' or 'manual' and is set to <${service_enable_real}>")
   validate_re($service_ensure_real, '^(running|stopped)$', "service_ensure may be either 'running' or 'stopped' and is set to <${service_ensure_real}>")
   validate_re($service_hasrestart_real, '^(true|false)$', "service_hasrestart may be either 'true' or 'false' and is set to '${service_hasrestart_real}'")
   validate_re($service_hasstatus_real, '^(true|false)$', "service_hasstatus may be either 'true' or 'false' and is set to '${service_hasstatus_real}'")

@@ -1,0 +1,57 @@
+# alias_database = hash:/etc/aliases
+alias_database = <%= @main_alias_database_real %>
+
+# alias_maps = hash:/etc/aliases, nis:mail.aliases
+alias_maps = <%= @main_alias_maps_real %>
+
+# append_dot_mydomain = yes
+append_dot_mydomain = <%= @main_append_dot_mydomain_real %>
+
+# biff = yes
+biff = <%= @main_biff_real %>
+
+# command_directory = /usr/sbin
+command_directory = <%= @main_command_directory_real %>
+
+# daemon_directory = /usr/libexec/postfix (RHEL & Suse)
+# daemon_directory = /usr/lib/postfix (Ubuntu)
+daemon_directory = <%= @main_daemon_directory_real %>
+
+# data_directory = /var/lib/postfix
+data_directory = <%= @main_data_directory_real %>
+
+# inet_interfaces = all
+inet_interfaces = <%= @main_inet_interfaces_real %>
+
+# inet_protocols = ipv4 (RHEL & Suse)
+# inet_protocols = all (Ubuntu)
+inet_protocols = all
+
+# mailbox_size_limit = 51200000
+mailbox_size_limit = <%= @main_mailbox_size_limit_real %>
+
+# mydestination = $myhostname, localhost.$mydomain, localhost
+mydestination = <%= @main_mydestination_real %>
+
+# myhostname = <%= @hostname %>.localdomain (Suse & Ubuntu)
+# myhostname = <%= @fqdn %> (RHEL)
+myhostname = <%= @main_myhostname_real %>
+
+# mynetworks = 127.0.0.0/8 <%= @network_eth0 %>/<%= @netmask_eth0 %> (RHEL & Suse)
+# mynetworks = 127.0.0.0/8 <%= @network_eth0 %>/<%= @netmask_eth0 %> [::1]/128 [fe80::]/64 (Ubuntu)
+mynetworks = <%= @main_mynetworks_real %>
+
+# myorigin = $myhostname
+myorigin = <%= @main_myorigin_real %>
+
+# queue_directory = /var/spool/postfix
+queue_directory = <%= @main_queue_directory_real %>
+
+# recipient_delimiter =
+recipient_delimiter = <%= main_recipient_delimiter_real %>
+
+# relayhost =
+relayhost = <%= @main_relayhost_real %>
+
+# setgid_group = postdrop
+setgid_group = <%= @main_setgid_group_real %>

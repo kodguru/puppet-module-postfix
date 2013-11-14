@@ -9,7 +9,7 @@ The module installs and configures Postfix MTA to relay local mail to a relayhos
 
 This module has been tested to work on the following systems.
 
- * EL 6
+ * RHEL 6
  * SLES 11 (SLED should work, it just needs your testing and confirmation :)
 
 
@@ -231,3 +231,10 @@ The name of the service to run. This name is used to find the service; on platfo
 services have short system names and long display names, this should be the short name.
 
 - *Module Default*: 'postfix'
+
+
+template_main_cf
+----------------
+The name of the template file to use for main.cf.
+
+- *Module Default*: 'postfix/main.cf.erb'

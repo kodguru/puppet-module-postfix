@@ -26,7 +26,7 @@ class postfix (
   $service_hasrestart       = 'true',
   $service_hasstatus        = 'true',
   $service_name             = 'postfix',
-  $template_main_cf         = 'USE_DEFAULTS',
+  $template_main_cf         = 'postfix/main.cf.erb',
 ) {
 
   # <define USE_DEFAULTS>
@@ -41,7 +41,6 @@ class postfix (
       $default_main_recipient_delimiter = ''
       $default_main_setgid_group        = 'postdrop'
       $default_packages                 = 'postfix'
-      $default_template_main_cf         = 'postfix/RedHat-main.cf.erb'
     }
     'Suse': {
       $default_main_command_directory   = '/usr/sbin'
@@ -53,7 +52,6 @@ class postfix (
       $default_main_recipient_delimiter = ''
       $default_main_setgid_group        = 'maildrop'
       $default_packages                 = 'postfix'
-      $default_template_main_cf         = 'postfix/Suse-main.cf.erb'
     }
     default: {
       fail("postfix supports osfamilies RedHat and Suse. Detected osfamily is <${::osfamily}>.")
@@ -117,11 +115,7 @@ class postfix (
   $service_hasrestart_real = $service_hasrestart
   $service_hasstatus_real  = $service_hasstatus
   $service_name_real       = $service_name
-
-  $template_main_cf_real = $template_main_cf ? {
-    'USE_DEFAULTS' => $default_template_main_cf,
-    default        => $template_main_cf
-  }
+  $template_main_cf_real   = $template_main_cf
   # </USE_DEFAULTS ?>
 
 

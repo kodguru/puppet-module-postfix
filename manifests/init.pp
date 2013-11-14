@@ -11,6 +11,7 @@ class postfix (
   $main_daemon_directory    = 'USE_DEFAULTS',
   $main_data_directory      = 'USE_DEFAULTS',
   $main_inet_interfaces     = '127.0.0.1',
+  $main_inet_protocols      = 'ipv4',
   $main_mailbox_size_limit  = '0',
   $main_mydestination       = 'localhost',
   $main_myhostname          = $::fqdn,
@@ -79,6 +80,7 @@ class postfix (
     default        => $main_data_directory }
 
   $main_inet_interfaces_real = $main_inet_interfaces
+  $main_inet_protocols_real  = $main_inet_protocols
 
   $main_mailbox_size_limit_real = $main_mailbox_size_limit ? {
     'USE_DEFAULTS' => $default_main_mailbox_size_limit,
@@ -128,6 +130,7 @@ class postfix (
   validate_absolute_path($main_daemon_directory_real)
   validate_absolute_path($main_data_directory_real)
   if empty($main_inet_interfaces_real) == true { fail("main_inet_interfaces must contain a valid value and is set to <${main_inet_interfaces_real}>") }
+  if empty($main_inet_protocols_real) == true { fail("main_inet_protocols must contain a valid value and is set to <${main_main_inet_protocols_real}>") }
   if is_integer($main_mailbox_size_limit_real) == false { fail("main_mailbox_size_limit must be an integer and is set to <${main_mailbox_size_limit_real}>") }
   if $main_mailbox_size_limit_real < 0 { fail("main_mailbox_size_limit needs a minimum value of 0 and is set to <${main_mailbox_size_limit_real}>") }
   if is_domain_name($main_mydestination_real) == false { fail("main_mydestination must be a domain name and is set to <${main_mydestination_real}>") }

@@ -95,6 +95,19 @@ for IPv6 is available in Postfix version 2.2 and later.
 - *Module Default*: '127.0.0.1'
 
 
+main_inet_protocols (default: all)
+----------------------------------
+The Internet protocols Postfix will attempt to use when making or accepting connections. Specify
+one or more of "ipv4" or "ipv6", separated by whitespace or commas. The form "all" is equivalent
+to "ipv4, ipv6" or "ipv4", depending on whether the operating system implements IPv6.
+With Postfix 2.8 and earlier the default is "ipv4". For backwards compatibility with these releases,
+the Postfix 2.9 and later upgrade procedure appends an explicit "inet_protocols = ipv4" setting to
+main.cf when no explicit setting is present. This compatibility workaround will be phased out as
+IPv6 deployment becomes more common. 
+
+- *Module Default*: 'ipv4'
+
+
 main_mailbox_size_limit (default: 51200000)
 -------------------------------------------
 The maximal size of any local(8) individual mailbox or maildir file, or zero (no limit). In fact,

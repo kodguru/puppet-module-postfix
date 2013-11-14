@@ -25,7 +25,7 @@ inet_interfaces = <%= @main_inet_interfaces_real %>
 
 # inet_protocols = ipv4 (RHEL & Suse)
 # inet_protocols = all (Ubuntu)
-inet_protocols = all
+inet_protocols = <%= @main_inet_protocols_real %>
 
 # mailbox_size_limit = 51200000
 mailbox_size_limit = <%= @main_mailbox_size_limit_real %>

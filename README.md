@@ -251,3 +251,12 @@ template_main_cf
 The name of the template file to use for main.cf.
 
 - *Module Default*: 'postfix/main.cf.erb'
+
+
+# Testing #
+You may verify that the host in question is correctly forwarding mail to your mail relay by
+using the "mail" command. Example:
+
+<pre>
+echo "works if you read this" | mail -s "Testing mail forward on $(uname -n)" yourmail@ericsson.com
+</pre>

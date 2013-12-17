@@ -32,6 +32,17 @@ class postfix (
 
   # <define USE_DEFAULTS>
   case $::osfamily {
+    'Debian': {
+      $default_main_command_directory   = '/usr/sbin'
+      $default_main_daemon_directory    = '/usr/lib/postfix'
+      $default_main_data_directory      = '/var/lib/postfix'
+      $default_main_mailbox_size_limit  = '51200000'
+      $default_main_mydestination       = '$myhostname, localhost.$mydomain, localhost'
+      $default_main_queue_directory     = '/var/spool/postfix'
+      $default_main_recipient_delimiter = ''
+      $default_main_setgid_group        = 'postdrop'
+      $default_packages                 = 'postfix'
+    }
     'RedHat': {
       $default_main_command_directory   = '/usr/sbin'
       $default_main_daemon_directory    = '/usr/libexec/postfix'
@@ -55,7 +66,7 @@ class postfix (
       $default_packages                 = 'postfix'
     }
     default: {
-      fail("postfix supports osfamilies RedHat and Suse. Detected osfamily is <${::osfamily}>.")
+      fail("postfix supports osfamilies Debian, RedHat and Suse. Detected osfamily is <${::osfamily}>.")
     }
   }
   # </define USE_DEFAULTS>

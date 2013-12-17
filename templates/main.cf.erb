@@ -14,7 +14,7 @@ biff = <%= @main_biff_real %>
 command_directory = <%= @main_command_directory_real %>
 
 # daemon_directory = /usr/libexec/postfix (RHEL & Suse)
-# daemon_directory = /usr/lib/postfix (Ubuntu)
+# daemon_directory = /usr/lib/postfix (Debian & Ubuntu)
 daemon_directory = <%= @main_daemon_directory_real %>
 
 # data_directory = /var/lib/postfix
@@ -24,7 +24,7 @@ data_directory = <%= @main_data_directory_real %>
 inet_interfaces = <%= @main_inet_interfaces_real %>
 
 # inet_protocols = ipv4 (RHEL & Suse)
-# inet_protocols = all (Ubuntu)
+# inet_protocols = all (Debian & Ubuntu)
 inet_protocols = <%= @main_inet_protocols_real %>
 
 # mailbox_size_limit = 51200000
@@ -33,12 +33,12 @@ mailbox_size_limit = <%= @main_mailbox_size_limit_real %>
 # mydestination = $myhostname, localhost.$mydomain, localhost
 mydestination = <%= @main_mydestination_real %>
 
-# myhostname = <%= @hostname %>.localdomain (Suse & Ubuntu)
+# myhostname = <%= @hostname %>.localdomain (Debian, Suse & Ubuntu)
 # myhostname = <%= @fqdn %> (RHEL)
 myhostname = <%= @main_myhostname_real %>
 
 # mynetworks = 127.0.0.0/8 <%= @network_eth0 %>/<%= @netmask_eth0 %> (RHEL & Suse)
-# mynetworks = 127.0.0.0/8 <%= @network_eth0 %>/<%= @netmask_eth0 %> [::1]/128 [fe80::]/64 (Ubuntu)
+# mynetworks = 127.0.0.0/8 <%= @network_eth0 %>/<%= @netmask_eth0 %> [::1]/128 [fe80::]/64 (Debian & Ubuntu)
 mynetworks = <%= @main_mynetworks_real %>
 
 # myorigin = $myhostname

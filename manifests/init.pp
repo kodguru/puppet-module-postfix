@@ -188,5 +188,16 @@ class postfix (
   }
   # <Install & Config>
 
+  # <Remove Sendmail>
+    package { 'sendmail':
+      ensure  => absent,
+      require => Package['sendmail-cf'],
+      before  => Package['postfix_packages']
+    }
+    package { 'sendmail-cf':
+      ensure  => absent,
+    }
+  # </Remove Sendmail>
+
 }
 

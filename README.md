@@ -9,6 +9,7 @@ The module installs and configures Postfix MTA to relay local mail to a relayhos
 
 This module has been tested to work on the following systems.
 
+ * Debian
  * RHEL 6
  * SLES 11 (SLED should work, it just needs your testing and confirmation :)
 
@@ -258,5 +259,5 @@ You may verify that the host in question is correctly forwarding mail to your ma
 using the "mail" command. Example:
 
 <pre>
-echo "works if you read this" | mail -s "Testing mail forward on $(uname -n)" yourmail@ericsson.com
+echo "works if you read this" | mail -s "Testing mail forward on $(uname -n)" yourmail@yourmail.domain
 </pre>

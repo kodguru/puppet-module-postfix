@@ -7,6 +7,7 @@ describe 'postfix' do
         :osfamily => 'Debian',
       }
     end
+  end
 
   context 'postfix with default params' do
     it {

@@ -1,7 +1,7 @@
 # == Class: postfix
 #
 # Manage Postfix to relay mail
-#
+
 class postfix (
   $main_alias_database      = 'hash:/etc/aliases',
   $main_alias_maps          = 'hash:/etc/aliases',
@@ -200,4 +200,3 @@ class postfix (
   # </Remove Sendmail>
 
 }
-

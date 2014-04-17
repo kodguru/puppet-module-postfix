@@ -150,7 +150,14 @@ class postfix (
   if empty($main_myorigin_real) == true { fail("main_myorigin must contain a valid value and is set to <${main_myorigin_real}>") }
   validate_absolute_path($main_queue_directory_real)
   # main_recipient_delimiter can not be checkek, it can contain nothing to everything
-  if is_domain_name($main_relayhost_real) == false { fail("main_relayhost must be a domain name and is set to <${$main_relayhost_real}>") }
+  if (
+    (is_domain_name($main_relayhost_real) == false)
+    and ($main_relayhost_real !~ /^\[([-0-9A-Za-z\.]+)\]$/ or is_domain_name($1) == false)
+    and ($main_relayhost_real !~ /^\[([-0-9A-Za-z\.]+)\]:[0-9]+$/ or is_domain_name($1) == false)
+    and ($main_relayhost_real !~ /^([-0-9A-Za-z\.]+):[0-9]+$/ or is_domain_name($1) == false)
+  ){
+       fail("main_relayhost must be a domain name with optional port and is set to <${$main_relayhost_real}>")
+  }
   if empty($main_setgid_group_real) == true { fail("main_setgid_group must contain a valid value and is set to <${main_setgid_group_real}>") }
   if empty($packages_real) == true { fail("packages must contain a valid value and is set to <${packages_real}>") }
   validate_re($service_enable_real, '^(true|false|manual)$', "service_enable may be either 'true', 'false' or 'manual' and is set to <${service_enable_real}>")

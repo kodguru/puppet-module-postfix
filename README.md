@@ -180,7 +180,7 @@ user and .forward.
 - *Module Default*: '+'
 
 
-main_relayhost (default: empty)
+main_relayhost & main_relayhost_port (default: empty)
 -------------------------------
 The next-hop destination of non-local mail; overrides non-local domains in recipient addresses.
 This information is overruled with relay_transport, sender_dependent_default_transport_maps,
@@ -188,7 +188,8 @@ default_transport, sender_dependent_relayhost_maps and with the transport(5) tab
 In the case of SMTP, specify a domain name, hostname, hostname:port, [hostname]:port, [hostaddress]
 or [hostaddress]:port. The form [hostname] turns off MX lookups.
 
-- *Module Default*: "mailhost.${::domain}"
+- *Module Default* for host: "mailhost.${::domain}"
+- *Module Default* for port: '25'
 
 
 main_setgid_group (default: postdrop)

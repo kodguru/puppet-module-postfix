@@ -212,11 +212,6 @@ This feature is available  in Postfix 2.0 and later.
 
 - *Module Default*: 'hash:/etc/postfix/virtual'
 
-virtual_aliases (default: undef)
---------------------------------
-Hash of entries to add to virtual_alias_maps file defined by $main_virtual_alias_maps.
-
-- *Module Default*: undef
 
 packages
 --------
@@ -271,6 +266,22 @@ template_main_cf
 The name of the template file to use for main.cf.
 
 - *Module Default*: 'postfix/main.cf.erb'
+
+
+virtual_aliases (default: undef)
+--------------------------------
+Hash of entries to add to virtual_alias_maps file defined by $main_virtual_alias_maps.
+
+- *Module Default*: undef
+
+Example:
+<pre>
+postfix::virtual_aliases:
+    test1@test.void: 'destination1'
+    test2@test.void:
+      - 'destination2'
+      - 'destination3'
+</pre>
 
 
 # Testing #

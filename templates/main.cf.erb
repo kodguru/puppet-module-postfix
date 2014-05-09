@@ -4,10 +4,6 @@ alias_database = <%= @main_alias_database_real %>
 # alias_maps = hash:/etc/aliases, nis:mail.aliases
 alias_maps = <%= @main_alias_maps_real %>
 
-<% if @main_virtual_alias_maps_real and @virtual_aliases_real -%>
-virtual_alias_maps = <%= @main_virtual_alias_maps_real %>
-<% end -%>
-
 # append_dot_mydomain = yes
 append_dot_mydomain = <%= @main_append_dot_mydomain_real %>
 
@@ -59,3 +55,7 @@ relayhost = <%= @main_relayhost_real %>:<%= @main_relayhost_port_real %>
 
 # setgid_group = postdrop
 setgid_group = <%= @main_setgid_group_real %>
+<% if @main_virtual_alias_maps_real and @virtual_aliases_real -%>
+
+virtual_alias_maps = <%= @main_virtual_alias_maps_real %>
+<% end -%>

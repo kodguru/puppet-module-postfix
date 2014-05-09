@@ -22,6 +22,8 @@ class postfix (
   $main_relayhost           = "mailhost.${::domain}",
   $main_relayhost_port      = '25',
   $main_setgid_group        = 'USE_DEFAULTS',
+  $main_virtual_alias_maps  = 'hash:/etc/postfix/virtual',
+  $virtual_aliases          = undef,
   $packages                 = 'USE_DEFAULTS',
   $service_enable           = 'true',
   $service_ensure           = 'running',
@@ -125,12 +127,14 @@ class postfix (
     'USE_DEFAULTS' => $default_packages,
     default        => $packages }
 
-  $service_enable_real     = $service_enable
-  $service_ensure_real     = $service_ensure
-  $service_hasrestart_real = $service_hasrestart
-  $service_hasstatus_real  = $service_hasstatus
-  $service_name_real       = $service_name
-  $template_main_cf_real   = $template_main_cf
+  $service_enable_real          = $service_enable
+  $service_ensure_real          = $service_ensure
+  $service_hasrestart_real      = $service_hasrestart
+  $service_hasstatus_real       = $service_hasstatus
+  $service_name_real            = $service_name
+  $template_main_cf_real        = $template_main_cf
+  $main_virtual_alias_maps_real = $main_virtual_alias_maps
+  $virtual_aliases_real         = $virtual_aliases
   # </USE_DEFAULTS ?>
 
 
@@ -162,8 +166,9 @@ class postfix (
   validate_re($service_hasstatus_real, '^(true|false)$', "service_hasstatus may be either 'true' or 'false' and is set to '${service_hasstatus_real}'")
   if empty($service_name_real) == true { fail("service_name must contain a valid value and is set to <${service_name_real}>") }
   if empty($template_main_cf_real) == true { fail("template_main_cf must contain a valid value and is set to <${template_main_cf_real}>") }
+  if empty($main_virtual_alias_maps_real) == true { fail("main_virtual_alias_maps must contain a valid value and is set to <${main_virtual_alias_maps_real}>") }
+  if $virtual_aliases_real { validate_hash($virtual_aliases_real) }
   # </validating variables>
-
 
   # <Install & Config>
   package { 'postfix_packages':
@@ -188,6 +193,21 @@ class postfix (
     mode    => '0644',
     content => template($template_main_cf_real),
     require => Package['postfix_packages'],
+  }
+
+  file { 'postfix_virtual':
+    ensure  => file,
+    path    => '/etc/postfix/virtual',
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+    content => template('postfix/virtual.erb'),
+  }
+
+  exec { 'postfix_rebuild_virtual':
+    command     => "${default_main_command_directory}/postmap ${main_virtual_alias_maps_real}",
+    refreshonly => true,
+    subscribe   => File['postfix_virtual'],
   }
   # <Install & Config>
 

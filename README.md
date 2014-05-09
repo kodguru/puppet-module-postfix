@@ -202,6 +202,22 @@ version 2.0 and earlier: "/etc/postfix/post-install set-permissions".
 - *Module Default*: 'USE_DEFAULTS'
 
 
+main_virtual_alias_maps (default: $virtual_maps)
+------------------------------------------------
+Optional lookup tables that alias specific mail addresses or domains to other local or
+remote address. The table format and lookups are documented in virtual(5). For an
+overview of Postfix address manipulations see the ADDRESS_REWRITING_README document.
+
+This feature is available  in Postfix 2.0 and later.
+
+- *Module Default*: 'hash:/etc/postfix/virtual'
+
+virtual_aliases (default: undef)
+--------------------------------
+Hash of entries to add to virtual_alias_maps file defined by $main_virtual_alias_maps.
+
+- *Module Default*: undef
+
 packages
 --------
 Array of package names used for installation.

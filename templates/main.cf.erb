@@ -55,3 +55,7 @@ relayhost = <%= @main_relayhost_real %>:<%= @main_relayhost_port_real %>
 
 # setgid_group = postdrop
 setgid_group = <%= @main_setgid_group_real %>
+<% if @main_virtual_alias_maps_real and @virtual_aliases_real -%>
+
+virtual_alias_maps = <%= @main_virtual_alias_maps_real %>
+<% end -%>

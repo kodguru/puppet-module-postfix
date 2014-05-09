@@ -9,11 +9,13 @@ The module installs and configures Postfix MTA to relay local mail to a relayhos
 
 # Compatability #
 
-This module has been tested to work on the following systems.
+This module provides OS default values for these OSfamilies:
 
  * Debian
- * RHEL 6
- * SLES 11 (SLED should work, it just needs your testing and confirmation :)
+ * RedHat
+ * Suse
+
+For other OSfamilies support, please specify all parameters which defaults to 'USE_DEFAULTS'.
 
 
 # Parameters #

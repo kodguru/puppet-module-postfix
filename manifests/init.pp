@@ -169,8 +169,9 @@ class postfix (
 
   # <Install & Config>
   package { 'postfix_packages':
-    ensure => installed,
-    name   => $packages_real,
+    ensure  => installed,
+    name    => $packages_real,
+    before  => Package['sendmail'],
   }
 
   service { 'postfix_service' :
@@ -179,7 +180,8 @@ class postfix (
     enable     => $service_enable_real,
     hasrestart => $service_hasrestart_real,
     hasstatus  => $service_hasstatus_real,
-    subscribe  => File['postfix_main.cf'],
+    require    => Package['postfix_packages'],
+    subscribe  => [ File['postfix_main.cf'], File['postfix_virtual'], ]
   }
 
   file  { 'postfix_main.cf' :
@@ -200,6 +202,7 @@ class postfix (
       group   => 'root',
       mode    => '0644',
       content => template('postfix/virtual.erb'),
+      require => Package['postfix_packages'],
     }
     exec { 'postfix_rebuild_virtual':
       command     => "${default_main_command_directory}/postmap ${main_virtual_alias_maps_real}",
@@ -209,12 +212,12 @@ class postfix (
   }
   else {
     file { 'postfix_virtual':
-      ensure  => absent,
-      path    => '/etc/postfix/virtual',
+      ensure => absent,
+      path   => '/etc/postfix/virtual',
     }
     file { 'postfix_virtual_db':
-      ensure  => absent,
-      path    => '/etc/postfix/virtual.db',
+      ensure => absent,
+      path   => '/etc/postfix/virtual.db',
     }
   }
   # </Install & Config>
@@ -223,10 +226,9 @@ class postfix (
     package { 'sendmail':
       ensure  => absent,
       require => Package['sendmail-cf'],
-      before  => Package['postfix_packages']
     }
     package { 'sendmail-cf':
-      ensure  => absent,
+      ensure => absent,
     }
   # </Remove Sendmail>
 

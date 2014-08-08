@@ -33,84 +33,99 @@ class postfix (
   $virtual_aliases          = undef,
 ) {
 
-  # <define USE_DEFAULTS>
+  # <provide os default values>
+  # Set $os_defaults_missing to true for unspecified osfamilies
   case $::osfamily {
     'Debian': {
-      $default_main_command_directory   = '/usr/sbin'
-      $default_main_daemon_directory    = '/usr/lib/postfix'
-      $default_main_data_directory      = '/var/lib/postfix'
-      $default_main_mailbox_size_limit  = '51200000'
-      $default_main_mydestination       = '$myhostname, localhost.$mydomain, localhost'
-      $default_main_queue_directory     = '/var/spool/postfix'
-      $default_main_recipient_delimiter = ''
-      $default_main_setgid_group        = 'postdrop'
-      $default_packages                 = 'postfix'
+      $main_command_directory_default   = '/usr/sbin'
+      $main_daemon_directory_default    = '/usr/lib/postfix'
+      $main_data_directory_default      = '/var/lib/postfix'
+      $main_mailbox_size_limit_default  = '51200000'
+      $main_mydestination_default       = '$myhostname, localhost.$mydomain, localhost'
+      $main_queue_directory_default     = '/var/spool/postfix'
+      $main_recipient_delimiter_default = ''
+      $main_setgid_group_default        = 'postdrop'
+      $packages_default                 = 'postfix'
     }
     'RedHat': {
-      $default_main_command_directory   = '/usr/sbin'
-      $default_main_daemon_directory    = '/usr/libexec/postfix'
-      $default_main_data_directory      = '/var/lib/postfix'
-      $default_main_mailbox_size_limit  = '51200000'
-      $default_main_mydestination       = '$myhostname, localhost.$mydomain, localhost'
-      $default_main_queue_directory     = '/var/spool/postfix'
-      $default_main_recipient_delimiter = ''
-      $default_main_setgid_group        = 'postdrop'
-      $default_packages                 = 'postfix'
+      $main_command_directory_default   = '/usr/sbin'
+      $main_daemon_directory_default    = '/usr/libexec/postfix'
+      $main_data_directory_default      = '/var/lib/postfix'
+      $main_mailbox_size_limit_default  = '51200000'
+      $main_mydestination_default       = '$myhostname, localhost.$mydomain, localhost'
+      $main_queue_directory_default     = '/var/spool/postfix'
+      $main_recipient_delimiter_default = ''
+      $main_setgid_group_default        = 'postdrop'
+      $packages_default                 = 'postfix'
     }
     'Suse': {
-      $default_main_command_directory   = '/usr/sbin'
-      $default_main_daemon_directory    = '/usr/lib/postfix'
-      $default_main_data_directory      = '/var/lib/postfix'
-      $default_main_mailbox_size_limit  = '51200000'
-      $default_main_mydestination       = '$myhostname, localhost.$mydomain, localhost'
-      $default_main_queue_directory     = '/var/spool/postfix'
-      $default_main_recipient_delimiter = ''
-      $default_main_setgid_group        = 'maildrop'
-      $default_packages                 = 'postfix'
+      $main_command_directory_default   = '/usr/sbin'
+      $main_daemon_directory_default    = '/usr/lib/postfix'
+      $main_data_directory_default      = '/var/lib/postfix'
+      $main_mailbox_size_limit_default  = '51200000'
+      $main_mydestination_default       = '$myhostname, localhost.$mydomain, localhost'
+      $main_queue_directory_default     = '/var/spool/postfix'
+      $main_recipient_delimiter_default = ''
+      $main_setgid_group_default        = 'maildrop'
+      $packages_default                 = 'postfix'
     }
     default: {
-      fail("postfix supports osfamilies Debian, RedHat and Suse. Detected osfamily is <${::osfamily}>.")
+      $os_defaults_missing = true
     }
   }
-  # </define USE_DEFAULTS>
+  # </provide os default values>
 
+
+  # <USE_DEFAULT vs OS defaults>
+  # Check if 'USE_DEFAULTS' is used anywhere without having OS default value
+  if $os_defaults_missing == true and (
+    ($main_command_directory == 'USE_DEFAULTS') or
+    ($main_daemon_directory  == 'USE_DEFAULTS') or
+    ($main_data_directory    == 'USE_DEFAULTS') or
+    ($main_queue_directory   == 'USE_DEFAULTS') or
+    ($main_setgid_group      == 'USE_DEFAULTS') or
+    ($packages               == 'USE_DEFAULTS')
+  ) {
+      fail("Sorry, I don't know default values for $::osfamily yet :( Please provide specific values to the postfix module.")
+  }
+  # </USE_DEFAULT vs OS defaults>
 
   # <USE_DEFAULTS ?>
 
   $main_command_directory_real = $main_command_directory ? {
-    'USE_DEFAULTS' => $default_main_command_directory,
+    'USE_DEFAULTS' => $main_command_directory_default,
     default        => $main_command_directory }
 
   $main_daemon_directory_real = $main_daemon_directory ? {
-    'USE_DEFAULTS' => $default_main_daemon_directory,
+    'USE_DEFAULTS' => $main_daemon_directory_default,
     default        => $main_daemon_directory }
 
   $main_data_directory_real = $main_data_directory ? {
-    'USE_DEFAULTS' => $default_main_data_directory,
+    'USE_DEFAULTS' => $main_data_directory_default,
     default        => $main_data_directory }
 
   $main_mailbox_size_limit_real = $main_mailbox_size_limit ? {
-    'USE_DEFAULTS' => $default_main_mailbox_size_limit,
+    'USE_DEFAULTS' => $main_mailbox_size_limit_default,
     default        => $main_mailbox_size_limit }
 
   $main_mydestination_real = $main_mydestination ? {
-    'USE_DEFAULTS' => $default_main_mydestination,
+    'USE_DEFAULTS' => $main_mydestination_default,
     default        => $main_mydestination }
 
   $main_queue_directory_real = $main_queue_directory ? {
-    'USE_DEFAULTS' => $default_main_queue_directory,
+    'USE_DEFAULTS' => $main_queue_directory_default,
     default        => $main_queue_directory }
 
   $main_recipient_delimiter_real = $main_recipient_delimiter ? {
-    'USE_DEFAULTS' => $default_main_recipient_delimiter,
+    'USE_DEFAULTS' => $main_recipient_delimiter_default,
     default        => $main_recipient_delimiter }
 
   $main_setgid_group_real = $main_setgid_group ? {
-    'USE_DEFAULTS' => $default_main_setgid_group,
+    'USE_DEFAULTS' => $main_setgid_group_default,
     default        => $main_setgid_group }
 
   $packages_real = $packages ? {
-    'USE_DEFAULTS' => $default_packages,
+    'USE_DEFAULTS' => $packages_default,
     default        => $packages }
 
   $main_alias_database_real      = $main_alias_database
@@ -147,7 +162,7 @@ class postfix (
   if empty($main_inet_protocols_real) == true { fail("main_inet_protocols must contain a valid value and is set to <${main_main_inet_protocols_real}>") }
   if is_integer($main_mailbox_size_limit_real) == false { fail("main_mailbox_size_limit must be an integer and is set to <${main_mailbox_size_limit_real}>") }
   if $main_mailbox_size_limit_real < 0 { fail("main_mailbox_size_limit needs a minimum value of 0 and is set to <${main_mailbox_size_limit_real}>") }
-  if is_domain_name($main_mydestination_real) == false { fail("main_mydestination must be a domain name and is set to <${main_mydestination_real}>") }
+  validate_string($main_mydestination_real)
   if is_domain_name($main_myhostname_real) == false { fail("main_myhostname must be a domain name and is set to <${main_myhostname_real}>") }
   if empty($main_mynetworks_real) == true { fail("main_mynetworks must contain a valid value and is set to <${main_mynetworks_real}>") }
   if empty($main_myorigin_real) == true { fail("main_myorigin must contain a valid value and is set to <${main_myorigin_real}>") }
@@ -205,7 +220,7 @@ class postfix (
       require => Package['postfix_packages'],
     }
     exec { 'postfix_rebuild_virtual':
-      command     => "${default_main_command_directory}/postmap ${main_virtual_alias_maps_real}",
+      command     => "${main_command_directory_real}/postmap ${main_virtual_alias_maps_real}",
       refreshonly => true,
       subscribe   => File['postfix_virtual'],
     }

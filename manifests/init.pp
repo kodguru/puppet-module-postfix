@@ -183,10 +183,9 @@ class postfix (
   # </validating variables>
 
   # <Install & Config>
-  package { 'postfix_packages':
-    ensure  => installed,
-    name    => $packages_real,
-    before  => Package['sendmail'],
+  package { $packages_real:
+    ensure => installed,
+    before => Package['sendmail'],
   }
 
   service { 'postfix_service' :
@@ -195,7 +194,7 @@ class postfix (
     enable     => $service_enable_real,
     hasrestart => $service_hasrestart_real,
     hasstatus  => $service_hasstatus_real,
-    require    => Package['postfix_packages'],
+    require    => Package[$packages_real],
     subscribe  => [ File['postfix_main.cf'], File['postfix_virtual'], ]
   }
 
@@ -206,7 +205,7 @@ class postfix (
     group   => 'root',
     mode    => '0644',
     content => template($template_main_cf_real),
-    require => Package['postfix_packages'],
+    require => Package[$packages_real],
   }
 
   if $virtual_aliases != undef {
@@ -217,7 +216,7 @@ class postfix (
       group   => 'root',
       mode    => '0644',
       content => template('postfix/virtual.erb'),
-      require => Package['postfix_packages'],
+      require => Package[$packages_real],
     }
     exec { 'postfix_rebuild_virtual':
       command     => "${main_command_directory_real}/postmap ${main_virtual_alias_maps_real}",

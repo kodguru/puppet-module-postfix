@@ -55,11 +55,10 @@ describe 'postfix' do
           }
         end
 
-        # package { 'postfix_packages' :}
+        # package { $packages_real:}
         it {
-          should contain_package('postfix_packages').with({
+          should contain_package(v[:packages_default]).with({
             'ensure' => 'installed',
-            'name'   => v[:packages_default],
             'before' => 'Package[sendmail]',
           })
         }
@@ -72,7 +71,7 @@ describe 'postfix' do
             'enable'     => 'true',
             'hasrestart' => 'true',
             'hasstatus'  => 'true',
-            'require'    => 'Package[postfix_packages]',
+            'require'    => "Package[#{v[:packages_default]}]",
             'subscribe'  => ['File[postfix_main.cf]', 'File[postfix_virtual]'],
           })
         }
@@ -85,7 +84,7 @@ describe 'postfix' do
             'owner'      => 'root',
             'group'      => 'root',
             'mode'       => '0644',
-            'require'    => 'Package[postfix_packages]',
+            'require'    => "Package[#{v[:packages_default]}]",
           })
         }
 

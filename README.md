@@ -228,7 +228,7 @@ service_enable
 Whether a service should be enabled to start at boot.
 Valid values are 'true', 'false' and 'manual'.
 
-- *Module Default*: 'true'
+- *Module Default*: true
 
 
 service_ensure
@@ -244,7 +244,7 @@ Specify that an init script has a restart command. If this is false and you do n
 command in the restart attribute, the init script’s stop and start commands will be used.
 Defaults to false. Valid values are 'true' or 'false'.
 
-- *Module Default*: 'true'
+- *Module Default*: true
 
 
 service_hasstatus
@@ -252,7 +252,7 @@ service_hasstatus
 Declare whether the service’s init script has a functional status command; defaults to true.
 This attribute’s default value changed in Puppet 2.7.0. Valid values are 'true' or 'false'.
 
-- *Module Default*: 'true'
+- *Module Default*: true
 
 
 service_name

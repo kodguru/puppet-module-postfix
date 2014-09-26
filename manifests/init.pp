@@ -24,10 +24,10 @@ class postfix (
   $main_setgid_group        = 'USE_DEFAULTS',
   $main_virtual_alias_maps  = 'hash:/etc/postfix/virtual',
   $packages                 = 'USE_DEFAULTS',
-  $service_enable           = 'true',
+  $service_enable           = true,
   $service_ensure           = 'running',
-  $service_hasrestart       = 'true',
-  $service_hasstatus        = 'true',
+  $service_hasrestart       = true,
+  $service_hasstatus        = true,
   $service_name             = 'postfix',
   $template_main_cf         = 'postfix/main.cf.erb',
   $virtual_aliases          = undef,
@@ -75,7 +75,6 @@ class postfix (
   }
   # </provide os default values>
 
-
   # <USE_DEFAULT vs OS defaults>
   # Check if 'USE_DEFAULTS' is used anywhere without having OS default value
   if $os_defaults_missing == true and (
@@ -86,7 +85,7 @@ class postfix (
     ($main_setgid_group      == 'USE_DEFAULTS') or
     ($packages               == 'USE_DEFAULTS')
   ) {
-      fail("Sorry, I don't know default values for $::osfamily yet :( Please provide specific values to the postfix module.")
+      fail("Sorry, I don't know default values for ${::osfamily} yet :( Please provide specific values to the postfix module.")
   }
   # </USE_DEFAULT vs OS defaults>
 
@@ -142,13 +141,22 @@ class postfix (
   $main_virtual_alias_maps_real  = $main_virtual_alias_maps
   $service_enable_real           = $service_enable
   $service_ensure_real           = $service_ensure
-  $service_hasrestart_real       = $service_hasrestart
-  $service_hasstatus_real        = $service_hasstatus
   $service_name_real             = $service_name
   $template_main_cf_real         = $template_main_cf
   $virtual_aliases_real          = $virtual_aliases
-  # </USE_DEFAULTS ?>
 
+  if type($service_hasrestart) == 'string' {
+    $service_hasrestart_real = str2bool($service_hasrestart)
+  } else {
+    $service_hasrestart_real = $service_hasrestart
+  }
+
+  if type($service_hasstatus) == 'string' {
+    $service_hasstatus_real = str2bool($service_hasstatus)
+  } else {
+    $service_hasstatus_real = $service_hasstatus
+  }
+  # </USE_DEFAULTS ?>
 
   # <validating variables>
   if empty($main_alias_database_real) == true { fail("main_alias_database must contain a valid value and is set to <${main_alias_database_real}>") }
@@ -159,7 +167,7 @@ class postfix (
   validate_absolute_path($main_daemon_directory_real)
   validate_absolute_path($main_data_directory_real)
   if empty($main_inet_interfaces_real) == true { fail("main_inet_interfaces must contain a valid value and is set to <${main_inet_interfaces_real}>") }
-  if empty($main_inet_protocols_real) == true { fail("main_inet_protocols must contain a valid value and is set to <${main_main_inet_protocols_real}>") }
+  if empty($main_inet_protocols_real) == true { fail("main_inet_protocols must contain a valid value and is set to <${main_inet_protocols_real}>") }
   if is_integer($main_mailbox_size_limit_real) == false { fail("main_mailbox_size_limit must be an integer and is set to <${main_mailbox_size_limit_real}>") }
   if $main_mailbox_size_limit_real < 0 { fail("main_mailbox_size_limit needs a minimum value of 0 and is set to <${main_mailbox_size_limit_real}>") }
   validate_string($main_mydestination_real)
@@ -173,10 +181,10 @@ class postfix (
   if empty($main_setgid_group_real) == true { fail("main_setgid_group must contain a valid value and is set to <${main_setgid_group_real}>") }
   if empty($main_virtual_alias_maps_real) == true { fail("main_virtual_alias_maps must contain a valid value and is set to <${main_virtual_alias_maps_real}>") }
   if empty($packages_real) == true { fail("packages must contain a valid value and is set to <${packages_real}>") }
-  validate_re($service_enable_real, '^(true|false|manual)$', "service_enable may be either 'true', 'false' or 'manual' and is set to <${service_enable_real}>")
+  if type($service_enable_real) != 'boolean' { validate_re($service_enable_real, '^(true|false|manual)$', "service_enable may be either 'true', 'false' or 'manual' and is set to <${service_enable_real}>") }
   validate_re($service_ensure_real, '^(running|stopped)$', "service_ensure may be either 'running' or 'stopped' and is set to <${service_ensure_real}>")
-  validate_re($service_hasrestart_real, '^(true|false)$', "service_hasrestart may be either 'true' or 'false' and is set to '${service_hasrestart_real}'")
-  validate_re($service_hasstatus_real, '^(true|false)$', "service_hasstatus may be either 'true' or 'false' and is set to '${service_hasstatus_real}'")
+  validate_bool($service_hasrestart_real)
+  validate_bool($service_hasstatus_real)
   if empty($service_name_real) == true { fail("service_name must contain a valid value and is set to <${service_name_real}>") }
   if empty($template_main_cf_real) == true { fail("template_main_cf must contain a valid value and is set to <${template_main_cf_real}>") }
   if $virtual_aliases_real { validate_hash($virtual_aliases_real) }
@@ -237,13 +245,13 @@ class postfix (
   # </Install & Config>
 
   # <Remove Sendmail>
-    package { 'sendmail':
-      ensure  => absent,
-      require => Package['sendmail-cf'],
-    }
-    package { 'sendmail-cf':
-      ensure => absent,
-    }
+  package { 'sendmail':
+    ensure  => absent,
+    require => Package['sendmail-cf'],
+  }
+  package { 'sendmail-cf':
+    ensure => absent,
+  }
   # </Remove Sendmail>
 
 }

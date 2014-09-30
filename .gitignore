@@ -27,3 +27,5 @@ doc/
 # Puppet
 coverage/
 spec/fixtures/modules/*
+Gemfile.lock
+spec/fixtures/

@@ -87,7 +87,6 @@ describe 'postfix' do
             'require'    => "Package[#{v[:packages_default]}]",
           })
         }
-
         it { should contain_file('postfix_main.cf').with_content(/^alias_database = hash:\/etc\/aliases$/) }
         it { should contain_file('postfix_main.cf').with_content(/^alias_maps = hash:\/etc\/aliases$/) }
         it { should contain_file('postfix_main.cf').with_content(/^biff = no$/) }
@@ -105,7 +104,7 @@ describe 'postfix' do
         it { should contain_file('postfix_main.cf').with_content(/^recipient_delimiter = \+$/) }
         it { should contain_file('postfix_main.cf').with_content(/^relayhost = mailhost.test.local:25$/) }
         it { should contain_file('postfix_main.cf').with_content(/^setgid_group = #{v[:main_setgid_group_default]}$/) }
-
+        it { should_not contain_file('postfix_main.cf').with_content(/^virtual_alias_maps = hash:\/etc\/postfix\/virtual$/) }
 
 
         # file { 'postfix_virtual' :}
@@ -138,6 +137,63 @@ describe 'postfix' do
             'ensure'     => 'absent',
           })
         }
+      end
+    end
+  end
+
+
+  describe 'with virtual_aliases set' do
+    platforms.sort.each do |k,v|
+      context "where osfamily is <#{v[:osfamily]}>" do
+
+        let :facts do
+          {
+            :osfamily => v[:osfamily],
+          }
+        end
+
+        let :params do
+          {
+            :virtual_aliases => { 'test1@test.void' => 'destination1', 'test2@test.void' => [ 'destination2', 'destination3' ] },
+          }
+        end
+
+        # file { 'postfix_virtual': }
+        it {
+          should contain_file('postfix_virtual').with({
+            'ensure'     => 'file',
+            'path'       => '/etc/postfix/virtual',
+            'owner'      => 'root',
+            'group'      => 'root',
+            'mode'       => '0644',
+            'require'    => "Package[#{v[:packages_default]}]",
+          })
+        }
+        it { should contain_file('postfix_virtual').with_content(/^test1@test.void\t\tdestination1$/) }
+        it { should contain_file('postfix_virtual').with_content(/^test2@test.void\t\tdestination2,destination3$/) }
+
+        # exec { 'postfix_rebuild_virtual': }
+        it {
+          should contain_exec('postfix_rebuild_virtual').with({
+            'command'     => "#{v[:main_command_directory_default]}/postmap hash:/etc/postfix/virtual",
+            'refreshonly' => 'true',
+            'subscribe'   => 'File[postfix_virtual]',
+          })
+        }
+
+        # file { 'postfix_main.cf' :}
+        it {
+          should contain_file('postfix_main.cf').with({
+            'ensure'     => 'file',
+            'path'       => '/etc/postfix/main.cf',
+            'owner'      => 'root',
+            'group'      => 'root',
+            'mode'       => '0644',
+            'require'    => "Package[#{v[:packages_default]}]",
+          })
+        }
+        it { should contain_file('postfix_main.cf').with_content(/^virtual_alias_maps = hash:\/etc\/postfix\/virtual$/) }
+
       end
     end
   end

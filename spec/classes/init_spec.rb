@@ -144,7 +144,7 @@ describe 'postfix' do
   end
 
 
-  describe 'running on unkown OS overriding <USE_DEFAULTS> with specific values' do
+  describe 'running on unkown OS, passing specific values for <USE_DEFAULTS>' do
     let(:facts) { {
       'osfamily' => 'UnknownOS',
       'domain'   => 'test.local',
@@ -244,6 +244,22 @@ describe 'postfix' do
     }
   end
 
+  describe 'running on unkown OS without passing specific values for <USE_DEFAULTS>' do
+    let(:facts) { {
+      'osfamily' => 'UnknownOS',
+      'domain'   => 'test.local',
+      'fqdn'     => 'dummy.test.local',
+    } }
+
+    it do
+      expect {
+        should contain_class('postfix')
+      }.to raise_error(Puppet::Error, /^Sorry, I don\'t know default values for UnknownOS yet :\( Please provide specific values to the postfix module./)
+    end
+
+  end
+
+########################################
 
   describe 'validating variables on valid osfamily RedHat with valid values' do
     let(:facts) { { 'osfamily' => 'Redhat' } }

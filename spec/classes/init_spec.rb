@@ -144,6 +144,107 @@ describe 'postfix' do
   end
 
 
+  describe 'running on unkown OS overriding <USE_DEFAULTS> with specific values' do
+    let(:facts) { {
+      'osfamily' => 'UnknownOS',
+      'domain'   => 'test.local',
+      'fqdn'     => 'dummy.test.local',
+    } }
+
+    let(:params) { {
+      'main_command_directory' => '/uOS/command',
+      'main_daemon_directory'  => '/uOS/daemon',
+      'main_data_directory'    => '/uOS/data',
+      'main_queue_directory'   => '/uOS/queue',
+      'main_setgid_group'      => 'uOSuser',
+      'packages'               => 'uOSpostfix',
+    } }
+
+    # package { $packages_real:}
+    it {
+      should contain_package('uOSpostfix').with({
+        'ensure' => 'installed',
+        'before' => 'Package[sendmail]',
+      })
+    }
+
+    # service { 'postfix_service' :}
+    it {
+      should contain_service('postfix_service').with({
+        'ensure'     => 'running',
+        'name'       => 'postfix',
+        'enable'     => 'true',
+        'hasrestart' => 'true',
+        'hasstatus'  => 'true',
+        'require'    => 'Package[uOSpostfix]',
+        'subscribe'  => ['File[postfix_main.cf]', 'File[postfix_virtual]'],
+      })
+    }
+
+    # file { 'postfix_main.cf' :}
+    it {
+      should contain_file('postfix_main.cf').with({
+        'ensure'     => 'file',
+        'path'       => '/etc/postfix/main.cf',
+        'owner'      => 'root',
+        'group'      => 'root',
+        'mode'       => '0644',
+        'require'    => 'Package[uOSpostfix]',
+      })
+    }
+    it { should contain_file('postfix_main.cf').with_content(/^alias_database = hash:\/etc\/aliases$/) }
+    it { should contain_file('postfix_main.cf').with_content(/^alias_maps = hash:\/etc\/aliases$/) }
+    it { should contain_file('postfix_main.cf').with_content(/^append_dot_mydomain = no$/) }
+    it { should contain_file('postfix_main.cf').with_content(/^biff = no$/) }
+    it { should contain_file('postfix_main.cf').with_content(/^command_directory = \/uOS\/command$/) }
+    it { should contain_file('postfix_main.cf').with_content(/^daemon_directory = \/uOS\/daemon$/) }
+    it { should contain_file('postfix_main.cf').with_content(/^data_directory = \/uOS\/data$/) }
+    it { should contain_file('postfix_main.cf').with_content(/^inet_interfaces = 127.0.0.1$/) }
+    it { should contain_file('postfix_main.cf').with_content(/^inet_protocols = ipv4$/) }
+    it { should contain_file('postfix_main.cf').with_content(/^mailbox_size_limit = 0$/) }
+    it { should contain_file('postfix_main.cf').with_content(/^mydestination = localhost$/) }
+    it { should contain_file('postfix_main.cf').with_content(/^myhostname = dummy.test.local$/) }
+    it { should contain_file('postfix_main.cf').with_content(/^mynetworks = 127.0.0.0\/8$/) }
+    it { should contain_file('postfix_main.cf').with_content(/^myorigin = \$myhostname$/) }
+    it { should contain_file('postfix_main.cf').with_content(/^queue_directory = \/uOS\/queue$/) }
+    it { should contain_file('postfix_main.cf').with_content(/^recipient_delimiter = \+$/) }
+    it { should contain_file('postfix_main.cf').with_content(/^relayhost = mailhost.test.local:25$/) }
+    it { should contain_file('postfix_main.cf').with_content(/^setgid_group = uOSuser$/) }
+    it { should_not contain_file('postfix_main.cf').with_content(/^virtual_alias_maps = hash:\/etc\/postfix\/virtual$/) }
+
+    # file { 'postfix_virtual' :}
+    it {
+      should contain_file('postfix_virtual').with({
+        'ensure'     => 'absent',
+        'path'       => '/etc/postfix/virtual',
+      })
+    }
+
+    # file { 'postfix_virtual_db' :}
+    it {
+      should contain_file('postfix_virtual_db').with({
+        'ensure'     => 'absent',
+        'path'       => '/etc/postfix/virtual.db',
+      })
+    }
+
+    # package { 'sendmail' :}
+    it {
+      should contain_package('sendmail').with({
+        'ensure'     => 'absent',
+        'require'    => 'Package[sendmail-cf]',
+      })
+    }
+
+    # package { 'sendmail-cf' :}
+    it {
+      should contain_package('sendmail-cf').with({
+        'ensure'     => 'absent',
+      })
+    }
+  end
+
+
   describe 'validating variables on valid osfamily RedHat with valid values' do
     let(:facts) { { 'osfamily' => 'Redhat' } }
 

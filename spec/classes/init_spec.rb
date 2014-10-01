@@ -244,6 +244,7 @@ describe 'postfix' do
     }
   end
 
+
   describe 'running on unkown OS without passing specific values for <USE_DEFAULTS>' do
     let(:facts) { {
       'osfamily' => 'UnknownOS',
@@ -259,7 +260,6 @@ describe 'postfix' do
 
   end
 
-########################################
 
   describe 'validating variables on valid osfamily RedHat with valid values' do
     let(:facts) { { 'osfamily' => 'Redhat' } }

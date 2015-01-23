@@ -63,7 +63,15 @@ relayhost = <%= @main_relayhost_real %>:<%= @main_relayhost_port_real %>
 
 # setgid_group = postdrop
 setgid_group = <%= @main_setgid_group_real %>
-<% if @main_virtual_alias_maps_real and @virtual_aliases_real -%>
+<% if @main_virtual_alias_domains_real -%>
+
+virtual_alias_domains = <%= @main_virtual_alias_domains_real %>
+<% end -%>
+<% if @main_virtual_alias_maps_real and (@virtual_aliases_real or @virtual_aliases_external_real) -%>
 
 virtual_alias_maps = <%= @main_virtual_alias_maps_real %>
+<% end -%>
+<% if @main_transport_maps_real and (@transport_maps_real or @transport_maps_external_real) -%>
+
+transport_maps = <%= @main_transport_maps_real %>
 <% end -%>

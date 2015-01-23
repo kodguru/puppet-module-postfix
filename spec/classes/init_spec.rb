@@ -73,7 +73,7 @@ describe 'postfix' do
             'hasrestart' => 'true',
             'hasstatus'  => 'true',
             'require'    => "Package[#{v[:packages_default]}]",
-            'subscribe'  => ['File[postfix_main.cf]', 'File[postfix_virtual]'],
+            'subscribe'  => ['File[postfix_main.cf]', 'File[postfix_virtual]', 'File[postfix_transport]'],
           })
         }
 
@@ -109,6 +109,7 @@ describe 'postfix' do
         it { should contain_file('postfix_main.cf').without_content(/^virtual_alias_maps = hash:\/etc\/postfix\/virtual$/) }
         it { should contain_file('postfix_main.cf').without_content(/^mailbox_command =/) }
         it { should contain_file('postfix_main.cf').without_content(/^relay_domains =/) }
+        it { should contain_file('postfix_main.cf').without_content(/^transport_maps/) }
 
 
         # file { 'postfix_virtual' :}
@@ -179,7 +180,7 @@ describe 'postfix' do
         'hasrestart' => 'true',
         'hasstatus'  => 'true',
         'require'    => 'Package[uOSpostfix]',
-        'subscribe'  => ['File[postfix_main.cf]', 'File[postfix_virtual]'],
+        'subscribe'  => ['File[postfix_main.cf]', 'File[postfix_virtual]', 'File[postfix_transport]'],
       })
     }
 
@@ -215,6 +216,7 @@ describe 'postfix' do
     it { should contain_file('postfix_main.cf').without_content(/^virtual_alias_maps = hash:\/etc\/postfix\/virtual$/) }
     it { should contain_file('postfix_main.cf').without_content(/^mailbox_command =/) }
     it { should contain_file('postfix_main.cf').without_content(/^relay_domains =/) }
+    it { should contain_file('postfix_main.cf').without_content(/^transport_maps/) }
 
     # file { 'postfix_virtual' :}
     it {
@@ -404,6 +406,12 @@ describe 'postfix' do
       it { should contain_file('postfix_main.cf').with_content(/^setgid_group = postfixdropper$/) }
     end
 
+    context 'with main_virtual_alias_domains set to <virtual.example.com>' do
+      let(:params) { { 'main_virtual_alias_domains' => 'virtual.example.com' } }
+
+      it { should contain_file('postfix_main.cf').with_content(/^virtual_alias_domains = virtual\.example\.com$/) }
+    end
+
     context 'with main_virtual_alias_maps set to <hash:/etc/postfix/virtual_maps>' do
       let(:params) { {
         'main_virtual_alias_maps' => 'hash:/etc/postfix/virtual_maps',
@@ -412,6 +420,16 @@ describe 'postfix' do
       } }
 
       it { should contain_file('postfix_main.cf').with_content(/^virtual_alias_maps = hash:\/etc\/postfix\/virtual_maps$/) }
+    end
+
+    context 'with main_transport_maps set to <hash:/etc/postfix/external_transport>' do
+      let(:params) { {
+        'main_transport_maps' => 'hash:/etc/postfix/external_transport',
+        # virtual_aliases needs to contain a valid value too
+        'transport_maps_external' => true,
+      } }
+
+      it { should contain_file('postfix_main.cf').with_content(/^transport_maps = hash:\/etc\/postfix\/external_transport$/) }
     end
 
     context "with packages set to <postfix_alt>" do
@@ -455,7 +473,7 @@ describe 'postfix' do
             'hasrestart' => 'true',
             'hasstatus'  => 'true',
             'require'    => "Package[postfix]",
-            'subscribe'  => ['File[postfix_main.cf]', 'File[postfix_virtual]'],
+            'subscribe'  => ['File[postfix_main.cf]', 'File[postfix_virtual]', 'File[postfix_transport]'],
           })
         }
       end
@@ -473,7 +491,7 @@ describe 'postfix' do
             'hasrestart' => 'true',
             'hasstatus'  => 'true',
             'require'    => "Package[postfix]",
-            'subscribe'  => ['File[postfix_main.cf]', 'File[postfix_virtual]'],
+            'subscribe'  => ['File[postfix_main.cf]', 'File[postfix_virtual]', 'File[postfix_transport]'],
           })
         }
       end
@@ -491,7 +509,7 @@ describe 'postfix' do
             'hasrestart' => "#{value}",
             'hasstatus'  => 'true',
             'require'    => "Package[postfix]",
-            'subscribe'  => ['File[postfix_main.cf]', 'File[postfix_virtual]'],
+            'subscribe'  => ['File[postfix_main.cf]', 'File[postfix_virtual]', 'File[postfix_transport]'],
           })
         }
       end
@@ -509,7 +527,7 @@ describe 'postfix' do
             'hasrestart' => 'true',
             'hasstatus'  => "#{value}",
             'require'    => "Package[postfix]",
-            'subscribe'  => ['File[postfix_main.cf]', 'File[postfix_virtual]'],
+            'subscribe'  => ['File[postfix_main.cf]', 'File[postfix_virtual]', 'File[postfix_transport]'],
           })
         }
       end
@@ -526,7 +544,7 @@ describe 'postfix' do
           'hasrestart' => 'true',
           'hasstatus'  => 'true',
           'require'    => "Package[postfix]",
-          'subscribe'  => ['File[postfix_main.cf]', 'File[postfix_virtual]'],
+          'subscribe'  => ['File[postfix_main.cf]', 'File[postfix_virtual]', 'File[postfix_transport]'],
         })
       }
     end
@@ -552,6 +570,24 @@ describe 'postfix' do
       }
 
       it { should contain_file('postfix_main.cf').with_content(/^virtual_alias_maps = hash:\/etc\/postfix\/virtual$/) }
+    end
+
+    context "with transport_maps set to <[ 'sub1.example.com  mail1.example.com', 'sub2.example.com  mail2.example.com' ]>" do
+      let(:params) { { 'transport_maps' => { 'sub1.example.com' => 'mail1.example.com', 'sub2.example.com' => 'mail2.example.com' } } }
+
+      it { should contain_file('postfix_transport').with_content(/^sub1.example.com\t\tmail1.example.com$/) }
+      it { should contain_file('postfix_transport').with_content(/^sub2.example.com\t\tmail2.example.com$/) }
+
+      # exec { 'postfix_rebuild_virtual': }
+      it {
+        should contain_exec('postfix_rebuild_transport').with({
+          'command'     => '/usr/sbin/postmap hash:/etc/postfix/transport',
+          'refreshonly' => 'true',
+          'subscribe'   => 'File[postfix_transport]',
+        })
+      }
+
+      it { should contain_file('postfix_main.cf').with_content(/^transport_maps = hash:\/etc\/postfix\/transport$/) }
     end
   end
 
@@ -769,6 +805,16 @@ describe 'postfix' do
       end
     end
 
+    context 'with main_virtual_alias_domains set to invalid <non-string>' do
+      let(:params) { { 'main_virtual_alias_domains' => ['non','string'] } }
+
+      it do
+        expect {
+          should contain_class('postfix')
+        }.to raise_error(Puppet::Error, /is not a string/)
+      end
+    end
+
     context 'with empty main_virtual_alias_maps' do
       let(:params) { { 'main_virtual_alias_maps' => '' } }
 
@@ -776,6 +822,16 @@ describe 'postfix' do
         expect {
           should contain_class('postfix')
         }.to raise_error(Puppet::Error, /^main_virtual_alias_maps must contain a valid value and is set to <>/)
+      end
+    end
+
+    context 'with empty main_transport_maps' do
+      let(:params) { { 'main_transport_maps' => '' } }
+
+      it do
+        expect {
+          should contain_class('postfix')
+        }.to raise_error(Puppet::Error, /^main_transport_maps must contain a valid value and is set to <>/)
       end
     end
 
@@ -856,6 +912,56 @@ describe 'postfix' do
         expect {
           should contain_class('postfix')
         }.to raise_error(Puppet::Error, /^"test1@test.void" is not a Hash.  It looks to be a String at/)
+      end
+    end
+
+    context 'with transport_maps set to invalid <relay:smtp.example.com>' do
+      let(:params) { { 'transport_maps' => 'relay:smtp.example.com' } }
+
+      it do
+        expect {
+          should contain_class('postfix')
+        }.to raise_error(Puppet::Error, /^"relay:smtp.example.com" is not a Hash.  It looks to be a String at/)
+      end
+    end
+
+    context 'with transport_maps_external set to invalid <string>' do
+      let(:params) { { 'transport_maps_external' => 'string' } }
+
+      it do
+        expect {
+          should contain_class('postfix')
+        }.to raise_error(Puppet::Error, /^str2bool\(\): Unknown type of boolean given at/)
+      end
+    end
+
+    context 'with virtual_aliases set to invalid <admin@example.com admin@example.org>' do
+      let(:params) { { 'virtual_aliases' => 'admin@example.com admin@example.org' } }
+
+      it do
+        expect {
+          should contain_class('postfix')
+        }.to raise_error(Puppet::Error, /^"admin@example.com admin@example.org" is not a Hash.  It looks to be a String at/)
+      end
+    end
+
+    context 'with virtual_aliases set to invalid <admin@example.com admin@example.org>' do
+      let(:params) { { 'virtual_aliases' => 'admin@example.com admin@example.org' } }
+
+      it do
+        expect {
+          should contain_class('postfix')
+        }.to raise_error(Puppet::Error, /^"admin@example.com admin@example.org" is not a Hash.  It looks to be a String at/)
+      end
+    end
+
+    context 'with virtual_aliases_external set to invalid <string>' do
+      let(:params) { { 'virtual_aliases_external' => 'string' } }
+
+      it do
+        expect {
+          should contain_class('postfix')
+        }.to raise_error(Puppet::Error, /^str2bool\(\): Unknown type of boolean given at/)
       end
     end
 

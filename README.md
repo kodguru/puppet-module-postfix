@@ -239,6 +239,18 @@ version 2.0 and earlier: "/etc/postfix/post-install set-permissions".
 - *Module Default*: 'USE_DEFAULTS'
 
 
+main_virtual_alias_domains (default: $virtual_alias_maps)
+---------------------------------------------------------
+Postfix is final destination for the specified list of virtual alias domains, that is, domains for
+which all addresses are aliased to addresses in other local or remote domains. The SMTP server
+validates recipient addresses with $virtual_alias_maps and rejects non-existent recipients. See also
+the virtual alias domain class in the ADDRESS_CLASS_README file.
+
+This feature is available  in Postfix 2.0 and later.
+
+- *Module Default*: 'hash:/etc/postfix/virtual'
+
+
 main_virtual_alias_maps (default: $virtual_maps)
 ------------------------------------------------
 Optional lookup tables that alias specific mail addresses or domains to other local or
@@ -248,6 +260,24 @@ overview of Postfix address manipulations see the ADDRESS_REWRITING_README docum
 This feature is available  in Postfix 2.0 and later.
 
 - *Module Default*: 'hash:/etc/postfix/virtual'
+
+
+main_transport_maps (default: empty)
+------------------------------------------------
+Optional lookup tables with mappings from recipient address to (message delivery transport,
+next-hop destination). See transport(5) for details.
+
+This parameter can be used to specify a file not managed by this puppet module to provide alternative
+lookup sources. For example ldap, nis, mysql, pcre, etc. For more information see the man pages for
+postmap(1), transport(5)
+
+- *Module Default*: 'hash:/etc/postfix/transport'
+
+Example:
+<pre>
+postfix::main_transport_maps: 'pcre:/etc/postfix/transport_pcre'
+postfix::transport_maps_external: true
+</pre>
 
 
 packages
@@ -319,6 +349,39 @@ postfix::virtual_aliases:
       - 'destination2'
       - 'destination3'
 </pre>
+
+
+virtual_aliases_external (default: false)
+-----------------------------------------
+Use a non-puppet managed source for the virtual_aliases parameter, for example nis: or ldap:.
+This parameter will cause the value of main_virtual_alias_maps to be added despite the
+virtual_aliases parameter beeing undefined.
+
+- *Module Default*: false
+
+
+transport_maps (default: undef)
+--------------------------------
+Hash of entries to add to transport_maps file defined by $main_transport_maps. The value
+must be a string.
+
+- *Module Default*: undef
+
+Example:
+<pre>
+postfix::virtual_aliases:
+    '.sub1.example.com': 'relay:mail1.example.com'
+    '.sub2.example.com': 'relay:mail2.example.com'
+</pre>
+
+
+transport_maps_external (default: false)
+----------------------------------------
+Use a non-puppet managed source for the transport_maps, for example nis: or ldap:. This parameter
+will cause the value of main_transport_maps to be added despite the transport_map parameter beeing
+undefined.
+
+- *Module Default*: false
 
 
 # Testing #

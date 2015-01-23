@@ -3,36 +3,41 @@
 # Manage Postfix to relay mail
 
 class postfix (
-  $main_alias_database      = 'hash:/etc/aliases',
-  $main_alias_maps          = 'hash:/etc/aliases',
-  $main_append_dot_mydomain = 'no',
-  $main_biff                = 'no',
-  $main_command_directory   = 'USE_DEFAULTS',
-  $main_daemon_directory    = 'USE_DEFAULTS',
-  $main_data_directory      = 'USE_DEFAULTS',
-  $main_inet_interfaces     = '127.0.0.1',
-  $main_inet_protocols      = 'ipv4',
-  $main_mailbox_command     = undef,
-  $main_mailbox_size_limit  = '0',
-  $main_mydestination       = 'localhost',
-  $main_myhostname          = $::fqdn,
-  $main_mynetworks          = '127.0.0.0/8',
-  $main_myorigin            = '$myhostname',
-  $main_queue_directory     = 'USE_DEFAULTS',
-  $main_recipient_delimiter = '+',
-  $main_relay_domains       = undef,
-  $main_relayhost           = "mailhost.${::domain}",
-  $main_relayhost_port      = '25',
-  $main_setgid_group        = 'USE_DEFAULTS',
-  $main_virtual_alias_maps  = 'hash:/etc/postfix/virtual',
-  $packages                 = 'USE_DEFAULTS',
-  $service_enable           = true,
-  $service_ensure           = 'running',
-  $service_hasrestart       = true,
-  $service_hasstatus        = true,
-  $service_name             = 'postfix',
-  $template_main_cf         = 'postfix/main.cf.erb',
-  $virtual_aliases          = undef,
+  $main_alias_database        = 'hash:/etc/aliases',
+  $main_alias_maps            = 'hash:/etc/aliases',
+  $main_append_dot_mydomain   = 'no',
+  $main_biff                  = 'no',
+  $main_command_directory     = 'USE_DEFAULTS',
+  $main_daemon_directory      = 'USE_DEFAULTS',
+  $main_data_directory        = 'USE_DEFAULTS',
+  $main_inet_interfaces       = '127.0.0.1',
+  $main_inet_protocols        = 'ipv4',
+  $main_mailbox_command       = undef,
+  $main_mailbox_size_limit    = '0',
+  $main_mydestination         = 'localhost',
+  $main_myhostname            = $::fqdn,
+  $main_mynetworks            = '127.0.0.0/8',
+  $main_myorigin              = '$myhostname',
+  $main_queue_directory       = 'USE_DEFAULTS',
+  $main_recipient_delimiter   = '+',
+  $main_relayhost             = "mailhost.${::domain}",
+  $main_relayhost_port        = '25',
+  $main_relay_domains         = undef,
+  $main_setgid_group          = 'USE_DEFAULTS',
+  $main_virtual_alias_domains = undef,
+  $main_virtual_alias_maps    = 'hash:/etc/postfix/virtual',
+  $main_transport_maps        = 'hash:/etc/postfix/transport',
+  $packages                   = 'USE_DEFAULTS',
+  $service_enable             = true,
+  $service_ensure             = 'running',
+  $service_hasrestart         = true,
+  $service_hasstatus          = true,
+  $service_name               = 'postfix',
+  $template_main_cf           = 'postfix/main.cf.erb',
+  $virtual_aliases            = undef,
+  $virtual_aliases_external   = false,
+  $transport_maps             = undef,
+  $transport_maps_external    = false,
 ) {
 
   # <provide os default values>
@@ -129,23 +134,26 @@ class postfix (
     'USE_DEFAULTS' => $packages_default,
     default        => $packages }
 
-  $main_alias_database_real      = $main_alias_database
-  $main_alias_maps_real          = $main_alias_maps
-  $main_append_dot_mydomain_real = $main_append_dot_mydomain
-  $main_biff_real                = $main_biff
-  $main_inet_interfaces_real     = $main_inet_interfaces
-  $main_inet_protocols_real      = $main_inet_protocols
-  $main_myhostname_real          = $main_myhostname
-  $main_mynetworks_real          = $main_mynetworks
-  $main_myorigin_real            = $main_myorigin
-  $main_relayhost_real           = $main_relayhost
-  $main_relayhost_port_real      = $main_relayhost_port
-  $main_virtual_alias_maps_real  = $main_virtual_alias_maps
-  $service_enable_real           = $service_enable
-  $service_ensure_real           = $service_ensure
-  $service_name_real             = $service_name
-  $template_main_cf_real         = $template_main_cf
-  $virtual_aliases_real          = $virtual_aliases
+  $main_alias_database_real        = $main_alias_database
+  $main_alias_maps_real            = $main_alias_maps
+  $main_append_dot_mydomain_real   = $main_append_dot_mydomain
+  $main_biff_real                  = $main_biff
+  $main_inet_interfaces_real       = $main_inet_interfaces
+  $main_inet_protocols_real        = $main_inet_protocols
+  $main_myhostname_real            = $main_myhostname
+  $main_mynetworks_real            = $main_mynetworks
+  $main_myorigin_real              = $main_myorigin
+  $main_relayhost_real             = $main_relayhost
+  $main_relayhost_port_real        = $main_relayhost_port
+  $main_virtual_alias_domains_real = $main_virtual_alias_domains
+  $main_virtual_alias_maps_real    = $main_virtual_alias_maps
+  $main_transport_maps_real        = $main_transport_maps
+  $service_enable_real             = $service_enable
+  $service_ensure_real             = $service_ensure
+  $service_name_real               = $service_name
+  $template_main_cf_real           = $template_main_cf
+  $virtual_aliases_real            = $virtual_aliases
+  $transport_maps_real             = $transport_maps
 
   if is_bool($service_hasrestart) == true {
     $service_hasrestart_real = $service_hasrestart
@@ -157,6 +165,18 @@ class postfix (
     $service_hasstatus_real = $service_hasstatus
   } else {
     $service_hasstatus_real = str2bool($service_hasstatus)
+  }
+
+  if is_bool($virtual_aliases_external) == true {
+    $virtual_aliases_external_real = $virtual_aliases_external
+  } else {
+    $virtual_aliases_external_real = str2bool($virtual_aliases_external)
+  }
+
+  if is_bool($transport_maps_external) == true {
+    $transport_maps_external_real = $transport_maps_external
+  } else {
+    $transport_maps_external_real = str2bool($transport_maps_external)
   }
   # </USE_DEFAULTS ?>
 
@@ -182,6 +202,7 @@ class postfix (
   if is_integer($main_relayhost_port_real) == false { fail("main_relayhost_port must be an integer and is set to <${$main_relayhost_port_real}>") }
   if empty($main_setgid_group_real) == true { fail("main_setgid_group must contain a valid value and is set to <${main_setgid_group_real}>") }
   if empty($main_virtual_alias_maps_real) == true { fail("main_virtual_alias_maps must contain a valid value and is set to <${main_virtual_alias_maps_real}>") }
+  if empty($main_transport_maps_real) == true { fail("main_transport_maps must contain a valid value and is set to <${main_transport_maps_real}>") }
   if empty($packages_real) == true { fail("packages must contain a valid value and is set to <${packages_real}>") }
   if !is_bool($service_enable_real) { validate_re($service_enable_real, '^(true|false|manual)$', "service_enable may be either 'true', 'false' or 'manual' and is set to <${service_enable_real}>") }
   validate_re($service_ensure_real, '^(running|stopped)$', "service_ensure may be either 'running' or 'stopped' and is set to <${service_ensure_real}>")
@@ -192,6 +213,8 @@ class postfix (
   if $virtual_aliases_real { validate_hash($virtual_aliases_real) }
   if $main_mailbox_command { validate_string($main_mailbox_command) }
   if $main_relay_domains { validate_string($main_relay_domains) }
+  if $transport_maps_real { validate_hash($transport_maps_real) }
+  if $main_virtual_alias_domains_real { validate_string($main_virtual_alias_domains_real) }
   # </validating variables>
 
   # <Install & Config>
@@ -207,7 +230,7 @@ class postfix (
     hasrestart => $service_hasrestart_real,
     hasstatus  => $service_hasstatus_real,
     require    => Package[$packages_real],
-    subscribe  => [ File['postfix_main.cf'], File['postfix_virtual'], ]
+    subscribe  => [ File['postfix_main.cf'], File['postfix_virtual'], File['postfix_transport'], ]
   }
 
   file  { 'postfix_main.cf' :
@@ -244,6 +267,32 @@ class postfix (
     file { 'postfix_virtual_db':
       ensure => absent,
       path   => '/etc/postfix/virtual.db',
+    }
+  }
+  if $transport_maps != undef {
+    file { 'postfix_transport':
+      ensure  => file,
+      path    => '/etc/postfix/transport',
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0644',
+      content => template('postfix/transport.erb'),
+      require => Package[$packages_real],
+    }
+    exec { 'postfix_rebuild_transport':
+      command     => "${main_command_directory_real}/postmap hash:/etc/postfix/transport",
+      refreshonly => true,
+      subscribe   => File['postfix_transport'],
+    }
+  }
+  else {
+    file { 'postfix_transport':
+      ensure => absent,
+      path   => '/etc/postfix/transport',
+    }
+    file { 'postfix_transport_db':
+      ensure => absent,
+      path   => '/etc/postfix/transport.db',
     }
   }
   # </Install & Config>

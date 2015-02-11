@@ -1,0 +1,47 @@
+{
+  "name": "Phil-Friderici-postfix",
+  "version": "1.0.1",
+  "author": "Phil-Friderici",
+  "summary": "Manage Postfix",
+  "license": "Apache-2.0",
+  "source": "git@github.com:Phil-Friderici/puppet-module-postfix.git",
+  "project_page": "https://github.com/Phil-Friderici/puppet-module-postfix",
+  "issues_url": "https://github.com/Phil-Friderici/puppet-module-postfix/issues",
+  "description": "Manage Postfix for mail relaying",
+  "requirements": [
+    {
+      "name": "pe",
+      "version_requirement": "3.2.x"
+    },
+    {
+      "name": "puppet",
+      "version_requirement": "3.x"
+    }
+  ],
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "Debian",
+    },
+    {
+      "operatingsystem": "RedHat",
+    },
+    {
+      "operatingsystem": "CentOS",
+    },
+    {
+      "operatingsystem": "OracleLinux",
+    },
+    {
+      "operatingsystem": "Scientific",
+    },
+    {
+      "operatingsystem": "SLES"
+    },
+    {
+      "operatingsystem": "SLED"
+    },
+  ],
+  "dependencies": [
+    {"name":"puppetlabs/stdlib","version_requirement":">= 4.2.0"}
+  ]
+}

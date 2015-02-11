@@ -145,16 +145,16 @@ class postfix (
   $template_main_cf_real         = $template_main_cf
   $virtual_aliases_real          = $virtual_aliases
 
-  if type($service_hasrestart) == 'string' {
-    $service_hasrestart_real = str2bool($service_hasrestart)
-  } else {
+  if is_bool($service_hasrestart) == true {
     $service_hasrestart_real = $service_hasrestart
+  } else {
+    $service_hasrestart_real = str2bool($service_hasrestart)
   }
 
-  if type($service_hasstatus) == 'string' {
-    $service_hasstatus_real = str2bool($service_hasstatus)
-  } else {
+  if is_bool($service_hasstatus) == true {
     $service_hasstatus_real = $service_hasstatus
+  } else {
+    $service_hasstatus_real = str2bool($service_hasstatus)
   }
   # </USE_DEFAULTS ?>
 
@@ -181,7 +181,7 @@ class postfix (
   if empty($main_setgid_group_real) == true { fail("main_setgid_group must contain a valid value and is set to <${main_setgid_group_real}>") }
   if empty($main_virtual_alias_maps_real) == true { fail("main_virtual_alias_maps must contain a valid value and is set to <${main_virtual_alias_maps_real}>") }
   if empty($packages_real) == true { fail("packages must contain a valid value and is set to <${packages_real}>") }
-  if type($service_enable_real) != 'boolean' { validate_re($service_enable_real, '^(true|false|manual)$', "service_enable may be either 'true', 'false' or 'manual' and is set to <${service_enable_real}>") }
+  if !is_bool($service_enable_real) { validate_re($service_enable_real, '^(true|false|manual)$', "service_enable may be either 'true', 'false' or 'manual' and is set to <${service_enable_real}>") }
   validate_re($service_ensure_real, '^(running|stopped)$', "service_ensure may be either 'running' or 'stopped' and is set to <${service_ensure_real}>")
   validate_bool($service_hasrestart_real)
   validate_bool($service_hasstatus_real)

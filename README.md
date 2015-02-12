@@ -19,11 +19,16 @@ For other OSfamilies support, please specify all parameters which defaults to 'U
 
 
 # Version history #
-1.0.0 2014-11-25
-initial 1.0.0 release
+1.0.2 2015-02-12
+fix broken metadata.json
 
 1.0.1 2015-02-11
 deprecate type() as preparation for Puppet v4. Needs stdlib >= 4.2 now
+
+1.0.0 2014-11-25
+initial 1.0.0 release
+
+
 
 
 # Parameters #

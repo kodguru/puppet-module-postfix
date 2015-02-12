@@ -7,39 +7,62 @@
   "source": "git@github.com:Phil-Friderici/puppet-module-postfix.git",
   "project_page": "https://github.com/Phil-Friderici/puppet-module-postfix",
   "issues_url": "https://github.com/Phil-Friderici/puppet-module-postfix/issues",
-  "description": "Manage Postfix for mail relaying",
-  "requirements": [
-    {
-      "name": "pe",
-      "version_requirement": "3.2.x"
-    },
-    {
-      "name": "puppet",
-      "version_requirement": "3.x"
-    }
-  ],
   "operatingsystem_support": [
     {
       "operatingsystem": "Debian",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
     },
     {
       "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "5",
+        "6",
+        "7"
+      ]
     },
     {
       "operatingsystem": "CentOS",
+      "operatingsystemrelease": [
+        "5",
+        "6",
+        "7"
+      ]
     },
     {
       "operatingsystem": "OracleLinux",
+      "operatingsystemrelease": [
+        "5",
+        "6",
+        "7"
+      ]
     },
     {
       "operatingsystem": "Scientific",
+      "operatingsystemrelease": [
+        "5",
+        "6",
+        "7"
+      ]
     },
     {
       "operatingsystem": "SLES"
     },
     {
-      "operatingsystem": "SLED"
+      "operatingsystem": "SLED"	
+    }
+  ],
+  "requirements": [
+    {
+      "name": "pe",
+      "version_requirement": "3.x"
     },
+    {
+      "name": "puppet",
+      "version_requirement": "3.x"
+    }
   ],
   "dependencies": [
     {"name":"puppetlabs/stdlib","version_requirement":">= 4.2.0"}

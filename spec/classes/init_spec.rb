@@ -107,6 +107,8 @@ describe 'postfix' do
         it { should contain_file('postfix_main.cf').with_content(/^relayhost = mailhost.test.local:25$/) }
         it { should contain_file('postfix_main.cf').with_content(/^setgid_group = #{v[:main_setgid_group_default]}$/) }
         it { should_not contain_file('postfix_main.cf').with_content(/^virtual_alias_maps = hash:\/etc\/postfix\/virtual$/) }
+        it { should_not contain_file('postfix_main.cf').with_content(/^mailbox_command =/) }
+        it { should_not contain_file('postfix_main.cf').with_content(/^relay_domains =/) }
 
 
         # file { 'postfix_virtual' :}
@@ -322,6 +324,12 @@ describe 'postfix' do
       it { should contain_file('postfix_main.cf').with_content(/^inet_protocols = ipv6$/) }
     end
 
+    context 'with main_mailbox_command set to </usr/bin/procmail>' do
+      let(:params) { { 'main_mailbox_command' => '/usr/bin/procmail' } }
+
+      it { should contain_file('postfix_main.cf').with_content(/^mailbox_command = \/usr\/bin\/procmail$/) }
+    end
+
     context 'with main_mailbox_size_limit set to <USE_DEFAULTS>' do
       let(:params) { { 'main_mailbox_size_limit' => 'USE_DEFAULTS' } }
 
@@ -364,6 +372,12 @@ describe 'postfix' do
       let(:params) { { 'main_queue_directory' => '/var/queue' } }
 
       it { should contain_file('postfix_main.cf').with_content(/^queue_directory = \/var\/queue$/) }
+    end
+
+    context 'with main_relay_domains set to <test.com, domain.com>' do
+      let(:params) { { 'main_relay_domains' => 'test.com, domain.com' } }
+
+      it { should contain_file('postfix_main.cf').with_content(/^relay_domains = test.com, domain.com$/) }
     end
 
     context 'with main_relayhost set to <relayhost.valid.test>' do
@@ -633,6 +647,16 @@ describe 'postfix' do
       end
     end
 
+    context 'with main_mailbox_command set to invalid <non-string>' do
+      let(:params) { { 'main_mailbox_command' => ['non','string'] } }
+
+      it do
+        expect {
+          should contain_class('postfix')
+        }.to raise_error(Puppet::Error, /is not a string/)
+      end
+    end
+
     context 'with main_mailbox_size_limit set to invalid <noninteger>' do
       let(:params) { { 'main_mailbox_size_limit' => 'noninteger' } }
 
@@ -700,6 +724,16 @@ describe 'postfix' do
         expect {
           should contain_class('postfix')
         }.to raise_error(Puppet::Error, /^"..\/var\/spool" is not an absolute path./)
+      end
+    end
+
+    context 'with main_relay_domains set to invalid <non-string>' do
+      let(:params) { { 'main_relay_domains' => ['non','string'] } }
+
+      it do
+        expect {
+          should contain_class('postfix')
+        }.to raise_error(Puppet::Error, /is not a string/)
       end
     end
 

@@ -26,6 +26,10 @@ inet_interfaces = <%= @main_inet_interfaces_real %>
 # inet_protocols = ipv4 (RHEL & Suse)
 # inet_protocols = all (Debian & Ubuntu)
 inet_protocols = <%= @main_inet_protocols_real %>
+<% if @main_mailbox_command -%>
+
+mailbox_command = <%= @main_mailbox_command %>
+<% end -%>
 
 # mailbox_size_limit = 51200000
 mailbox_size_limit = <%= @main_mailbox_size_limit_real %>
@@ -49,6 +53,10 @@ queue_directory = <%= @main_queue_directory_real %>
 
 # recipient_delimiter =
 recipient_delimiter = <%= @main_recipient_delimiter_real %>
+<% if @main_relay_domains -%>
+
+relay_domains = <%= @main_relay_domains %>
+<% end -%>
 
 # relayhost =
 relayhost = <%= @main_relayhost_real %>:<%= @main_relayhost_port_real %>

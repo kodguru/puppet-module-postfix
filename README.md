@@ -126,6 +126,17 @@ IPv6 deployment becomes more common.
 - *Module Default*: 'ipv4'
 
 
+main_mailbox_command (default: undef)
+--------------------------------
+Optional external command that the local(8) delivery agent should use for mailbox delivery. The
+command is run with the user ID and the primary group ID privileges of the recipient.
+Exception: command delivery for root executes with $default_privs privileges. This is not a problem,
+because 1) mail for root should always be aliased to a real user and 2) don't log in as root,
+use "su" instead. 
+
+- *Module Default*: undef
+
+
 main_mailbox_size_limit (default: 51200000)
 -------------------------------------------
 The maximal size of any local(8) individual mailbox or maildir file, or zero (no limit). In fact,
@@ -193,6 +204,14 @@ virtual, and relocated lookups. Basically, the software tries user+foo and .forw
 user and .forward.
 
 - *Module Default*: '+'
+
+main_relay_domains (default: undef)
+--------------------------------
+What destination domains (and subdomains thereof) this system will relay mail to. For details about how
+the relay_domains value is used, see the description of the permit_auth_destination and
+reject_unauth_destination SMTP recipient restrictions.
+
+- *Module Default*: undef
 
 
 main_relayhost & main_relayhost_port (default: empty)

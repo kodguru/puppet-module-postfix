@@ -106,9 +106,9 @@ describe 'postfix' do
         it { should contain_file('postfix_main.cf').with_content(/^recipient_delimiter = \+$/) }
         it { should contain_file('postfix_main.cf').with_content(/^relayhost = mailhost.test.local:25$/) }
         it { should contain_file('postfix_main.cf').with_content(/^setgid_group = #{v[:main_setgid_group_default]}$/) }
-        it { should_not contain_file('postfix_main.cf').with_content(/^virtual_alias_maps = hash:\/etc\/postfix\/virtual$/) }
-        it { should_not contain_file('postfix_main.cf').with_content(/^mailbox_command =/) }
-        it { should_not contain_file('postfix_main.cf').with_content(/^relay_domains =/) }
+        it { should contain_file('postfix_main.cf').without_content(/^virtual_alias_maps = hash:\/etc\/postfix\/virtual$/) }
+        it { should contain_file('postfix_main.cf').without_content(/^mailbox_command =/) }
+        it { should contain_file('postfix_main.cf').without_content(/^relay_domains =/) }
 
 
         # file { 'postfix_virtual' :}
@@ -212,7 +212,9 @@ describe 'postfix' do
     it { should contain_file('postfix_main.cf').with_content(/^recipient_delimiter = \+$/) }
     it { should contain_file('postfix_main.cf').with_content(/^relayhost = mailhost.test.local:25$/) }
     it { should contain_file('postfix_main.cf').with_content(/^setgid_group = uOSuser$/) }
-    it { should_not contain_file('postfix_main.cf').with_content(/^virtual_alias_maps = hash:\/etc\/postfix\/virtual$/) }
+    it { should contain_file('postfix_main.cf').without_content(/^virtual_alias_maps = hash:\/etc\/postfix\/virtual$/) }
+    it { should contain_file('postfix_main.cf').without_content(/^mailbox_command =/) }
+    it { should contain_file('postfix_main.cf').without_content(/^relay_domains =/) }
 
     # file { 'postfix_virtual' :}
     it {

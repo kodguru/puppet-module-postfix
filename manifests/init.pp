@@ -12,6 +12,7 @@ class postfix (
   $main_data_directory      = 'USE_DEFAULTS',
   $main_inet_interfaces     = '127.0.0.1',
   $main_inet_protocols      = 'ipv4',
+  $main_mailbox_command     = undef,
   $main_mailbox_size_limit  = '0',
   $main_mydestination       = 'localhost',
   $main_myhostname          = $::fqdn,
@@ -19,6 +20,7 @@ class postfix (
   $main_myorigin            = '$myhostname',
   $main_queue_directory     = 'USE_DEFAULTS',
   $main_recipient_delimiter = '+',
+  $main_relay_domains       = undef,
   $main_relayhost           = "mailhost.${::domain}",
   $main_relayhost_port      = '25',
   $main_setgid_group        = 'USE_DEFAULTS',
@@ -188,6 +190,8 @@ class postfix (
   if empty($service_name_real) == true { fail("service_name must contain a valid value and is set to <${service_name_real}>") }
   if empty($template_main_cf_real) == true { fail("template_main_cf must contain a valid value and is set to <${template_main_cf_real}>") }
   if $virtual_aliases_real { validate_hash($virtual_aliases_real) }
+  if $main_mailbox_command { validate_string($main_mailbox_command) }
+  if $main_relay_domains { validate_string($main_relay_domains) }
   # </validating variables>
 
   # <Install & Config>

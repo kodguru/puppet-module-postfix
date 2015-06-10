@@ -406,10 +406,22 @@ describe 'postfix' do
       it { should contain_file('postfix_main.cf').with_content(/^setgid_group = postfixdropper$/) }
     end
 
-    context 'with main_virtual_alias_domains set to <virtual.example.com>' do
+    context 'where main_virtual_alias_domains is set to valid <virtual.example.com>' do
       let(:params) { { 'main_virtual_alias_domains' => 'virtual.example.com' } }
 
       it { should contain_file('postfix_main.cf').with_content(/^virtual_alias_domains = virtual\.example\.com$/) }
+    end
+
+    [['array'],a = { 'ha' => 'sh' },].each do |value|
+      context "where main_virtual_alias_domains is set to invalid #{value} (as #{value.class})" do
+        let(:params) { { 'main_virtual_alias_domains' => value } }
+
+        it do
+          expect {
+            should contain_class('postfix')
+          }.to raise_error(Puppet::Error, /is not a string/)
+        end
+      end
     end
 
     context 'with main_virtual_alias_maps set to <hash:/etc/postfix/virtual_maps>' do
@@ -422,14 +434,36 @@ describe 'postfix' do
       it { should contain_file('postfix_main.cf').with_content(/^virtual_alias_maps = hash:\/etc\/postfix\/virtual_maps$/) }
     end
 
-    context 'with main_transport_maps set to <hash:/etc/postfix/external_transport>' do
+    context 'where main_transport_maps is set to valid <hash:/etc/postfix/external_transport>' do
       let(:params) { {
         'main_transport_maps' => 'hash:/etc/postfix/external_transport',
-        # virtual_aliases needs to contain a valid value too
+        # needed for the functionality test:
         'transport_maps_external' => true,
       } }
 
       it { should contain_file('postfix_main.cf').with_content(/^transport_maps = hash:\/etc\/postfix\/external_transport$/) }
+    end
+
+    context 'where main_transport_maps is set to invalid empty' do
+      let(:params) { { 'main_transport_maps' => '' } }
+
+      it do
+        expect {
+          should contain_class('postfix')
+        }.to raise_error(Puppet::Error, /^main_transport_maps must contain a valid value and is set to <>/)
+      end
+    end
+
+    [['array'],a = { 'ha' => 'sh' },].each do |value|
+      context "where main_transport_maps is set to invalid #{value} (as #{value.class})" do
+        let(:params) { { 'main_transport_maps' => value } }
+
+        it do
+          expect {
+            should contain_class('postfix')
+          }.to raise_error(Puppet::Error, /is not a string/)
+        end
+      end
     end
 
     context "with packages set to <postfix_alt>" do
@@ -572,7 +606,7 @@ describe 'postfix' do
       it { should contain_file('postfix_main.cf').with_content(/^virtual_alias_maps = hash:\/etc\/postfix\/virtual$/) }
     end
 
-    context "with transport_maps set to <[ 'sub1.example.com  mail1.example.com', 'sub2.example.com  mail2.example.com' ]>" do
+    context "where transport_maps is set to valid <[ 'sub1.example.com  mail1.example.com', 'sub2.example.com  mail2.example.com' ]> (as Hash))" do
       let(:params) { { 'transport_maps' => { 'sub1.example.com' => 'mail1.example.com', 'sub2.example.com' => 'mail2.example.com' } } }
 
       it { should contain_file('postfix_transport').with_content(/^sub1.example.com\t\tmail1.example.com$/) }
@@ -589,8 +623,59 @@ describe 'postfix' do
 
       it { should contain_file('postfix_main.cf').with_content(/^transport_maps = hash:\/etc\/postfix\/transport$/) }
     end
-  end
 
+    ['string',true,3,2.42,['array'],].each do |value|
+      context "where transport_maps is set to invalid #{value} (as #{value.class})" do
+        let(:params) { { 'transport_maps' => value } }
+
+        it do
+          expect {
+            should contain_class('postfix')
+          }.to raise_error(Puppet::Error, /is not a Hash/)
+        end
+      end
+    end
+
+    ['string',3,2.42,['array'],a = { 'ha' => 'sh' },].each do |value|
+      context "where transport_maps_external is set to invalid #{value} (as #{value.class})" do
+        let(:params) { { 'transport_maps_external' => value } }
+
+        it do
+          expect {
+            should contain_class('postfix')
+          }.to raise_error(Puppet::Error, /str2bool\(\)/)
+        end
+      end
+    end
+
+    [true,false,'true','false',].each do |value|
+      context "where virtual_aliases_external is set to valid #{value} (as #{value.class})" do
+        let(:params) { {
+          'virtual_aliases_external' => value,
+          # needed for the functionality test:
+          'main_virtual_alias_maps'  => 'hash:/etc/postfix/spec_testing',
+        } }
+
+        if value.to_s == 'true'
+          it { should contain_file('postfix_main.cf').with_content(/^virtual_alias_maps = hash:\/etc\/postfix\/spec_testing$/) }
+        else
+          it { should contain_file('postfix_main.cf').without_content(/virtual_alias_maps/) }
+        end
+      end
+    end
+
+    ['string',3,2.42,['array'],a = { 'ha' => 'sh' },].each do |value|
+      context "where virtual_aliases_external is set to invalid #{value} (as #{value.class})" do
+        let(:params) { { 'virtual_aliases_external' => value } }
+
+        it do
+          expect {
+            should contain_class('postfix')
+          }.to raise_error(Puppet::Error, /str2bool\(\)/)
+        end
+      end
+    end
+  end
 
   describe 'validating variables on valid osfamily RedHat with invalid values' do
     let(:facts) { { 'osfamily' => 'Redhat' } }
@@ -805,16 +890,6 @@ describe 'postfix' do
       end
     end
 
-    context 'with main_virtual_alias_domains set to invalid <non-string>' do
-      let(:params) { { 'main_virtual_alias_domains' => ['non','string'] } }
-
-      it do
-        expect {
-          should contain_class('postfix')
-        }.to raise_error(Puppet::Error, /is not a string/)
-      end
-    end
-
     context 'with empty main_virtual_alias_maps' do
       let(:params) { { 'main_virtual_alias_maps' => '' } }
 
@@ -822,16 +897,6 @@ describe 'postfix' do
         expect {
           should contain_class('postfix')
         }.to raise_error(Puppet::Error, /^main_virtual_alias_maps must contain a valid value and is set to <>/)
-      end
-    end
-
-    context 'with empty main_transport_maps' do
-      let(:params) { { 'main_transport_maps' => '' } }
-
-      it do
-        expect {
-          should contain_class('postfix')
-        }.to raise_error(Puppet::Error, /^main_transport_maps must contain a valid value and is set to <>/)
       end
     end
 
@@ -925,16 +990,6 @@ describe 'postfix' do
       end
     end
 
-    context 'with transport_maps_external set to invalid <string>' do
-      let(:params) { { 'transport_maps_external' => 'string' } }
-
-      it do
-        expect {
-          should contain_class('postfix')
-        }.to raise_error(Puppet::Error, /^str2bool\(\): Unknown type of boolean given at/)
-      end
-    end
-
     context 'with virtual_aliases set to invalid <admin@example.com admin@example.org>' do
       let(:params) { { 'virtual_aliases' => 'admin@example.com admin@example.org' } }
 
@@ -952,16 +1007,6 @@ describe 'postfix' do
         expect {
           should contain_class('postfix')
         }.to raise_error(Puppet::Error, /^"admin@example.com admin@example.org" is not a Hash.  It looks to be a String at/)
-      end
-    end
-
-    context 'with virtual_aliases_external set to invalid <string>' do
-      let(:params) { { 'virtual_aliases_external' => 'string' } }
-
-      it do
-        expect {
-          should contain_class('postfix')
-        }.to raise_error(Puppet::Error, /^str2bool\(\): Unknown type of boolean given at/)
       end
     end
 

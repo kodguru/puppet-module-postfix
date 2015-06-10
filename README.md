@@ -246,9 +246,9 @@ which all addresses are aliased to addresses in other local or remote domains. T
 validates recipient addresses with $virtual_alias_maps and rejects non-existent recipients. See also
 the virtual alias domain class in the ADDRESS_CLASS_README file.
 
-This feature is available  in Postfix 2.0 and later.
+This feature is available in Postfix 2.0 and later.
 
-- *Module Default*: 'hash:/etc/postfix/virtual'
+- *Module Default*: undef
 
 
 main_virtual_alias_maps (default: $virtual_maps)
@@ -257,7 +257,7 @@ Optional lookup tables that alias specific mail addresses or domains to other lo
 remote address. The table format and lookups are documented in virtual(5). For an
 overview of Postfix address manipulations see the ADDRESS_REWRITING_README document.
 
-This feature is available  in Postfix 2.0 and later.
+This feature is available in Postfix 2.0 and later.
 
 - *Module Default*: 'hash:/etc/postfix/virtual'
 

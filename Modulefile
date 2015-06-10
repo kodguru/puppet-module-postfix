@@ -1,5 +1,5 @@
 name 'puppet-module-postfix'
-version '1.1.0'
+version '1.2.0'
 source 'git://github.com:Phil-Friderici/puppet-module-postfix.git'
 author 'Phil-Friderici'
 license 'Apache License, Version 2.0'

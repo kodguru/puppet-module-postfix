@@ -19,6 +19,9 @@ For other OSfamilies support, please specify all parameters which defaults to 'U
 
 
 # Version history #
+1.2.0 2015-06-10
+add ability to configure transport maps
+
 1.1.0 2015-04-14
 add support for mailbox_command and relay_domains
 

@@ -9,6 +9,10 @@ The module installs and configures Postfix MTA to relay local mail to a relayhos
 
 # Compatability #
 
+This module has been tested to work on the following systems with Puppet v3
+(with and without the future parser) and Puppet v4 with Ruby versions 1.8.7,
+1.9.3, 2.0.0 and 2.1.0.
+
 This module provides OS default values for these OSfamilies:
 
  * Debian
@@ -150,7 +154,7 @@ this limits the size of any file that is written to upon local delivery, includi
 by external commands that are executed by the local(8) delivery agent.
 Note: This limit must not be smaller than the message size limit.
 
-- *Module Default*: '0'
+- *Module Default*: 0
 
 
 main_mydestination (default: $myhostname, localhost.$mydomain, localhost)

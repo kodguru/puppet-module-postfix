@@ -9,7 +9,7 @@ describe 'postfix' do
         :main_command_directory_default   => '/usr/sbin',
         :main_daemon_directory_default    => '/usr/lib/postfix',
         :main_data_directory_default      => '/var/lib/postfix',
-        :main_mailbox_size_limit_default  => '51200000',
+        :main_mailbox_size_limit_default  => 51200000,
         :main_mydestination_default       => '$myhostname, localhost.$mydomain, localhost',
         :main_queue_directory_default     => '/var/spool/postfix',
         :main_recipient_delimiter_default => '',
@@ -22,7 +22,7 @@ describe 'postfix' do
         :main_command_directory_default   => '/usr/sbin',
         :main_daemon_directory_default    => '/usr/libexec/postfix',
         :main_data_directory_default      => '/var/lib/postfix',
-        :main_mailbox_size_limit_default  => '51200000',
+        :main_mailbox_size_limit_default  => 51200000,
         :main_mydestination_default       => '$myhostname, localhost.$mydomain, localhost',
         :main_queue_directory_default     => '/var/spool/postfix',
         :main_recipient_delimiter_default => '',
@@ -35,7 +35,7 @@ describe 'postfix' do
         :main_command_directory_default   => '/usr/sbin',
         :main_daemon_directory_default    => '/usr/lib/postfix',
         :main_data_directory_default      => '/var/lib/postfix',
-        :main_mailbox_size_limit_default  => '51200000',
+        :main_mailbox_size_limit_default  => 51200000,
         :main_mydestination_default       => '$myhostname, localhost.$mydomain, localhost',
         :main_queue_directory_default     => '/var/spool/postfix',
         :main_recipient_delimiter_default => '',
@@ -261,7 +261,7 @@ describe 'postfix' do
     it do
       expect {
         should contain_class('postfix')
-      }.to raise_error(Puppet::Error, /^Sorry, I don\'t know default values for UnknownOS yet :\( Please provide specific values to the postfix module./)
+      }.to raise_error(Puppet::Error,/Sorry, I don\'t know default values for UnknownOS yet :\( Please provide specific values to the postfix module\./)
     end
 
   end
@@ -292,7 +292,7 @@ describe 'postfix' do
           it do
             expect {
               should contain_class('postfix')
-          }.to raise_error(Puppet::Error, /is not a string/)
+          }.to raise_error(Puppet::Error,/is not a string/)
           end
         end
       end
@@ -318,7 +318,7 @@ describe 'postfix' do
           it do
             expect {
               should contain_class('postfix')
-          }.to raise_error(Puppet::Error, /is not an absolute path/)
+          }.to raise_error(Puppet::Error,/is not an absolute path/)
           end
         end
       end
@@ -333,7 +333,7 @@ describe 'postfix' do
         it do
           expect {
             should contain_class('postfix')
-          }.to raise_error(Puppet::Error, /^main_#{Regexp.escape(variable)} must contain a valid value and is set to <>/)
+          }.to raise_error(Puppet::Error,/main_#{Regexp.escape(variable)} must contain a valid value and is set to <>/)
         end
       end
     end
@@ -356,7 +356,7 @@ describe 'postfix' do
           it do
             expect {
               should contain_class('postfix')
-            }.to raise_error(Puppet::Error, /^main_#{Regexp.escape(variable)} may be either 'yes' or 'no' and is set to <#{value}>/)
+            }.to raise_error(Puppet::Error,/main_#{Regexp.escape(variable)} may be either 'yes' or 'no' and is set to <#{value}>/)
           end
         end
       end
@@ -370,9 +370,9 @@ describe 'postfix' do
       it { should contain_file('postfix_main.cf').with_content(/^mailbox_size_limit = 51200000$/) }
     end
 
-    ['0','242',0,242].each do |value|
+    [0,242].each do |value|
       context "with main_mailbox_size_limit set to <#{value}>" do
-        let(:params) { { :main_mailbox_size_limit => "#{value}" } }
+        let(:params) { { :main_mailbox_size_limit => value } }
 
         it { should contain_file('postfix_main.cf').with_content(/^mailbox_size_limit = #{value}$/) }
       end
@@ -384,17 +384,17 @@ describe 'postfix' do
       it do
         expect {
           should contain_class('postfix')
-        }.to raise_error(Puppet::Error, /^main_mailbox_size_limit must be an integer and is set to <noninteger>/)
+        }.to raise_error(Puppet::Error,/main_mailbox_size_limit must be an integer and is set to <noninteger>/)
       end
     end
 
     context 'with main_mailbox_size_limit set to invalid <-1>' do
-      let(:params) { { 'main_mailbox_size_limit' => '-1' } }
+      let(:params) { { 'main_mailbox_size_limit' => -1 } }
 
       it do
         expect {
           should contain_class('postfix')
-        }.to raise_error(Puppet::Error, /^main_mailbox_size_limit needs a minimum value of 0 and is set to <-1>/)
+        }.to raise_error(Puppet::Error,/main_mailbox_size_limit needs a minimum value of 0 and is set to <-1>/)
       end
     end
 
@@ -404,7 +404,7 @@ describe 'postfix' do
       it do
         expect {
           should contain_class('postfix')
-        }.to raise_error(Puppet::Error, /^main_myhostname must be a domain name and is set to <invalid_domain.name>/)
+        }.to raise_error(Puppet::Error,/main_myhostname must be a domain name and is set to <invalid_domain.name>/)
       end
     end
 
@@ -420,7 +420,7 @@ describe 'postfix' do
       it do
         expect {
           should contain_class('postfix')
-        }.to raise_error(Puppet::Error, /^main_relayhost must be a domain name and is set to <invalid_domain.name>/)
+        }.to raise_error(Puppet::Error,/main_relayhost must be a domain name and is set to <invalid_domain.name>/)
       end
     end
 
@@ -440,7 +440,7 @@ describe 'postfix' do
       it do
         expect {
           should contain_class('postfix')
-        }.to raise_error(Puppet::Error, /^main_relayhost_port must be an integer and is set to <noninteger>/)
+        }.to raise_error(Puppet::Error,/main_relayhost_port must be an integer and is set to <noninteger>/)
       end
     end
 
@@ -479,7 +479,7 @@ describe 'postfix' do
       it do
         expect {
           should contain_class('postfix')
-        }.to raise_error(Puppet::Error, /^packages must contain a valid value and is set to <>/)
+        }.to raise_error(Puppet::Error,/packages must contain a valid value and is set to <>/)
       end
     end
 
@@ -507,7 +507,7 @@ describe 'postfix' do
       it do
         expect {
           should contain_class('postfix')
-        }.to raise_error(Puppet::Error, /^service_enable may be either 'true', 'false' or 'manual' and is set to <automatic>/)
+        }.to raise_error(Puppet::Error,/service_enable may be either 'true', 'false' or 'manual' and is set to <automatic>/)
       end
     end
 
@@ -535,7 +535,7 @@ describe 'postfix' do
       it do
         expect {
           should contain_class('postfix')
-        }.to raise_error(Puppet::Error, /^service_ensure may be either 'running' or 'stopped' and is set to <paused>/)
+        }.to raise_error(Puppet::Error,/service_ensure may be either 'running' or 'stopped' and is set to <paused>/)
       end
     end
 
@@ -563,7 +563,7 @@ describe 'postfix' do
       it do
         expect {
           should contain_class('postfix')
-        }.to raise_error(Puppet::Error, /^str2bool\(\): Unknown type of boolean given at/)
+        }.to raise_error(Puppet::Error,/str2bool\(\): Unknown type of boolean given at/)
       end
     end
 
@@ -591,7 +591,7 @@ describe 'postfix' do
       it do
         expect {
           should contain_class('postfix')
-        }.to raise_error(Puppet::Error, /^str2bool\(\): Unknown type of boolean given at/)
+        }.to raise_error(Puppet::Error,/str2bool\(\): Unknown type of boolean given at/)
       end
     end
 
@@ -617,7 +617,7 @@ describe 'postfix' do
       it do
         expect {
           should contain_class('postfix')
-        }.to raise_error(Puppet::Error, /^service_name must contain a valid value and is set to <>/)
+        }.to raise_error(Puppet::Error,/service_name must contain a valid value and is set to <>/)
       end
     end
 
@@ -632,7 +632,7 @@ describe 'postfix' do
       it do
         expect {
           should contain_class('postfix')
-        }.to raise_error(Puppet::Error, /^template_main_cf must contain a valid value and is set to <>/)
+        }.to raise_error(Puppet::Error,/template_main_cf must contain a valid value and is set to <>/)
       end
     end
 
@@ -660,7 +660,7 @@ describe 'postfix' do
       it do
         expect {
           should contain_class('postfix')
-        }.to raise_error(Puppet::Error, /^"test1@test.void" is not a Hash.  It looks to be a String at/)
+        }.to raise_error(Puppet::Error,/\"test1@test.void\" is not a Hash\.  It looks to be a String at/)
       end
     end
 
@@ -670,7 +670,7 @@ describe 'postfix' do
       it do
         expect {
           should contain_class('postfix')
-        }.to raise_error(Puppet::Error, /^"admin@example.com admin@example.org" is not a Hash.  It looks to be a String at/)
+        }.to raise_error(Puppet::Error,/\"admin@example.com admin@example.org\" is not a Hash\.  It looks to be a String at/)
       end
     end
 
@@ -699,7 +699,7 @@ describe 'postfix' do
         it do
           expect {
             should contain_class('postfix')
-          }.to raise_error(Puppet::Error, /is not a Hash/)
+          }.to raise_error(Puppet::Error,/is not a Hash/)
         end
       end
     end
@@ -711,7 +711,7 @@ describe 'postfix' do
         it do
           expect {
             should contain_class('postfix')
-          }.to raise_error(Puppet::Error, /str2bool\(\)/)
+          }.to raise_error(Puppet::Error,/str2bool\(\)/)
         end
       end
     end
@@ -739,7 +739,7 @@ describe 'postfix' do
         it do
           expect {
             should contain_class('postfix')
-          }.to raise_error(Puppet::Error, /str2bool\(\)/)
+          }.to raise_error(Puppet::Error,/str2bool\(\)/)
         end
       end
     end

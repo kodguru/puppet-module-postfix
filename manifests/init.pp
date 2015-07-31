@@ -13,7 +13,7 @@ class postfix (
   $main_inet_interfaces       = '127.0.0.1',
   $main_inet_protocols        = 'ipv4',
   $main_mailbox_command       = undef,
-  $main_mailbox_size_limit    = '0',
+  $main_mailbox_size_limit    = 0,
   $main_mydestination         = 'localhost',
   $main_myhostname            = $::fqdn,
   $main_mynetworks            = '127.0.0.0/8',
@@ -47,7 +47,7 @@ class postfix (
       $main_command_directory_default   = '/usr/sbin'
       $main_daemon_directory_default    = '/usr/lib/postfix'
       $main_data_directory_default      = '/var/lib/postfix'
-      $main_mailbox_size_limit_default  = '51200000'
+      $main_mailbox_size_limit_default  = 51200000
       $main_mydestination_default       = '$myhostname, localhost.$mydomain, localhost'
       $main_queue_directory_default     = '/var/spool/postfix'
       $main_recipient_delimiter_default = ''
@@ -58,7 +58,7 @@ class postfix (
       $main_command_directory_default   = '/usr/sbin'
       $main_daemon_directory_default    = '/usr/libexec/postfix'
       $main_data_directory_default      = '/var/lib/postfix'
-      $main_mailbox_size_limit_default  = '51200000'
+      $main_mailbox_size_limit_default  = 51200000
       $main_mydestination_default       = '$myhostname, localhost.$mydomain, localhost'
       $main_queue_directory_default     = '/var/spool/postfix'
       $main_recipient_delimiter_default = ''
@@ -69,7 +69,7 @@ class postfix (
       $main_command_directory_default   = '/usr/sbin'
       $main_daemon_directory_default    = '/usr/lib/postfix'
       $main_data_directory_default      = '/var/lib/postfix'
-      $main_mailbox_size_limit_default  = '51200000'
+      $main_mailbox_size_limit_default  = 51200000
       $main_mydestination_default       = '$myhostname, localhost.$mydomain, localhost'
       $main_queue_directory_default     = '/var/spool/postfix'
       $main_recipient_delimiter_default = ''

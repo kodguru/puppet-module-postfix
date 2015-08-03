@@ -23,6 +23,9 @@ For other OSfamilies support, please specify all parameters which defaults to 'U
 
 
 # Version history #
+1.2.1 2015-08-03
+support newer versions of Puppet v3 as well as the future parser and Puppet v4
+
 1.2.0 2015-06-10
 add ability to configure transport maps
 

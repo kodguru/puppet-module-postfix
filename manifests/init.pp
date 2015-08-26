@@ -3,41 +3,47 @@
 # Manage Postfix to relay mail
 
 class postfix (
-  $main_alias_database        = 'hash:/etc/aliases',
-  $main_alias_maps            = 'hash:/etc/aliases',
-  $main_append_dot_mydomain   = 'no',
-  $main_biff                  = 'no',
-  $main_command_directory     = 'USE_DEFAULTS',
-  $main_daemon_directory      = 'USE_DEFAULTS',
-  $main_data_directory        = 'USE_DEFAULTS',
-  $main_inet_interfaces       = '127.0.0.1',
-  $main_inet_protocols        = 'ipv4',
-  $main_mailbox_command       = undef,
-  $main_mailbox_size_limit    = 0,
-  $main_mydestination         = 'localhost',
-  $main_myhostname            = $::fqdn,
-  $main_mynetworks            = '127.0.0.0/8',
-  $main_myorigin              = '$myhostname',
-  $main_queue_directory       = 'USE_DEFAULTS',
-  $main_recipient_delimiter   = '+',
-  $main_relay_domains         = undef,
-  $main_relayhost             = "mailhost.${::domain}",
-  $main_relayhost_port        = '25',
-  $main_setgid_group          = 'USE_DEFAULTS',
-  $main_transport_maps        = 'hash:/etc/postfix/transport',
-  $main_virtual_alias_domains = undef,
-  $main_virtual_alias_maps    = 'hash:/etc/postfix/virtual',
-  $packages                   = 'USE_DEFAULTS',
-  $service_enable             = true,
-  $service_ensure             = 'running',
-  $service_hasrestart         = true,
-  $service_hasstatus          = true,
-  $service_name               = 'postfix',
-  $template_main_cf           = 'postfix/main.cf.erb',
-  $transport_maps             = undef,
-  $transport_maps_external    = false,
-  $virtual_aliases            = undef,
-  $virtual_aliases_external   = false,
+  $main_alias_database                = 'hash:/etc/aliases',
+  $main_alias_maps                    = 'hash:/etc/aliases',
+  $main_append_dot_mydomain           = 'no',
+  $main_biff                          = 'no',
+  $main_command_directory             = 'USE_DEFAULTS',
+  $main_daemon_directory              = 'USE_DEFAULTS',
+  $main_data_directory                = 'USE_DEFAULTS',
+  $main_inet_interfaces               = '127.0.0.1',
+  $main_inet_protocols                = 'ipv4',
+  $main_mailbox_command               = undef,
+  $main_mailbox_size_limit            = '0',
+  $main_mydestination                 = 'localhost',
+  $main_myhostname                    = $::fqdn,
+  $main_mynetworks                    = '127.0.0.0/8',
+  $main_myorigin                      = '$myhostname',
+  $main_queue_directory               = 'USE_DEFAULTS',
+  $main_recipient_delimiter           = '+',
+  $main_relay_domains                 = undef,
+  $main_relayhost                     = "mailhost.${::domain}",
+  $main_relayhost_port                = '25',
+  $main_setgid_group                  = 'USE_DEFAULTS',
+  $main_transport_maps                = 'hash:/etc/postfix/transport',
+  $main_virtual_alias_domains         = undef,
+  $main_virtual_alias_maps            = 'hash:/etc/postfix/virtual',
+  $main_smtp_tls_mandatory_protocols  = undef,
+  $main_smtp_tls_protocols            = undef,
+  $main_smtp_tls_security_level       = undef,
+  $main_smtpd_tls_mandatory_protocols = undef,
+  $main_smtpd_tls_protocols           = undef,
+  $main_smtpd_tls_security_level      = undef,
+  $packages                           = 'USE_DEFAULTS',
+  $service_enable                     = true,
+  $service_ensure                     = 'running',
+  $service_hasrestart                 = true,
+  $service_hasstatus                  = true,
+  $service_name                       = 'postfix',
+  $template_main_cf                   = 'postfix/main.cf.erb',
+  $transport_maps                     = undef,
+  $transport_maps_external            = false,
+  $virtual_aliases                    = undef,
+  $virtual_aliases_external           = false,
 ) {
 
   # <provide os default values>
@@ -228,6 +234,12 @@ class postfix (
   validate_bool($transport_maps_external_real)
   if $virtual_aliases_real { validate_hash($virtual_aliases_real) }
   validate_bool($virtual_aliases_external_real)
+  validate_string($main_smtp_tls_mandatory_protocols)
+  validate_string($main_smtp_tls_protocols)
+  validate_string($main_smtp_tls_security_level)
+  validate_string($main_smtpd_tls_mandatory_protocols)
+  validate_string($main_smtpd_tls_protocols)
+  validate_string($main_smtpd_tls_security_level)
   # </validating variables>
 
   # <Install & Config>

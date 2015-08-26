@@ -26,6 +26,30 @@ inet_interfaces = <%= @main_inet_interfaces_real %>
 # inet_protocols = ipv4 (RHEL & Suse)
 # inet_protocols = all (Debian & Ubuntu)
 inet_protocols = <%= @main_inet_protocols_real %>
+<% if @main_smtp_tls_mandatory_protocols -%>
+
+smtp_tls_mandatory_protocols = <%= @main_smtp_tls_mandatory_protocols %>
+<% end -%>
+<% if @main_smtp_tls_protocols -%>
+
+smtp_tls_protocols = <%= @main_smtp_tls_protocols %>
+<% end -%>
+<% if @main_smtp_tls_security_level -%>
+
+smtp_tls_security_level = <%= @main_smtp_tls_security_level %>
+<% end -%>
+<% if @main_smtpd_tls_mandatory_protocols -%>
+
+smtpd_tls_mandatory_protocols = <%= @main_smtpd_tls_mandatory_protocols %>
+<% end -%>
+<% if @main_smtpd_tls_protocols -%>
+
+smtpd_tls_protocols = <%= @main_smtpd_tls_protocols %>
+<% end -%>
+<% if @main_smtpd_tls_security_level -%>
+
+smtpd_tls_security_level = <%= @main_smtpd_tls_security_level %>
+<% end -%>
 <% if @main_mailbox_command -%>
 
 mailbox_command = <%= @main_mailbox_command %>

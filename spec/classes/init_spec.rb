@@ -271,7 +271,7 @@ describe 'postfix' do
     let(:facts) { { :osfamily => 'Redhat' } }
 
     #<testing free string variables for main.cf>
-    ['alias_database','alias_maps','inet_interfaces','inet_protocols','mailbox_command','mydestination','mynetworks','myorigin','relay_domains','setgid_group','transport_maps','virtual_alias_maps','virtual_alias_domains',].each do |variable|
+    ['alias_database','alias_maps','inet_interfaces','inet_protocols','mailbox_command','mydestination','mynetworks','myorigin','relay_domains','setgid_group','transport_maps','virtual_alias_maps','virtual_alias_domains','smtp_tls_mandatory_protocols','smtp_tls_protocols','smtp_tls_security_level','smtpd_tls_mandatory_protocols','smtpd_tls_protocols','smtpd_tls_security_level'].each do |variable|
       ['string1','string2',].each do |value|
         context "where main_#{variable} is set to valid #{value} (as #{value.class})" do
           let(:params) { {

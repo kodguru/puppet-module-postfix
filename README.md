@@ -201,6 +201,62 @@ aliases each user to user@that.users.mailhost.
 - *Module Default*: '$myhostname'
 
 
+main_smtp_tls_mandatory_protocols
+---------------------------------
+List of SSL/TLS protocols that the Postfix SMTP client will use with mandatory TLS encryption.
+An empty value means allow all protocols. The valid protocol names, (see SSL_get_version(3)), are
+"SSLv2", "SSLv3" and "TLSv1". The default value is "!SSLv2, !SSLv3" for Postfix releases after
+the middle of 2015, "!SSLv2" for older releases.
+
+- *Module Default*: undef
+
+
+main_smtp_tls_protocols
+-----------------------
+List of TLS protocols that the Postfix SMTP client will exclude or include with opportunistic TLS
+encryption. The default value is "!SSLv2, !SSLv3" for Postfix releases after the middle of 2015,
+"!SSLv2" for older releases. Before Postfix 2.6, the Postfix SMTP client would use all protocols
+with opportunistic TLS.
+
+- *Module Default*: undef
+
+
+main_smtp_tls_security_level
+----------------------------
+The default SMTP TLS security level for the Postfix SMTP client. Specify one of the following
+security levels: none, may, encrypt, dane, dane-only, fingerprint, verify, secure.
+
+- *Module Default*: undef
+
+
+main_smtpd_tls_mandatory_protocols
+----------------------------------
+List of SSL/TLS protocols that the Postfix SMTP server will use with mandatory TLS encryption.
+An empty value means allow all protocols. The valid protocol names, are "SSLv2", "SSLv3" and
+"TLSv1". The default value is "!SSLv2, !SSLv3" for Postfix releases after the middle of 2015,
+"!SSLv2" for older releases.
+
+- *Module Default*: undef
+
+
+main_smtpd_tls_mandatory_protocols
+----------------------------------
+List of TLS protocols that the Postfix SMTP server will exclude or include with opportunistic TLS
+encryption. An empty value means allow all protocols. The valid protocol names, are "SSLv2",
+"SSLv3" and "TLSv1". The default value is "!SSLv2, !SSLv3" for Postfix releases after the middle
+of 2015, "!SSLv2" for older releases.
+
+- *Module Default*: undef
+
+
+main_smtpd_tls_security_level
+-----------------------------
+The SMTP TLS security level for the Postfix SMTP server. Specify one of the following security
+levels: none, may, encrypt.
+
+- *Module Default*: undef
+
+
 main_queue_directory (default: see "postconf -d" output)
 --------------------------------------------------------
 The location of the Postfix top-level queue directory. This is the root directory of Postfix daemon

@@ -23,25 +23,13 @@ For other OSfamilies support, please specify all parameters which defaults to 'U
 
 
 # Version history #
-1.2.1 2015-08-03
-support newer versions of Puppet v3 as well as the future parser and Puppet v4
-
-1.2.0 2015-06-10
-add ability to configure transport maps
-
-1.1.0 2015-04-14
-add support for mailbox_command and relay_domains
-
-1.0.2 2015-02-12
-fix broken metadata.json
-
-1.0.1 2015-02-11
-deprecate type() as preparation for Puppet v4. Needs stdlib >= 4.2 now
-
-1.0.0 2014-11-25
-initial 1.0.0 release
-
-
+1.3.0 2015-08-26 add support for basic SSL/TLS configuration
+1.2.1 2015-08-03 support newer versions of Puppet v3 as well as the future parser and Puppet v4
+1.2.0 2015-06-10 add ability to configure transport maps
+1.1.0 2015-04-14 add support for mailbox_command and relay_domains
+1.0.2 2015-02-12 fix broken metadata.json
+1.0.1 2015-02-11 deprecate type() as preparation for Puppet v4. Needs stdlib >= 4.2 now
+1.0.0 2014-11-25 initial 1.0.0 release
 
 
 # Parameters #

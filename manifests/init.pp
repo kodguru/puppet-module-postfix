@@ -196,7 +196,7 @@ class postfix (
   validate_string($main_inet_protocols_real)
   if $main_mailbox_command { validate_string($main_mailbox_command) }
   if is_integer($main_mailbox_size_limit_real) == false { fail("main_mailbox_size_limit must be an integer and is set to <${main_mailbox_size_limit_real}>") }
-  if $main_mailbox_size_limit_real < 0 { fail("main_mailbox_size_limit needs a minimum value of 0 and is set to <${main_mailbox_size_limit_real}>") }
+  if $main_mailbox_size_limit_real + 0 < 0 { fail("main_mailbox_size_limit needs a minimum value of 0 and is set to <${main_mailbox_size_limit_real}>") }
   validate_string($main_mydestination_real)
   if is_domain_name($main_myhostname_real) == false { fail("main_myhostname must be a domain name and is set to <${main_myhostname_real}>") }
   if empty($main_mynetworks_real) == true { fail("main_mynetworks must contain a valid value and is set to <${main_mynetworks_real}>") }

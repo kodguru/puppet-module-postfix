@@ -217,6 +217,14 @@ describe 'postfix' do
     it { should contain_file('postfix_main.cf').without_content(/^mailbox_command =/) }
     it { should contain_file('postfix_main.cf').without_content(/^relay_domains =/) }
     it { should contain_file('postfix_main.cf').without_content(/^transport_maps/) }
+    it { should contain_file('postfix_main.cf').without_content(/^smtp_tls_mandatory_protocols/) }
+    it { should contain_file('postfix_main.cf').without_content(/^smtp_tls_protocols/) }
+    it { should contain_file('postfix_main.cf').without_content(/^smtp_tls_security_level/) }
+    it { should contain_file('postfix_main.cf').without_content(/^smtpd_tls_mandatory_protocols/) }
+    it { should contain_file('postfix_main.cf').without_content(/^smtpd_tls_protocols/) }
+    it { should contain_file('postfix_main.cf').without_content(/^smtpd_tls_security_level/) }
+    it { should contain_file('postfix_main.cf').without_content(/^smtpd_tls_key_file/) }
+    it { should contain_file('postfix_main.cf').without_content(/^smtpd_tls_cert_file/) }
 
     # file { 'postfix_virtual' :}
     it {
@@ -300,7 +308,7 @@ describe 'postfix' do
     #</testing free string variables for main.cf>
 
     #<testing path type string variables for main.cf>
-    ['command_directory','daemon_directory','data_directory','queue_directory',].each do |variable|
+    ['command_directory','daemon_directory','data_directory','queue_directory','smtpd_tls_key_file','smtpd_tls_cert_file',].each do |variable|
       ['/path/1','/path2',].each do |value|
         context "where main_#{variable} is set to valid #{value} (as #{value.class})" do
           let(:params) { {

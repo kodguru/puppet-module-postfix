@@ -23,6 +23,7 @@ For other OSfamilies support, please specify all parameters which defaults to 'U
 
 
 # Version history #
+1.3.1 2015-11-03 add possibility to specify TLS cert for smtpd, refactor spec tests
 1.3.0 2015-08-26 add support for basic SSL/TLS configuration
 1.2.1 2015-08-03 support newer versions of Puppet v3 as well as the future parser and Puppet v4
 1.2.0 2015-06-10 add ability to configure transport maps

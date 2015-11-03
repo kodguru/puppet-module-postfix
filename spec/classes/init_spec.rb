@@ -1,6 +1,5 @@
 require 'spec_helper'
 describe 'postfix' do
-
   # define os specific defaults
   platforms = {
     'Debian' =>
@@ -274,60 +273,42 @@ describe 'postfix' do
 
   end
 
-
   describe 'validating variables on valid osfamily RedHat' do
     let(:facts) { { :osfamily => 'Redhat' } }
 
     #<testing free string variables for main.cf>
-    ['alias_database','alias_maps','inet_interfaces','inet_protocols','mailbox_command','mydestination','mynetworks','myorigin','relay_domains','setgid_group','transport_maps','virtual_alias_maps','virtual_alias_domains','smtp_tls_mandatory_protocols','smtp_tls_protocols','smtp_tls_security_level','smtpd_tls_mandatory_protocols','smtpd_tls_protocols','smtpd_tls_security_level'].each do |variable|
+    ['main_alias_database','main_alias_maps','main_inet_interfaces','main_inet_protocols','main_mailbox_command',
+     'main_mydestination','main_mynetworks','main_myorigin','main_relay_domains','main_setgid_group',
+     'main_smtp_tls_mandatory_protocols','main_smtp_tls_protocols','main_smtp_tls_security_level',
+     'main_smtpd_tls_mandatory_protocols','main_smtpd_tls_protocols','main_smtpd_tls_security_level',
+     'main_transport_maps','main_virtual_alias_domains','main_virtual_alias_maps'
+    ].each do |variable|
+
       ['string1','string2',].each do |value|
-        context "where main_#{variable} is set to valid #{value} (as #{value.class})" do
+        context "where #{variable} is set to valid #{value} (as #{value.class})" do
           let(:params) { {
-            :"main_#{variable}"       => value,
+            :"#{variable}"            => value,
             # needed for functionality tests
             :transport_maps_external  => true,
             :virtual_aliases_external => true,
           } }
-
-          it { should contain_file('postfix_main.cf').with_content(/^#{variable} = #{value}$/) }
-        end
-      end
-
-      [['array'],a = { 'ha' => 'sh' },].each do |value|
-        context "where main_#{variable} is set to invalid #{value} (as #{value.class})" do
-          let(:params) { { :"main_#{variable}" => value } }
-
-          it do
-            expect {
-              should contain_class('postfix')
-          }.to raise_error(Puppet::Error,/is not a string/)
-          end
+          # remove 'main_' from the variable name to get the parameter name
+          it { should contain_file('postfix_main.cf').with_content(/^#{variable.sub('main_','')} = #{value}$/) }
         end
       end
     end
     #</testing free string variables for main.cf>
 
     #<testing path type string variables for main.cf>
-    ['command_directory','daemon_directory','data_directory','queue_directory','smtpd_tls_key_file','smtpd_tls_cert_file',].each do |variable|
+    ['main_command_directory','main_daemon_directory','main_data_directory','main_queue_directory','main_smtpd_tls_key_file','main_smtpd_tls_cert_file',].each do |variable|
       ['/path/1','/path2',].each do |value|
-        context "where main_#{variable} is set to valid #{value} (as #{value.class})" do
+        context "where #{variable} is set to valid #{value} (as #{value.class})" do
           let(:params) { {
-            :"main_#{variable}"       => value,
+            :"#{variable}" => value,
           } }
 
-          it { should contain_file('postfix_main.cf').with_content(/^#{variable} = #{value}$/) }
-        end
-      end
-
-      ['../invalid/path',['array'],a = { 'ha' => 'sh' },].each do |value|
-        context "where main_#{variable} is set to invalid #{value} (as #{value.class})" do
-          let(:params) { { :"main_#{variable}" => value } }
-
-          it do
-            expect {
-              should contain_class('postfix')
-          }.to raise_error(Puppet::Error,/is not an absolute path/)
-          end
+          # remove 'main_' from the variable name to get the parameter name
+          it { should contain_file('postfix_main.cf').with_content(/^#{variable.sub('main_','')} = #{value}$/) }
         end
       end
     end
@@ -356,19 +337,6 @@ describe 'postfix' do
           it { should contain_file('postfix_main.cf').with_content(/^#{Regexp.escape(variable)} = #{value}$/) }
         end
       end
-
-      ['string',true,false,].each do |value|
-        context "where main_#{variable} is set to invalid <#{value}> (as #{value.class})" do
-          let(:params) { { :"main_#{variable}" => value } }
-
-          it do
-            expect {
-              should contain_class('postfix')
-            }.to raise_error(Puppet::Error,/main_#{Regexp.escape(variable)} may be either 'yes' or 'no' and is set to <#{value}>/)
-          end
-        end
-      end
-
     end
     #</testing yes/no string type variables for main.cf>
 
@@ -386,16 +354,6 @@ describe 'postfix' do
       end
     end
 
-    context 'with main_mailbox_size_limit set to invalid <noninteger>' do
-      let(:params) { { 'main_mailbox_size_limit' => 'noninteger' } }
-
-      it do
-        expect {
-          should contain_class('postfix')
-        }.to raise_error(Puppet::Error,/main_mailbox_size_limit must be an integer and is set to <noninteger>/)
-      end
-    end
-
     context 'with main_mailbox_size_limit set to invalid <-1>' do
       let(:params) { { 'main_mailbox_size_limit' => -1 } }
 
@@ -406,30 +364,10 @@ describe 'postfix' do
       end
     end
 
-    context 'with main_myhostname set to invalid <invalid_domain.name>' do
-      let(:params) { { 'main_myhostname' => 'invalid_domain.name' } }
-
-      it do
-        expect {
-          should contain_class('postfix')
-        }.to raise_error(Puppet::Error,/main_myhostname must be a domain name and is set to <invalid_domain.name>/)
-      end
-    end
-
     context 'with main_relayhost set to <relayhost.valid.test>' do
       let(:params) { { 'main_relayhost' => 'relayhost.valid.test' } }
 
       it { should contain_file('postfix_main.cf').with_content(/^relayhost = relayhost.valid.test:25$/) }
-    end
-
-    context 'with main_relayhost set to invalid <invalid_domain.name>' do
-      let(:params) { { 'main_relayhost' => 'invalid_domain.name' } }
-
-      it do
-        expect {
-          should contain_class('postfix')
-        }.to raise_error(Puppet::Error,/main_relayhost must be a domain name and is set to <invalid_domain.name>/)
-      end
     end
 
     context 'with main_relayhost_port set to <587>' do
@@ -440,16 +378,6 @@ describe 'postfix' do
       } }
 
       it { should contain_file('postfix_main.cf').with_content(/^relayhost = relayhost.valid.test:587$/) }
-    end
-
-    context 'with main_relayhost_port set to invalid <noninteger>' do
-      let(:params) { { 'main_relayhost_port' => 'noninteger' } }
-
-      it do
-        expect {
-          should contain_class('postfix')
-        }.to raise_error(Puppet::Error,/main_relayhost_port must be an integer and is set to <noninteger>/)
-      end
     end
 
     context "with packages set to <postfix_alt>" do
@@ -481,16 +409,6 @@ describe 'postfix' do
       }
     end
 
-    context 'with empty packages' do
-      let(:params) { { 'packages' => '' } }
-
-      it do
-        expect {
-          should contain_class('postfix')
-        }.to raise_error(Puppet::Error,/packages must contain a valid value and is set to <>/)
-      end
-    end
-
     ['true','false','manual',true,false].each do |value|
       context "with service_enable set to <#{value}>" do
         let(:params) { { :service_enable => "#{value}" } }
@@ -506,16 +424,6 @@ describe 'postfix' do
             'subscribe'  => ['File[postfix_main.cf]', 'File[postfix_virtual]', 'File[postfix_transport]'],
           })
         }
-      end
-    end
-
-    context 'with service_enable set to invalid <automatic>' do
-      let(:params) { { 'service_enable' => 'automatic' } }
-
-      it do
-        expect {
-          should contain_class('postfix')
-        }.to raise_error(Puppet::Error,/service_enable may be either 'true', 'false' or 'manual' and is set to <automatic>/)
       end
     end
 
@@ -537,16 +445,6 @@ describe 'postfix' do
       end
     end
 
-    context 'with service_ensure set to invalid <paused>' do
-      let(:params) { { 'service_ensure' => 'paused' } }
-
-      it do
-        expect {
-          should contain_class('postfix')
-        }.to raise_error(Puppet::Error,/service_ensure may be either 'running' or 'stopped' and is set to <paused>/)
-      end
-    end
-
     ['true','false',true,false].each do |value|
       context "with service_hasrestart set to <#{value}>" do
         let(:params) { { :service_hasrestart => "#{value}" } }
@@ -562,16 +460,6 @@ describe 'postfix' do
             'subscribe'  => ['File[postfix_main.cf]', 'File[postfix_virtual]', 'File[postfix_transport]'],
           })
         }
-      end
-    end
-
-    context 'with service_hasrestart set to invalid <maybe>' do
-      let(:params) { { 'service_hasrestart' => 'maybe' } }
-
-      it do
-        expect {
-          should contain_class('postfix')
-        }.to raise_error(Puppet::Error,/str2bool\(\): Unknown type of boolean given at/)
       end
     end
 
@@ -593,16 +481,6 @@ describe 'postfix' do
       end
     end
 
-    context 'with service_hasstatus set to invalid <mostly>' do
-      let(:params) { { 'service_hasstatus' => 'mostly' } }
-
-      it do
-        expect {
-          should contain_class('postfix')
-        }.to raise_error(Puppet::Error,/str2bool\(\): Unknown type of boolean given at/)
-      end
-    end
-
     context 'with service_name set to <postfixservice>' do
       let(:params) { { 'service_name' => 'postfixservice' } }
 
@@ -617,21 +495,6 @@ describe 'postfix' do
           'subscribe'  => ['File[postfix_main.cf]', 'File[postfix_virtual]', 'File[postfix_transport]'],
         })
       }
-    end
-
-    context 'with empty service_name' do
-      let(:params) { { 'service_name' => '' } }
-
-      it do
-        expect {
-          should contain_class('postfix')
-        }.to raise_error(Puppet::Error,/service_name must contain a valid value and is set to <>/)
-      end
-    end
-
-    context 'with template_main_cf set to <postfix/main.cf_alternative.erb>' do
-    # Dont know how to test different templates for content parameter :(
-    # Anyone ?
     end
 
     context 'with empty template_main_cf' do
@@ -662,26 +525,6 @@ describe 'postfix' do
       it { should contain_file('postfix_main.cf').with_content(/^virtual_alias_maps = hash:\/etc\/postfix\/virtual$/) }
     end
 
-    context 'with virtual_aliases set to invalid <test1@test.void>' do
-      let(:params) { { 'virtual_aliases' => 'test1@test.void' } }
-
-      it do
-        expect {
-          should contain_class('postfix')
-        }.to raise_error(Puppet::Error,/\"test1@test.void\" is not a Hash\.  It looks to be a String at/)
-      end
-    end
-
-    context 'with virtual_aliases set to invalid <admin@example.com admin@example.org>' do
-      let(:params) { { 'virtual_aliases' => 'admin@example.com admin@example.org' } }
-
-      it do
-        expect {
-          should contain_class('postfix')
-        }.to raise_error(Puppet::Error,/\"admin@example.com admin@example.org\" is not a Hash\.  It looks to be a String at/)
-      end
-    end
-
     context "where transport_maps is set to valid <[ 'sub1.example.com  mail1.example.com', 'sub2.example.com  mail2.example.com' ]> (as Hash))" do
       let(:params) { { 'transport_maps' => { 'sub1.example.com' => 'mail1.example.com', 'sub2.example.com' => 'mail2.example.com' } } }
 
@@ -700,30 +543,6 @@ describe 'postfix' do
       it { should contain_file('postfix_main.cf').with_content(/^transport_maps = hash:\/etc\/postfix\/transport$/) }
     end
 
-    ['string',true,3,2.42,['array'],].each do |value|
-      context "where transport_maps is set to invalid #{value} (as #{value.class})" do
-        let(:params) { { 'transport_maps' => value } }
-
-        it do
-          expect {
-            should contain_class('postfix')
-          }.to raise_error(Puppet::Error,/is not a Hash/)
-        end
-      end
-    end
-
-    ['string',3,2.42,['array'],a = { 'ha' => 'sh' },].each do |value|
-      context "where transport_maps_external is set to invalid #{value} (as #{value.class})" do
-        let(:params) { { 'transport_maps_external' => value } }
-
-        it do
-          expect {
-            should contain_class('postfix')
-          }.to raise_error(Puppet::Error,/str2bool\(\)/)
-        end
-      end
-    end
-
     [true,false,'true','false',].each do |value|
       context "where virtual_aliases_external is set to valid #{value} (as #{value.class})" do
         let(:params) { {
@@ -739,17 +558,114 @@ describe 'postfix' do
         end
       end
     end
-
-    ['string',3,2.42,['array'],a = { 'ha' => 'sh' },].each do |value|
-      context "where virtual_aliases_external is set to invalid #{value} (as #{value.class})" do
-        let(:params) { { 'virtual_aliases_external' => value } }
-
-        it do
-          expect {
-            should contain_class('postfix')
-          }.to raise_error(Puppet::Error,/str2bool\(\)/)
-        end
-      end
-    end
   end
+
+  describe 'variable type and content validations' do
+    # set needed custom facts and variables
+    let(:facts) { {
+      :osfamily => 'RedHat',
+    } }
+    let(:validation_params) { {
+#      :param => 'value',
+    } }
+
+    validations = {
+      'absolute_path' => {
+        :name    => ['main_command_directory','main_daemon_directory','main_data_directory','main_queue_directory',
+                     'main_smtpd_tls_cert_file','main_smtpd_tls_key_file'],
+        :valid   => ['/absolute/filepath','/absolute/directory/'],
+        :invalid => ['invalid',3,2.42,['array'],a={'ha'=>'sh'}],
+        :message => 'is not an absolute path',
+      },
+      'bool_stringified' => {
+        :name    => ['service_hasrestart','service_hasstatus','transport_maps_external','virtual_aliases_external'],
+        :valid   => [true,'true',false,'false'],
+        :invalid => [nil,'invalid',3,2.42,['array'],a={'ha'=>'sh'}],
+        :message => 'str2bool',
+      },
+      'domain_name' => {
+        :name    => ['main_myhostname','main_relayhost'],
+        :valid   => ['v.al.id','val.id'],
+        :invalid => ['in,val.id','in_val.id',2.42,['array'],a={'ha'=>'sh'}],
+        :message => 'must be a domain name and is set to',
+      },
+      'hash' => {
+        :name    => ['transport_maps','virtual_aliases'],
+        :valid   => [a={'ha'=>'sh'},a={'test1@test.void'=>'destination1','test2@test.void'=>['destination2','destination3']}],
+        :invalid => [true,false,'invalid',3,2.42,['array']],
+        :message => 'is not a Hash',
+      },
+      'integer' => {
+        :name    => ['main_mailbox_size_limit','main_relayhost_port'],
+        :valid   => ['242'],
+        :invalid => ['invalid',2.42,['array'],a={'ha'=>'sh'}],
+        :message => 'must be an integer',
+      },
+      'not_empty_string' => {
+        :name    => ['main_alias_database','main_alias_maps','main_inet_interfaces','main_inet_protocols','main_mynetworks',
+                     'main_myorigin','main_setgid_group','main_transport_maps','main_virtual_alias_maps','service_name'],
+        :valid   => ['valid'],
+        :invalid => ['',[],{}],
+        :message => 'must contain a valid value',
+      },
+      'not_empty_string/array' => {
+        :name    => ['packages'],
+        :valid   => ['valid',['array']],
+        :invalid => ['',[],3,2.42,a={'ha'=>'sh'}],
+        :message => 'must contain a valid value',
+      },
+      'regex_running/stopped' => {
+        :name    => ['service_ensure'],
+        :valid   => ['running','stopped'],
+        :invalid => ['invalid',3,2.42,['array'],a={'ha'=>'sh'}],
+        :message => 'may be either \'running\' or \'stopped\'',
+      },
+      'regex_true/false/manual' => {
+        :name    => ['service_enable'],
+        :valid   => [true,'true',false,'false','manual'],
+        :invalid => ['invalid',3,2.42,['array'],a={'ha'=>'sh'}],
+        :message => 'may be either \'true\', \'false\' or \'manual\'',
+      },
+      'regex_yes/no' => {
+        :name    => ['main_append_dot_mydomain','main_biff'],
+        :valid   => ['yes','no'],
+        :invalid => [true,false,'invalid',3,2.42,['array'],a={'ha'=>'sh'}],
+        :message => 'may be either \'yes\' or \'no\'',
+      },
+      'string' => {
+        :name    => ['main_alias_database','main_alias_maps','main_inet_interfaces','main_inet_protocols','main_mailbox_command',
+                     'main_mydestination','main_mynetworks','main_myorigin','main_relay_domains','main_setgid_group',
+                     'main_smtp_tls_mandatory_protocols','main_smtp_tls_protocols','main_smtp_tls_security_level',
+                     'main_smtpd_tls_mandatory_protocols','main_smtpd_tls_protocols','main_smtpd_tls_security_level',
+                     'main_transport_maps','main_virtual_alias_domains','main_virtual_alias_maps','service_name'],
+        :valid   => ['valid'],
+        :invalid => [['array'],a={'ha'=>'sh'}],
+        :message => 'is not a string',
+      },
+    }
+
+    validations.sort.each do |type,var|
+      var[:name].each do |var_name|
+
+        var[:valid].each do |valid|
+          context "with #{var_name} (#{type}) set to valid #{valid} (as #{valid.class})" do
+            let(:params) { validation_params.merge({:"#{var_name}" => valid, }) }
+            it { should compile }
+          end
+        end
+
+        var[:invalid].each do |invalid|
+          context "with #{var_name} (#{type}) set to invalid #{invalid} (as #{invalid.class})" do
+            let(:params) { validation_params.merge({:"#{var_name}" => invalid, }) }
+            it 'should fail' do
+              expect {
+                should contain_class(subject)
+              }.to raise_error(Puppet::Error,/#{var[:message]}/)
+            end
+          end
+        end
+
+      end # var[:name].each
+    end # validations.sort.each
+  end # describe 'variable type and content validations'
 end

@@ -249,8 +249,8 @@ class postfix (
   validate_string($main_smtpd_tls_mandatory_protocols)
   validate_string($main_smtpd_tls_protocols)
   validate_string($main_smtpd_tls_security_level)
-  if empty($main_smtpd_tls_key_file) == false { validate_absolute_path($main_smtpd_tls_key_file) }
-  if empty($main_smtpd_tls_cert_file) == false { validate_absolute_path($main_smtpd_tls_cert_file) }
+  if $main_smtpd_tls_key_file != undef { validate_absolute_path($main_smtpd_tls_key_file) }
+  if $main_smtpd_tls_cert_file != undef { validate_absolute_path($main_smtpd_tls_cert_file) }
   # </validating variables>
 
   # <Install & Config>

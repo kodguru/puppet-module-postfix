@@ -232,9 +232,9 @@ class postfix (
   validate_string($service_name_real)
   if empty($template_main_cf_real) == true { fail("template_main_cf must contain a valid value and is set to <${template_main_cf_real}>") }
   validate_string($template_main_cf_real)
-  if $transport_maps_real { validate_hash($transport_maps_real) }
+  if $transport_maps_real != undef { validate_hash($transport_maps_real) }
   validate_bool($transport_maps_external_real)
-  if $virtual_aliases_real { validate_hash($virtual_aliases_real) }
+  if $virtual_aliases_real != undef { validate_hash($virtual_aliases_real) }
   validate_bool($virtual_aliases_external_real)
   validate_string($main_smtp_tls_mandatory_protocols)
   validate_string($main_smtp_tls_protocols)

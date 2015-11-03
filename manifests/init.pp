@@ -33,6 +33,8 @@ class postfix (
   $main_smtpd_tls_mandatory_protocols = undef,
   $main_smtpd_tls_protocols           = undef,
   $main_smtpd_tls_security_level      = undef,
+  $main_smtpd_tls_key_file            = undef,
+  $main_smtpd_tls_cert_file           = undef,
   $packages                           = 'USE_DEFAULTS',
   $service_enable                     = true,
   $service_ensure                     = 'running',
@@ -240,6 +242,8 @@ class postfix (
   validate_string($main_smtpd_tls_mandatory_protocols)
   validate_string($main_smtpd_tls_protocols)
   validate_string($main_smtpd_tls_security_level)
+  if empty($main_smtpd_tls_key_file) == false { validate_absolute_path($main_smtpd_tls_key_file) }
+  if empty($main_smtpd_tls_cert_file) == false { validate_absolute_path($main_smtpd_tls_cert_file) }
   # </validating variables>
 
   # <Install & Config>

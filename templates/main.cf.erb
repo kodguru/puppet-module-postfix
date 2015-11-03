@@ -50,6 +50,14 @@ smtpd_tls_protocols = <%= @main_smtpd_tls_protocols %>
 
 smtpd_tls_security_level = <%= @main_smtpd_tls_security_level %>
 <% end -%>
+<% if @main_smtpd_tls_key_file -%>
+
+smtpd_tls_key_file = <%= @main_smtpd_tls_key_file %>
+<% end -%>
+<% if @main_smtpd_tls_cert_file -%>
+
+smtpd_tls_cert_file = <%= @main_smtpd_tls_cert_file %>
+<% end -%>
 <% if @main_mailbox_command -%>
 
 mailbox_command = <%= @main_mailbox_command %>

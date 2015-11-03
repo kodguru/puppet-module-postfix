@@ -245,6 +245,21 @@ levels: none, may, encrypt.
 - *Module Default*: undef
 
 
+main_smtpd_tls_key_file
+-----------------------
+File with the Postfix SMTP server RSA private key in PEM format.
+
+- *Module Default*: undef
+
+
+main_smtpd_tls_cert_file
+------------------------
+File with the Postfix SMTP server RSA certificate in PEM format. This file may also contain the
+Postfix SMTP server private RSA key.
+
+- *Module Default*: undef
+
+
 main_queue_directory (default: see "postconf -d" output)
 --------------------------------------------------------
 The location of the Postfix top-level queue directory. This is the root directory of Postfix daemon

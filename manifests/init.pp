@@ -223,7 +223,14 @@ class postfix (
   if empty($main_virtual_alias_maps_real) == true { fail("main_virtual_alias_maps must contain a valid value and is set to <${main_virtual_alias_maps_real}>") }
   validate_string($main_virtual_alias_maps_real)
   if $main_virtual_alias_domains_real { validate_string($main_virtual_alias_domains_real) }
-  if empty($packages_real) == true { fail("packages must contain a valid value and is set to <${packages_real}>") }
+  case type3x($packages_real) {
+    'string','array': {
+      if empty($packages_real) == true { fail("packages must contain a valid value and is set to <${packages_real}>") }
+    }
+    default: {
+      fail("packages must contain a valid value and is set to <${packages_real}>")
+    }
+  }
   if !is_bool($service_enable_real) { validate_re($service_enable_real, '^(true|false|manual)$', "service_enable may be either 'true', 'false' or 'manual' and is set to <${service_enable_real}>") }
   validate_re($service_ensure_real, '^(running|stopped)$', "service_ensure may be either 'running' or 'stopped' and is set to <${service_ensure_real}>")
   validate_bool($service_hasrestart_real)
@@ -232,9 +239,9 @@ class postfix (
   validate_string($service_name_real)
   if empty($template_main_cf_real) == true { fail("template_main_cf must contain a valid value and is set to <${template_main_cf_real}>") }
   validate_string($template_main_cf_real)
-  if $transport_maps_real { validate_hash($transport_maps_real) }
+  if $transport_maps_real != undef { validate_hash($transport_maps_real) }
   validate_bool($transport_maps_external_real)
-  if $virtual_aliases_real { validate_hash($virtual_aliases_real) }
+  if $virtual_aliases_real != undef { validate_hash($virtual_aliases_real) }
   validate_bool($virtual_aliases_external_real)
   validate_string($main_smtp_tls_mandatory_protocols)
   validate_string($main_smtp_tls_protocols)

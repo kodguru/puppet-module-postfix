@@ -8,7 +8,7 @@ end
 
 gem 'metadata-json-lint'
 gem 'puppetlabs_spec_helper', '>= 0.1.0'
-gem 'puppet-lint', '>= 1.0.0'
+gem 'puppet-lint', '>= 1.0', '< 3.0' # change to '~> 2.0' once the plugins got updated
 gem 'facter', '>= 1.7.0'
 gem 'rspec-puppet'
 

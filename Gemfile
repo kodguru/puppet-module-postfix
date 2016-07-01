@@ -12,6 +12,11 @@ gem 'puppet-lint', '>= 1.0', '< 3.0' # change to '~> 2.0' once the plugins got u
 gem 'facter', '>= 1.7.0'
 gem 'rspec-puppet'
 
+if RUBY_VERSION < '2.0'
+  # json 2.x requires ruby 2.0. Lock to 1.8
+  gem 'json', '~> 1.8'
+end
+
 # rspec must be v2 for ruby 1.8.7
 if RUBY_VERSION >= '1.8.7' and RUBY_VERSION < '1.9'
   gem 'rspec', '~> 2.0'

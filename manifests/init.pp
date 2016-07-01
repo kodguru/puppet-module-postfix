@@ -61,6 +61,7 @@ class postfix (
       $main_recipient_delimiter_default = ''
       $main_setgid_group_default        = 'postdrop'
       $packages_default                 = 'postfix'
+      $os_defaults_missing              = false
     }
     'RedHat': {
       $main_command_directory_default   = '/usr/sbin'
@@ -72,6 +73,7 @@ class postfix (
       $main_recipient_delimiter_default = ''
       $main_setgid_group_default        = 'postdrop'
       $packages_default                 = 'postfix'
+      $os_defaults_missing              = false
     }
     'Suse': {
       $main_command_directory_default   = '/usr/sbin'
@@ -83,6 +85,7 @@ class postfix (
       $main_recipient_delimiter_default = ''
       $main_setgid_group_default        = 'maildrop'
       $packages_default                 = 'postfix'
+      $os_defaults_missing              = false
     }
     default: {
       $os_defaults_missing = true

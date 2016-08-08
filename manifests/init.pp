@@ -58,7 +58,7 @@ class postfix (
       $main_mailbox_size_limit_default  = 51200000
       $main_mydestination_default       = '$myhostname, localhost.$mydomain, localhost'
       $main_queue_directory_default     = '/var/spool/postfix'
-      $main_recipient_delimiter_default = ''
+      $main_recipient_delimiter_default = undef
       $main_setgid_group_default        = 'postdrop'
       $packages_default                 = 'postfix'
       $os_defaults_missing              = false
@@ -70,7 +70,7 @@ class postfix (
       $main_mailbox_size_limit_default  = 51200000
       $main_mydestination_default       = '$myhostname, localhost.$mydomain, localhost'
       $main_queue_directory_default     = '/var/spool/postfix'
-      $main_recipient_delimiter_default = ''
+      $main_recipient_delimiter_default = undef
       $main_setgid_group_default        = 'postdrop'
       $packages_default                 = 'postfix'
       $os_defaults_missing              = false
@@ -82,7 +82,7 @@ class postfix (
       $main_mailbox_size_limit_default  = 51200000
       $main_mydestination_default       = '$myhostname, localhost.$mydomain, localhost'
       $main_queue_directory_default     = '/var/spool/postfix'
-      $main_recipient_delimiter_default = ''
+      $main_recipient_delimiter_default = undef
       $main_setgid_group_default        = 'maildrop'
       $packages_default                 = 'postfix'
       $os_defaults_missing              = false
@@ -269,7 +269,7 @@ class postfix (
     hasrestart => $service_hasrestart_real,
     hasstatus  => $service_hasstatus_real,
     require    => Package[$packages_real],
-    subscribe  => [ File['postfix_main.cf'], File['postfix_virtual'], File['postfix_transport'], ]
+    subscribe  => [ File['postfix_main.cf'], File['postfix_virtual'], File['postfix_transport'], ],
   }
 
   file  { 'postfix_main.cf' :

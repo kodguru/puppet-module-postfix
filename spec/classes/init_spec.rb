@@ -109,6 +109,9 @@ describe 'postfix' do
         it { should contain_file('postfix_main.cf').without_content(/^mailbox_command =/) }
         it { should contain_file('postfix_main.cf').without_content(/^mydomain =/) }
         it { should contain_file('postfix_main.cf').without_content(/^relay_domains =/) }
+        it { should contain_file('postfix_main.cf').without_content(/^smtpd_helo_required/) }
+        it { should contain_file('postfix_main.cf').without_content(/^smtpd_helo_restrictions/) }
+        it { should contain_file('postfix_main.cf').without_content(/^smtpd_recipient_restrictions/) }
         it { should contain_file('postfix_main.cf').without_content(/^transport_maps/) }
 
 
@@ -221,6 +224,9 @@ describe 'postfix' do
     it { should contain_file('postfix_main.cf').without_content(/^smtp_tls_mandatory_protocols/) }
     it { should contain_file('postfix_main.cf').without_content(/^smtp_tls_protocols/) }
     it { should contain_file('postfix_main.cf').without_content(/^smtp_tls_security_level/) }
+    it { should contain_file('postfix_main.cf').without_content(/^smtpd_helo_required/) }
+    it { should contain_file('postfix_main.cf').without_content(/^smtpd_helo_restrictions/) }
+    it { should contain_file('postfix_main.cf').without_content(/^smtpd_recipient_restrictions/) }
     it { should contain_file('postfix_main.cf').without_content(/^smtpd_tls_mandatory_protocols/) }
     it { should contain_file('postfix_main.cf').without_content(/^smtpd_tls_protocols/) }
     it { should contain_file('postfix_main.cf').without_content(/^smtpd_tls_security_level/) }
@@ -391,6 +397,60 @@ describe 'postfix' do
           'before' => 'Package[sendmail]',
         })
       }
+    end
+
+    context "with main_smtpd_helo_required set to 'yes'" do
+      let(:params) {
+        {
+          'main_smtpd_helo_required' => 'yes',
+        }
+      }
+
+      it { should contain_file('postfix_main.cf').with_content(/^smtpd_helo_required = yes/) }
+    end
+
+    describe "with main_smtpd_restrictions" do
+      context "set to [ 'permit_mynetworks' ]" do
+        let(:params) {
+          {
+            'main_smtpd_helo_restrictions'  => [ 'permit_mynetworks'],
+          }
+        }
+
+        it { should contain_file('postfix_main.cf').with_content(/^smtpd_helo_restrictions = permit_mynetworks$/) }
+      end
+
+      context "set to [ 'permit_mynetworks', 'reject_invalid_helo_hostname' ]" do
+        let(:params) {
+          {
+            'main_smtpd_helo_restrictions'  => [ 'permit_mynetworks', 'reject_invalid_helo_hostname'],
+          }
+        }
+
+        it { should contain_file('postfix_main.cf').with_content(/^smtpd_helo_restrictions = permit_mynetworks,\n    reject_invalid_helo_hostname/) }
+      end
+    end
+
+    describe 'with main_smtpd_recipient_restrictions' do
+      context "set to [ 'permit_mynetworks' ]" do
+        let(:params) {
+          {
+            'main_smtpd_recipient_restrictions' => [ 'permit_mynetworks'],
+          }
+        }
+
+        it { should contain_file('postfix_main.cf').with_content(/^smtpd_recipient_restrictions = permit_mynetworks$/) }
+      end
+
+      context "set to [ 'permit_mynetworks', 'permit_sasl_authenticated' ]" do
+        let(:params) {
+          {
+            'main_smtpd_recipient_restrictions' => [ 'permit_mynetworks', 'permit_sasl_authenticated'],
+          }
+        }
+
+        it { should contain_file('postfix_main.cf').with_content(/^smtpd_recipient_restrictions = permit_mynetworks,\n    permit_sasl_authenticated/) }
+      end
     end
 
     context "with packages set to <['postfix','postfix-helper']>" do
@@ -579,6 +639,12 @@ describe 'postfix' do
         :invalid => ['invalid',3,2.42,['array'],a={'ha'=>'sh'}],
         :message => 'is not an absolute path',
       },
+      'array' => {
+        :name    => ['main_smtpd_helo_restrictions', 'main_smtpd_recipient_restrictions'],
+        :valid   => [['array'], ['array', 'array']],
+        :invalid => ['invalid', 3,2.42,a={'ha'=>'sh'}, true, false],
+        :message => 'is not an Array',
+      },
       'bool_stringified' => {
         :name    => ['service_hasrestart','service_hasstatus','transport_maps_external','virtual_aliases_external'],
         :valid   => [true,'true',false,'false'],
@@ -629,7 +695,7 @@ describe 'postfix' do
         :message => 'may be either \'true\', \'false\' or \'manual\'',
       },
       'regex_yes/no' => {
-        :name    => ['main_append_dot_mydomain','main_biff'],
+        :name    => ['main_append_dot_mydomain','main_biff', 'main_smtpd_helo_required'],
         :valid   => ['yes','no'],
         :invalid => [true,false,'invalid',3,2.42,['array'],a={'ha'=>'sh'}],
         :message => 'may be either \'yes\' or \'no\'',

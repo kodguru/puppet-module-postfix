@@ -31,6 +31,9 @@ class postfix (
   $main_smtp_tls_mandatory_protocols  = undef,
   $main_smtp_tls_protocols            = undef,
   $main_smtp_tls_security_level       = undef,
+  $main_smtpd_helo_required           = undef,
+  $main_smtpd_helo_restrictions       = undef,
+  $main_smtpd_recipient_restrictions  = undef,
   $main_smtpd_tls_mandatory_protocols = undef,
   $main_smtpd_tls_protocols           = undef,
   $main_smtpd_tls_security_level      = undef,
@@ -256,6 +259,9 @@ class postfix (
   validate_string($main_smtpd_tls_security_level)
   if $main_smtpd_tls_key_file != undef { validate_absolute_path($main_smtpd_tls_key_file) }
   if $main_smtpd_tls_cert_file != undef { validate_absolute_path($main_smtpd_tls_cert_file) }
+  if $main_smtpd_helo_required != undef { validate_re($main_smtpd_helo_required, '^(yes|no)$', "main_smtpd_helo_required may be either 'yes' or 'no' and is set to <${main_smtpd_helo_required}>") }
+  if $main_smtpd_helo_restrictions != undef { validate_array($main_smtpd_helo_restrictions) }
+  if $main_smtpd_recipient_restrictions != undef { validate_array($main_smtpd_recipient_restrictions) }
   # </validating variables>
 
   # <Install & Config>

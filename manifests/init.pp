@@ -15,6 +15,7 @@ class postfix (
   $main_mailbox_command               = undef,
   $main_mailbox_size_limit            = '0',
   $main_mydestination                 = 'localhost',
+  $main_mydomain                      = undef,
   $main_myhostname                    = $::fqdn,
   $main_mynetworks                    = '127.0.0.0/8',
   $main_myorigin                      = '$myhostname',
@@ -209,6 +210,7 @@ class postfix (
   if is_integer($main_mailbox_size_limit_real) == false { fail("main_mailbox_size_limit must be an integer and is set to <${main_mailbox_size_limit_real}>") }
   if $main_mailbox_size_limit_real + 0 < 0 { fail("main_mailbox_size_limit needs a minimum value of 0 and is set to <${main_mailbox_size_limit_real}>") }
   validate_string($main_mydestination_real)
+  if $main_mydomain != undef and is_domain_name($main_mydomain) == false { fail("main_mydomain must be a domain name and is set to <${main_mydomain}>") }
   if is_domain_name($main_myhostname_real) == false { fail("main_myhostname must be a domain name and is set to <${main_myhostname_real}>") }
   if empty($main_mynetworks_real) == true { fail("main_mynetworks must contain a valid value and is set to <${main_mynetworks_real}>") }
   validate_string($main_mynetworks_real)

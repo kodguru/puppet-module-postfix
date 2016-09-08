@@ -149,6 +149,16 @@ Note: This limit must not be smaller than the message size limit.
 - *Module Default*: 0
 
 
+main_mydomain (default: see "postconf -d" output)
+-------------------------------------------------
+The internet hostname of this mail system. The default is to use the
+fully-qualified domain name (FQDN) from gethostname(), or to use the non-FQDN
+result from gethostname() and append ".$mydomain". $myhostname is used
+as a default value for many other configuration parameters.
+
+- *Module default*: undef
+
+
 main_mydestination (default: $myhostname, localhost.$mydomain, localhost)
 -------------------------------------------------------------------------
 The list of domains that are delivered via the $local_transport mail delivery transport.

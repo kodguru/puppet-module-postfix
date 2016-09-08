@@ -107,6 +107,7 @@ describe 'postfix' do
         it { should contain_file('postfix_main.cf').with_content(/^setgid_group = #{v[:main_setgid_group_default]}$/) }
         it { should contain_file('postfix_main.cf').without_content(/^virtual_alias_maps = hash:\/etc\/postfix\/virtual$/) }
         it { should contain_file('postfix_main.cf').without_content(/^mailbox_command =/) }
+        it { should contain_file('postfix_main.cf').without_content(/^mydomain =/) }
         it { should contain_file('postfix_main.cf').without_content(/^relay_domains =/) }
         it { should contain_file('postfix_main.cf').without_content(/^transport_maps/) }
 
@@ -214,6 +215,7 @@ describe 'postfix' do
     it { should contain_file('postfix_main.cf').with_content(/^setgid_group = uOSuser$/) }
     it { should contain_file('postfix_main.cf').without_content(/^virtual_alias_maps = hash:\/etc\/postfix\/virtual$/) }
     it { should contain_file('postfix_main.cf').without_content(/^mailbox_command =/) }
+    it { should contain_file('postfix_main.cf').without_content(/^mydomain =/) }
     it { should contain_file('postfix_main.cf').without_content(/^relay_domains =/) }
     it { should contain_file('postfix_main.cf').without_content(/^transport_maps/) }
     it { should contain_file('postfix_main.cf').without_content(/^smtp_tls_mandatory_protocols/) }
@@ -584,7 +586,7 @@ describe 'postfix' do
         :message => 'str2bool',
       },
       'domain_name' => {
-        :name    => ['main_myhostname','main_relayhost'],
+        :name    => ['main_mydomain','main_myhostname','main_relayhost'],
         :valid   => ['v.al.id','val.id'],
         :invalid => ['in,val.id','in_val.id',2.42,['array'],a={'ha'=>'sh'}],
         :message => 'must be a domain name and is set to',

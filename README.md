@@ -149,6 +149,16 @@ Note: This limit must not be smaller than the message size limit.
 - *Module Default*: 0
 
 
+main_mydomain (default: see "postconf -d" output)
+-------------------------------------------------
+The internet hostname of this mail system. The default is to use the
+fully-qualified domain name (FQDN) from gethostname(), or to use the non-FQDN
+result from gethostname() and append ".$mydomain". $myhostname is used
+as a default value for many other configuration parameters.
+
+- *Module default*: undef
+
+
 main_mydestination (default: $myhostname, localhost.$mydomain, localhost)
 -------------------------------------------------------------------------
 The list of domains that are delivered via the $local_transport mail delivery transport.
@@ -216,6 +226,61 @@ The default SMTP TLS security level for the Postfix SMTP client. Specify one of 
 security levels: none, may, encrypt, dane, dane-only, fingerprint, verify, secure.
 
 - *Module Default*: undef
+
+
+main_smtpd_helo_required (default: no)
+--------------------------------------
+Require that a remote SMTP client introduces itself with the HELO or EHLO
+command before sending the MAIL command or other commands that require EHLO
+negotiation.
+
+- *Module Default*: undef
+
+
+main_smtpd_helo_restrictions (default: empty)
+---------------------------------------------
+Optional restrictions that the Postfix SMTP server applies in the context of a
+client HELO command. See SMTPD_ACCESS_README, section "Delayed evaluation of
+SMTP access restriction lists" for a discussion of evaluation context and time.
+
+The default is to permit everything.
+
+Note: specify  "smtpd_helo_required = yes" to fully enforce this restriction
+(without "smtpd_helo_required = yes", a client can simply skip
+smtpd_helo_restrictions by not sending HELO or EHLO).
+
+- *Module Default*: undef
+
+<pre>
+postfix::main_smtpd_helo_restrictions:
+    - 'permit_mynetworks'
+    - 'reject_invalid_helo_hostname'
+    - 'reject_unknown_helo_hostname'
+</pre>
+
+
+main_smtpd_recipient_restrictions (default: see postconf -d output)
+-------------------------------------------------------------------
+Optional restrictions that the Postfix SMTP server applies in the context of a
+client RCPT TO command, after smtpd_relay_restrictions. See SMTPD_ACCESS_README,
+section "Delayed evaluation of SMTP access restriction lists" for a discussion
+of evaluation context and time. With Postfix versions before 2.10, the rules
+for relay permission and spam blocking were combined under
+smtpd_recipient_restrictions, resulting in error-prone configuration.
+As of Postfix 2.10, relay permission rules are preferably implemented with
+smtpd_relay_restrictions, so that a permissive spam blocking policy under
+smtpd_recipient_restrictions will no longer result in a permissive mail relay
+policy.
+
+Read more in man pages.
+
+- *Module Default*: undef
+
+<pre>
+postfix::main_smtpd_recipient_restrictions:
+    - 'permit_mynetworks'
+    - 'permit_sasl_authenticated'
+</pre>
 
 
 main_smtpd_tls_mandatory_protocols

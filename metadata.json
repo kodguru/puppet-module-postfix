@@ -1,12 +1,12 @@
 {
-  "name": "Phil-Friderici-postfix",
+  "name": "kodguru-postfix",
   "version": "1.5.0",
-  "author": "Phil-Friderici",
+  "author": "kodguru",
   "summary": "Manage Postfix",
   "license": "Apache-2.0",
-  "source": "git@github.com:Phil-Friderici/puppet-module-postfix.git",
-  "project_page": "https://github.com/Phil-Friderici/puppet-module-postfix",
-  "issues_url": "https://github.com/Phil-Friderici/puppet-module-postfix/issues",
+  "source": "git@github.com:kodguru/puppet-module-postfix.git",
+  "project_page": "https://github.com/kodguru/puppet-module-postfix",
+  "issues_url": "https://github.com/kodguru/puppet-module-postfix/issues",
   "operatingsystem_support": [
     {
       "operatingsystem": "Debian",

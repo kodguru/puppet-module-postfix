@@ -1,6 +1,6 @@
 {
   "name": "kodguru-postfix",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "author": "kodguru",
   "summary": "Manage Postfix",
   "license": "Apache-2.0",

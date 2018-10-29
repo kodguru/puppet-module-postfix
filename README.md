@@ -23,6 +23,8 @@ For other OSfamilies support, please specify all parameters which defaults to 'U
 
 
 # Version history #
+* 1.5.2 2018-10-29 Support Puppet 6
+* 1.5.1 2018-09-26 Support Puppet 5
 * 1.5.0 2016-09-12 add parameters for main.cf: mydomain, smtpd_helo_required, smtpd_helo_restrictions, smtpd_recipient_restrictions and smtpd_tls_mandatory_protocols
 * 1.4.0 2016-09-12 add parameters for main.cf: mydomain, smtpd_helo_required, smtpd_helo_restrictions, smtpd_recipient_restrictions and smtpd_tls_mandatory_protocols
 * 1.3.1 2015-11-03 add possibility to specify TLS cert for smtpd, refactor spec tests

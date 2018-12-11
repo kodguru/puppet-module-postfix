@@ -57,7 +57,6 @@ class postfix (
   case $::osfamily {
     'Debian': {
       $main_command_directory_default   = '/usr/sbin'
-      $main_daemon_directory_default    = '/usr/lib/postfix'
       $main_data_directory_default      = '/var/lib/postfix'
       $main_mailbox_size_limit_default  = 51200000
       $main_mydestination_default       = '$myhostname, localhost.$mydomain, localhost'
@@ -66,6 +65,10 @@ class postfix (
       $main_setgid_group_default        = 'postdrop'
       $packages_default                 = 'postfix'
       $os_defaults_missing              = false
+      $main_daemon_directory_default = "${::operatingsystem}-${::operatingsystemrelease}" ? {
+        'Ubuntu-16.04' => '/usr/lib/postfix/sbin',
+        default        => '/usr/lib/postfix',
+      }
     }
     'RedHat': {
       $main_command_directory_default   = '/usr/sbin'

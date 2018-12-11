@@ -4,6 +4,8 @@ describe 'postfix' do
   platforms = {
     'Debian' =>
       {
+        :operatingsystem                  => 'Debian',
+        :operatingsystemrelease           => '8.0',
         :osfamily                         => 'Debian',
         :main_command_directory_default   => '/usr/sbin',
         :main_daemon_directory_default    => '/usr/lib/postfix',
@@ -17,6 +19,8 @@ describe 'postfix' do
       },
     'RedHat' =>
       {
+        :operatingsystem                  => 'RedHat',
+        :operatingsystemrelease           => '7.0.1406',
         :osfamily                         => 'Redhat',
         :main_command_directory_default   => '/usr/sbin',
         :main_daemon_directory_default    => '/usr/libexec/postfix',
@@ -30,6 +34,8 @@ describe 'postfix' do
       },
     'Suse' =>
       {
+        :operatingsystem                  => 'SLES',
+        :operatingsystemrelease           => '12.1',
         :osfamily                         => 'Suse',
         :main_command_directory_default   => '/usr/sbin',
         :main_daemon_directory_default    => '/usr/lib/postfix',
@@ -41,17 +47,34 @@ describe 'postfix' do
         :main_setgid_group_default        => 'maildrop',
         :packages_default                 => 'postfix',
       },
+    'Ubuntu-16.04' =>
+      {
+        :operatingsystem                  => 'Ubuntu',
+        :operatingsystemrelease           => '16.04',
+        :osfamily                         => 'Debian',
+        :main_command_directory_default   => '/usr/sbin',
+        :main_daemon_directory_default    => '/usr/lib/postfix/sbin',
+        :main_data_directory_default      => '/var/lib/postfix',
+        :main_mailbox_size_limit_default  => 51200000,
+        :main_mydestination_default       => '$myhostname, localhost.$mydomain, localhost',
+        :main_queue_directory_default     => '/var/spool/postfix',
+        :main_recipient_delimiter_default => nil,
+        :main_setgid_group_default        => 'postdrop',
+        :packages_default                 => 'postfix',
+      },
   }
 
   describe 'with default values for parameters' do
     platforms.sort.each do |k,v|
-      context "where osfamily is <#{v[:osfamily]}>" do
+      context "where OS is <#{k}>" do
 
         let :facts do
           {
-            :osfamily => v[:osfamily],
-            :domain   => 'test.local',
-            :fqdn     => 'dummy.test.local',
+            :operatingsystem        => v[:operatingsystem],
+            :operatingsystemrelease => v[:operatingsystemrelease],
+            :osfamily               => v[:osfamily],
+            :domain                 => 'test.local',
+            :fqdn                   => 'dummy.test.local',
           }
         end
 

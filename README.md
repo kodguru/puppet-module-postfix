@@ -18,11 +18,13 @@ This module provides OS default values for these OSfamilies:
  * Debian
  * RedHat
  * Suse
+ * Ubuntu 16.04
 
 For other OSfamilies support, please specify all parameters which defaults to 'USE_DEFAULTS'.
 
 
 # Version history #
+* 1.6.0 2018-12-11 add support for Ubuntu 16.04
 * 1.5.2 2018-10-29 Support Puppet 6
 * 1.5.1 2018-09-26 Support Puppet 5
 * 1.5.0 2016-09-12 add parameters for main.cf: mydomain, smtpd_helo_required, smtpd_helo_restrictions, smtpd_recipient_restrictions and smtpd_tls_mandatory_protocols

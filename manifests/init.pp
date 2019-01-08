@@ -67,6 +67,7 @@ class postfix (
       $os_defaults_missing              = false
       $main_daemon_directory_default = "${::operatingsystem}-${::operatingsystemrelease}" ? {
         'Ubuntu-16.04' => '/usr/lib/postfix/sbin',
+        'Ubuntu-18.04' => '/usr/lib/postfix/sbin',
         default        => '/usr/lib/postfix',
       }
     }

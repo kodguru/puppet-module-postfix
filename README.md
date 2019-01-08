@@ -18,12 +18,15 @@ This module provides OS default values for these OSfamilies:
  * Debian
  * RedHat
  * Suse
+ * Ubuntu 14.04
  * Ubuntu 16.04
+ * Ubuntu 18.04
 
 For other OSfamilies support, please specify all parameters which defaults to 'USE_DEFAULTS'.
 
 
 # Version history #
+* 1.6.1 2019-01-08 add support for Ubuntu 18.04
 * 1.6.0 2018-12-11 add support for Ubuntu 16.04
 * 1.5.2 2018-10-29 Support Puppet 6
 * 1.5.1 2018-09-26 Support Puppet 5

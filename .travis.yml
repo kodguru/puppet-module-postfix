@@ -13,8 +13,6 @@ before_install:
   - gem --version
   - bundle -v
 
-sudo: false
-
 script: 'SPEC_OPTS="--format documentation" bundle exec rake validate lint spec'
 
 matrix:

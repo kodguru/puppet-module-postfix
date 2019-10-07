@@ -85,7 +85,6 @@ class postfix (
     }
     'Suse': {
       $main_command_directory_default   = '/usr/sbin'
-      $main_daemon_directory_default    = '/usr/lib/postfix'
       $main_data_directory_default      = '/var/lib/postfix'
       $main_mailbox_size_limit_default  = 51200000
       $main_mydestination_default       = '$myhostname, localhost.$mydomain, localhost'
@@ -94,6 +93,10 @@ class postfix (
       $main_setgid_group_default        = 'maildrop'
       $packages_default                 = 'postfix'
       $os_defaults_missing              = false
+      $main_daemon_directory_default = "${::operatingsystem}-${::operatingsystemrelease}" ? {
+        'SLES-12.3'    => '/usr/lib/postfix/bin',
+        default        => '/usr/lib/postfix',
+      }
     }
     default: {
       $os_defaults_missing = true

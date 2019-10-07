@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/Phil-Friderici/puppet-module-postfix.png?branch=master)](https://travis-ci.org/Phil-Friderici/puppet-module-postfix)
+[![Build Status](https://travis-ci.org/kodguru/puppet-module-postfix.png?branch=master)](https://travis-ci.org/kodguru/puppet-module-postfix)
 
 # puppet-module-postfix #
 ===

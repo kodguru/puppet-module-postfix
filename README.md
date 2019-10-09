@@ -26,6 +26,7 @@ For other OSfamilies support, please specify all parameters which defaults to 'U
 
 
 # Version history #
+* 1.6.2 2019-10-09 fix daemon directory for SLES 12.3, remove ruby 1.8.7 spec tests
 * 1.6.1 2019-01-08 add support for Ubuntu 18.04
 * 1.6.0 2018-12-11 add support for Ubuntu 16.04
 * 1.5.2 2018-10-29 Support Puppet 6

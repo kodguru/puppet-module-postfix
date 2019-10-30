@@ -32,7 +32,7 @@ describe 'postfix' do
         :main_setgid_group_default        => 'postdrop',
         :packages_default                 => 'postfix',
       },
-    'Suse' =>
+    'Suse-12.1' =>
       {
         :operatingsystem                  => 'SLES',
         :operatingsystemrelease           => '12.1',
@@ -47,6 +47,37 @@ describe 'postfix' do
         :main_setgid_group_default        => 'maildrop',
         :packages_default                 => 'postfix',
       },
+    'Suse-12.3' =>
+      {
+        :operatingsystem                  => 'SLES',
+        :operatingsystemrelease           => '12.3',
+        :osfamily                         => 'Suse',
+        :main_command_directory_default   => '/usr/sbin',
+        :main_daemon_directory_default    => '/usr/lib/postfix/bin',
+        :main_data_directory_default      => '/var/lib/postfix',
+        :main_mailbox_size_limit_default  => 51200000,
+        :main_mydestination_default       => '$myhostname, localhost.$mydomain, localhost',
+        :main_queue_directory_default     => '/var/spool/postfix',
+        :main_recipient_delimiter_default => nil,
+        :main_setgid_group_default        => 'maildrop',
+        :packages_default                 => 'postfix',
+      },
+    'Suse-15.0' =>
+      {
+        :operatingsystem                  => 'SLES',
+        :operatingsystemrelease           => '15.0',
+        :osfamily                         => 'Suse',
+        :main_command_directory_default   => '/usr/sbin',
+        :main_daemon_directory_default    => '/usr/lib/postfix/bin',
+        :main_data_directory_default      => '/var/lib/postfix',
+        :main_mailbox_size_limit_default  => 51200000,
+        :main_mydestination_default       => '$myhostname, localhost.$mydomain, localhost',
+        :main_queue_directory_default     => '/var/spool/postfix',
+        :main_recipient_delimiter_default => nil,
+        :main_setgid_group_default        => 'maildrop',
+        :packages_default                 => 'postfix',
+      },
+
     'Ubuntu-14.04' =>
       {
         :operatingsystem                  => 'Ubuntu',

@@ -93,9 +93,9 @@ class postfix (
       $main_setgid_group_default        = 'maildrop'
       $packages_default                 = 'postfix'
       $os_defaults_missing              = false
-      $main_daemon_directory_default = "${::operatingsystem}-${::operatingsystemrelease}" ? {
-        'SLES-12.3'    => '/usr/lib/postfix/bin',
-        default        => '/usr/lib/postfix',
+      $main_daemon_directory_default    = "${::operatingsystem}-${::operatingsystemrelease}" ? {
+        /SLES-(1[01]\.|12\.[012])/  => '/usr/lib/postfix', # SLES 10, 11 and 12 up to 12.2
+        default                     => '/usr/lib/postfix/bin',
       }
     }
     default: {

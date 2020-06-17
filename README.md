@@ -21,6 +21,7 @@ This module provides OS default values for these OSfamilies:
  * Ubuntu 14.04
  * Ubuntu 16.04
  * Ubuntu 18.04
+ * Ubuntu 20.04
 
 For other OSfamilies support, please specify all parameters which defaults to 'USE_DEFAULTS'.
 

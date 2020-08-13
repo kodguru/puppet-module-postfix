@@ -27,6 +27,7 @@ For other OSfamilies support, please specify all parameters which defaults to 'U
 
 
 # Version history #
+* 1.6.4 2020-08-13 add support for Ubuntu 20.04
 * 1.6.3 2019-11-01 add support for SLES 15
 * 1.6.2 2019-10-09 fix daemon directory for SLES 12.3, remove ruby 1.8.7 spec tests
 * 1.6.1 2019-01-08 add support for Ubuntu 18.04

@@ -32,6 +32,21 @@ describe 'postfix' do
         :main_setgid_group_default        => 'postdrop',
         :packages_default                 => 'postfix',
       },
+    'Suse-10.4' =>
+      {
+        :operatingsystem                  => 'SLED',
+        :operatingsystemrelease           => '10.4',
+        :osfamily                         => 'Suse',
+        :main_command_directory_default   => '/usr/sbin',
+        :main_daemon_directory_default    => '/usr/lib/postfix',
+        :main_data_directory_default      => '/var/lib/postfix',
+        :main_mailbox_size_limit_default  => 51200000,
+        :main_mydestination_default       => '$myhostname, localhost.$mydomain, localhost',
+        :main_queue_directory_default     => '/var/spool/postfix',
+        :main_recipient_delimiter_default => nil,
+        :main_setgid_group_default        => 'maildrop',
+        :packages_default                 => 'postfix',
+      },
     'Suse-12.1' =>
       {
         :operatingsystem                  => 'SLES',

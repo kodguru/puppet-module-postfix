@@ -7,6 +7,12 @@
   "source": "git@github.com:kodguru/puppet-module-postfix.git",
   "project_page": "https://github.com/kodguru/puppet-module-postfix",
   "issues_url": "https://github.com/kodguru/puppet-module-postfix/issues",
+  "dependencies": [
+    {
+      "name": "puppetlabs/stdlib",
+      "version_requirement": ">= 4.2.0 < 5.0.0"
+    }
+  ],
   "operatingsystem_support": [
     {
       "operatingsystem": "Debian",
@@ -55,7 +61,7 @@
       "operatingsystem": "SLES"
     },
     {
-      "operatingsystem": "SLED"	
+      "operatingsystem": "SLED"
     },
     {
       "operatingsystem": "Ubuntu",
@@ -73,7 +79,7 @@
       "version_requirement": ">= 3.0.0 < 7.0.0"
     }
   ],
-  "dependencies": [
-    {"name":"puppetlabs/stdlib","version_requirement":">= 4.2.0 < 5.0.0"}
-  ]
+  "pdk-version": "2.1.1",
+  "template-url": "pdk-default#2.1.1",
+  "template-ref": "tags/2.1.1-0-g03daa92"
 }

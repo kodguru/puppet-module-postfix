@@ -204,25 +204,25 @@ class postfix (
   # </USE_DEFAULTS ?>
 
   # <validating variables>
-  if empty($main_alias_database_real) == true { fail("main_alias_database must contain a valid value and is set to <${main_alias_database_real}>") }
+  if empty($main_alias_database_real) == true { fail("main_alias_database must contain a valid value and is set to <${main_alias_database_real}>") } #lint:ignore:140chars
   validate_string($main_alias_database_real)
   if empty($main_alias_maps_real) == true { fail("main_alias_maps must contain a valid value and is set to <${main_alias_maps_real}>") }
   validate_string($main_alias_maps_real)
-  validate_re($main_append_dot_mydomain_real, '^(yes|no)$', "main_append_dot_mydomain may be either 'yes' or 'no' and is set to <${main_append_dot_mydomain_real}>")
+  validate_re($main_append_dot_mydomain_real, '^(yes|no)$', "main_append_dot_mydomain may be either 'yes' or 'no' and is set to <${main_append_dot_mydomain_real}>") #lint:ignore:140chars
   validate_re($main_biff_real, '^(yes|no)$', "main_biff may be either 'yes' or 'no' and is set to <${main_biff_real}>")
   validate_absolute_path($main_command_directory_real)
   validate_absolute_path($main_daemon_directory_real)
   validate_absolute_path($main_data_directory_real)
-  if empty($main_inet_interfaces_real) == true { fail("main_inet_interfaces must contain a valid value and is set to <${main_inet_interfaces_real}>") }
+  if empty($main_inet_interfaces_real) == true { fail("main_inet_interfaces must contain a valid value and is set to <${main_inet_interfaces_real}>") } #lint:ignore:140chars
   validate_string($main_inet_interfaces_real)
-  if empty($main_inet_protocols_real) == true { fail("main_inet_protocols must contain a valid value and is set to <${main_inet_protocols_real}>") }
+  if empty($main_inet_protocols_real) == true { fail("main_inet_protocols must contain a valid value and is set to <${main_inet_protocols_real}>") } #lint:ignore:140chars
   validate_string($main_inet_protocols_real)
   if $main_mailbox_command { validate_string($main_mailbox_command) }
-  if is_integer($main_mailbox_size_limit_real) == false { fail("main_mailbox_size_limit must be an integer and is set to <${main_mailbox_size_limit_real}>") }
-  if $main_mailbox_size_limit_real + 0 < 0 { fail("main_mailbox_size_limit needs a minimum value of 0 and is set to <${main_mailbox_size_limit_real}>") }
+  if is_integer($main_mailbox_size_limit_real) == false { fail("main_mailbox_size_limit must be an integer and is set to <${main_mailbox_size_limit_real}>") } #lint:ignore:140chars
+  if $main_mailbox_size_limit_real + 0 < 0 { fail("main_mailbox_size_limit needs a minimum value of 0 and is set to <${main_mailbox_size_limit_real}>") } #lint:ignore:140chars
   validate_string($main_mydestination_real)
-  if $main_mydomain != undef and is_domain_name($main_mydomain) == false { fail("main_mydomain must be a domain name and is set to <${main_mydomain}>") }
-  if is_domain_name($main_myhostname_real) == false { fail("main_myhostname must be a domain name and is set to <${main_myhostname_real}>") }
+  if $main_mydomain != undef and is_domain_name($main_mydomain) == false { fail("main_mydomain must be a domain name and is set to <${main_mydomain}>") } #lint:ignore:140chars
+  if is_domain_name($main_myhostname_real) == false { fail("main_myhostname must be a domain name and is set to <${main_myhostname_real}>") } #lint:ignore:140chars
   if empty($main_mynetworks_real) == true { fail("main_mynetworks must contain a valid value and is set to <${main_mynetworks_real}>") }
   validate_string($main_mynetworks_real)
   if empty($main_myorigin_real) == true { fail("main_myorigin must contain a valid value and is set to <${main_myorigin_real}>") }
@@ -231,12 +231,12 @@ class postfix (
   # main_recipient_delimiter can not be checkek, it can contain nothing to everything
   if $main_relay_domains { validate_string($main_relay_domains) }
   if is_domain_name($main_relayhost_real) == false { fail("main_relayhost must be a domain name and is set to <${$main_relayhost_real}>") }
-  if is_integer($main_relayhost_port_real) == false { fail("main_relayhost_port must be an integer and is set to <${$main_relayhost_port_real}>") }
-  if empty($main_setgid_group_real) == true { fail("main_setgid_group must contain a valid value and is set to <${main_setgid_group_real}>") }
+  if is_integer($main_relayhost_port_real) == false { fail("main_relayhost_port must be an integer and is set to <${$main_relayhost_port_real}>") } #lint:ignore:140chars
+  if empty($main_setgid_group_real) == true { fail("main_setgid_group must contain a valid value and is set to <${main_setgid_group_real}>") } #lint:ignore:140chars
   validate_string($main_setgid_group_real)
-  if empty($main_transport_maps_real) == true { fail("main_transport_maps must contain a valid value and is set to <${main_transport_maps_real}>") }
+  if empty($main_transport_maps_real) == true { fail("main_transport_maps must contain a valid value and is set to <${main_transport_maps_real}>") } #lint:ignore:140chars
   validate_string($main_transport_maps_real)
-  if empty($main_virtual_alias_maps_real) == true { fail("main_virtual_alias_maps must contain a valid value and is set to <${main_virtual_alias_maps_real}>") }
+  if empty($main_virtual_alias_maps_real) == true { fail("main_virtual_alias_maps must contain a valid value and is set to <${main_virtual_alias_maps_real}>") } #lint:ignore:140chars
   validate_string($main_virtual_alias_maps_real)
   if $main_virtual_alias_domains_real { validate_string($main_virtual_alias_domains_real) }
   case type3x($packages_real) {
@@ -247,8 +247,8 @@ class postfix (
       fail("packages must contain a valid value and is set to <${packages_real}>")
     }
   }
-  if !is_bool($service_enable_real) { validate_re($service_enable_real, '^(true|false|manual)$', "service_enable may be either 'true', 'false' or 'manual' and is set to <${service_enable_real}>") }
-  validate_re($service_ensure_real, '^(running|stopped)$', "service_ensure may be either 'running' or 'stopped' and is set to <${service_ensure_real}>")
+  if !is_bool($service_enable_real) { validate_re($service_enable_real, '^(true|false|manual)$', "service_enable may be either 'true', 'false' or 'manual' and is set to <${service_enable_real}>") } #lint:ignore:140chars
+  validate_re($service_ensure_real, '^(running|stopped)$', "service_ensure may be either 'running' or 'stopped' and is set to <${service_ensure_real}>") #lint:ignore:140chars
   validate_bool($service_hasrestart_real)
   validate_bool($service_hasstatus_real)
   if empty($service_name_real) == true { fail("service_name must contain a valid value and is set to <${service_name_real}>") }
@@ -267,7 +267,7 @@ class postfix (
   validate_string($main_smtpd_tls_security_level)
   if $main_smtpd_tls_key_file != undef { validate_absolute_path($main_smtpd_tls_key_file) }
   if $main_smtpd_tls_cert_file != undef { validate_absolute_path($main_smtpd_tls_cert_file) }
-  if $main_smtpd_helo_required != undef { validate_re($main_smtpd_helo_required, '^(yes|no)$', "main_smtpd_helo_required may be either 'yes' or 'no' and is set to <${main_smtpd_helo_required}>") }
+  if $main_smtpd_helo_required != undef { validate_re($main_smtpd_helo_required, '^(yes|no)$', "main_smtpd_helo_required may be either 'yes' or 'no' and is set to <${main_smtpd_helo_required}>") } #lint:ignore:140chars
   if $main_smtpd_helo_restrictions != undef { validate_array($main_smtpd_helo_restrictions) }
   if $main_smtpd_recipient_restrictions != undef { validate_array($main_smtpd_recipient_restrictions) }
   # </validating variables>

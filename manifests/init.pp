@@ -155,46 +155,6 @@
 #  "postfix set-permissions" (with Postfix version 2.0 and earlier:
 #  "/etc/postfix/post-install set-permissions".
 #
-# @param main_transport_maps
-#  Optional lookup tables with mappings from recipient address to (message
-#  delivery transport, next-hop destination). See transport(5) for details.
-#  This parameter can be used to specify a file not managed by this puppet module
-#  to provide alternative lookup sources. For example ldap, nis, mysql, pcre, etc.
-#  For more information see the man pages for postmap(1), transport(5)
-#
-# @param main_virtual_alias_domains
-#  Postfix is final destination for the specified list of virtual alias domains,
-#  that is, domains for which all addresses are aliased to addresses in other
-#  local or remote domains. The SMTP server validates recipient addresses with
-#  $virtual_alias_maps and rejects non-existent recipients. See also the virtual
-#  alias domain class in the ADDRESS_CLASS_README file.
-#
-# @param main_virtual_alias_maps
-#   Optional lookup tables that alias specific mail addresses or domains to other
-#   local or remote address. The table format and lookups are documented in
-#   virtual(5). For an overview of Postfix address manipulations see the
-#   ADDRESS_REWRITING_README document.
-#   This feature is available in Postfix 2.0 and later.
-#
-# @param main_smtp_tls_mandatory_protocols
-#   List of SSL/TLS protocols that the Postfix SMTP client will use with
-#   mandatory TLS encryption. An empty value means allow all protocols. The
-#   valid protocol names, (see SSL_get_version(3)), are "SSLv2", "SSLv3" and
-#   "TLSv1". The default value is "!SSLv2, !SSLv3" for Postfix releases after
-#   the middle of 2015, "!SSLv2" for older releases.
-#
-# @param main_smtp_tls_protocols
-#   List of TLS protocols that the Postfix SMTP client will exclude or include
-#   with opportunistic TLS encryption. The default value is "!SSLv2, !SSLv3" for
-#   Postfix releases after the middle of 2015, "!SSLv2" for older releases.
-#   Before Postfix 2.6, the Postfix SMTP client would use all protocols with
-#   opportunistic TLS.
-#
-# @parm main_smtp_tls_security_level
-#   The default SMTP TLS security level for the Postfix SMTP client. Specify
-#   one of the following security levels: none, may, encrypt, dane, dane-only,
-#   fingerprint, verify, secure.
-#
 # @param main_smtpd_helo_required
 #   Require that a remote SMTP client introduces itself with the HELO or EHLO
 #   command before sending the MAIL command or other commands that require EHLO
@@ -223,6 +183,13 @@
 #   policy.
 #   Read more in man pages.
 #
+# @param main_smtpd_tls_cert_file
+#   File with the Postfix SMTP server RSA certificate in PEM format. This file
+#   may also contain the Postfix SMTP server private RSA key.
+#
+# @param main_smtpd_tls_key_file
+#   File with the Postfix SMTP server RSA private key in PEM format.
+#
 # @param main_smtpd_tls_mandatory_protocols
 #  List of SSL/TLS protocols that the Postfix SMTP server will use with mandatory
 #  TLS encryption. An empty value means allow all protocols. The valid protocol
@@ -236,12 +203,45 @@
 #   The SMTP TLS security level for the Postfix SMTP server. Specify one of the
 #   following security levels: none, may, encrypt.
 #
-# @param main_smtpd_tls_key_file
-#   File with the Postfix SMTP server RSA private key in PEM format.
+# @param main_smtp_tls_mandatory_protocols
+#   List of SSL/TLS protocols that the Postfix SMTP client will use with
+#   mandatory TLS encryption. An empty value means allow all protocols. The
+#   valid protocol names, (see SSL_get_version(3)), are "SSLv2", "SSLv3" and
+#   "TLSv1". The default value is "!SSLv2, !SSLv3" for Postfix releases after
+#   the middle of 2015, "!SSLv2" for older releases.
 #
-# @param main_smtpd_tls_cert_file
-#   File with the Postfix SMTP server RSA certificate in PEM format. This file
-#   may also contain the Postfix SMTP server private RSA key.
+# @param main_smtp_tls_protocols
+#   List of TLS protocols that the Postfix SMTP client will exclude or include
+#   with opportunistic TLS encryption. The default value is "!SSLv2, !SSLv3" for
+#   Postfix releases after the middle of 2015, "!SSLv2" for older releases.
+#   Before Postfix 2.6, the Postfix SMTP client would use all protocols with
+#   opportunistic TLS.
+#
+# @parm main_smtp_tls_security_level
+#   The default SMTP TLS security level for the Postfix SMTP client. Specify
+#   one of the following security levels: none, may, encrypt, dane, dane-only,
+#   fingerprint, verify, secure.
+#
+# @param main_transport_maps
+#  Optional lookup tables with mappings from recipient address to (message
+#  delivery transport, next-hop destination). See transport(5) for details.
+#  This parameter can be used to specify a file not managed by this puppet module
+#  to provide alternative lookup sources. For example ldap, nis, mysql, pcre, etc.
+#  For more information see the man pages for postmap(1), transport(5)
+#
+# @param main_virtual_alias_domains
+#  Postfix is final destination for the specified list of virtual alias domains,
+#  that is, domains for which all addresses are aliased to addresses in other
+#  local or remote domains. The SMTP server validates recipient addresses with
+#  $virtual_alias_maps and rejects non-existent recipients. See also the virtual
+#  alias domain class in the ADDRESS_CLASS_README file.
+#
+# @param main_virtual_alias_maps
+#   Optional lookup tables that alias specific mail addresses or domains to other
+#   local or remote address. The table format and lookups are documented in
+#   virtual(5). For an overview of Postfix address manipulations see the
+#   ADDRESS_REWRITING_README document.
+#   This feature is available in Postfix 2.0 and later.
 #
 # @param packages
 #   Array of package names used for installation.
@@ -272,24 +272,24 @@
 # @param template_main_cf
 #   The name of the template file to use for main.cf.
 #
-# @param transport_maps
-#   Hash of entries to add to transport_maps file defined by
-#   $main_transport_maps. The value must be a string.
-#
 # @param transport_maps_external
 #   Use a non-puppet managed source for the transport_maps, for example nis: or
 #   ldap:. This parameter will cause the value of main_transport_maps to be
 #   added despite the transport_map parameter beeing undefined.
 #
-# @param virtual_aliases
-#   Hash of entries to add to virtual_alias_maps file defined by
-#   $main_virtual_alias_maps.
+# @param transport_maps
+#   Hash of entries to add to transport_maps file defined by
+#   $main_transport_maps. The value must be a string.
 #
 # @param virtual_aliases_external
 #   Use a non-puppet managed source for the virtual_aliases parameter, for
 #   example nis: or ldap:. This parameter will cause the value of
 #   main_virtual_alias_maps to be added despite the virtual_aliases parameter
 #   beeing undefined.
+#
+# @param virtual_aliases
+#   Hash of entries to add to virtual_alias_maps file defined by
+#   $main_virtual_alias_maps.
 #
 class postfix (
   $main_alias_database                = 'hash:/etc/aliases',
@@ -314,20 +314,20 @@ class postfix (
   $main_relayhost                     = "mailhost.${::domain}",
   $main_relayhost_port                = '25',
   $main_setgid_group                  = 'USE_DEFAULTS',
-  $main_transport_maps                = 'hash:/etc/postfix/transport',
-  $main_virtual_alias_domains         = undef,
-  $main_virtual_alias_maps            = 'hash:/etc/postfix/virtual',
-  $main_smtp_tls_mandatory_protocols  = undef,
-  $main_smtp_tls_protocols            = undef,
-  $main_smtp_tls_security_level       = undef,
   $main_smtpd_helo_required           = undef,
   $main_smtpd_helo_restrictions       = undef,
   $main_smtpd_recipient_restrictions  = undef,
+  $main_smtpd_tls_cert_file           = undef,
+  $main_smtpd_tls_key_file            = undef,
   $main_smtpd_tls_mandatory_protocols = undef,
   $main_smtpd_tls_protocols           = undef,
   $main_smtpd_tls_security_level      = undef,
-  $main_smtpd_tls_key_file            = undef,
-  $main_smtpd_tls_cert_file           = undef,
+  $main_smtp_tls_mandatory_protocols  = undef,
+  $main_smtp_tls_protocols            = undef,
+  $main_smtp_tls_security_level       = undef,
+  $main_transport_maps                = 'hash:/etc/postfix/transport',
+  $main_virtual_alias_domains         = undef,
+  $main_virtual_alias_maps            = 'hash:/etc/postfix/virtual',
   $packages                           = 'USE_DEFAULTS',
   $service_enable                     = true,
   $service_ensure                     = 'running',
@@ -335,10 +335,10 @@ class postfix (
   $service_hasstatus                  = true,
   $service_name                       = 'postfix',
   $template_main_cf                   = 'postfix/main.cf.erb',
-  $transport_maps                     = undef,
   $transport_maps_external            = false,
-  $virtual_aliases                    = undef,
+  $transport_maps                     = undef,
   $virtual_aliases_external           = false,
+  $virtual_aliases                    = undef,
 ) {
 
   # <provide os default values>

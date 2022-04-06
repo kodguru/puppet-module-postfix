@@ -827,19 +827,19 @@ describe 'postfix' do
         name:    ['service_ensure'],
         valid:   ['running', 'stopped'],
         invalid: ['invalid', 3, 2.42, ['array'], { 'ha' => 'sh' }],
-        message: 'may be either \'running\' or \'stopped\'',
+        message: 'validate_legacy',
       },
       'regex_true/false/manual' => {
         name:    ['service_enable'],
         valid:   [true, 'true', false, 'false', 'manual'],
         invalid: ['invalid', 3, 2.42, ['array'], { 'ha' => 'sh' }],
-        message: 'may be either \'true\', \'false\' or \'manual\'',
+        message: 'validate_legacy',
       },
       'regex_yes/no' => {
         name:    ['main_append_dot_mydomain', 'main_biff', 'main_smtpd_helo_required'],
         valid:   ['yes', 'no'],
         invalid: [true, false, 'invalid', 3, 2.42, ['array'], { 'ha' => 'sh' }],
-        message: 'may be either \'yes\' or \'no\'',
+        message: 'validate_legacy',
       },
       'string' => {
         name:    ['main_alias_database', 'main_alias_maps', 'main_inet_interfaces', 'main_inet_protocols', 'main_mailbox_command',

@@ -497,8 +497,8 @@ class postfix (
   validate_string($main_alias_database_real)
   if empty($main_alias_maps_real) == true { fail("main_alias_maps must contain a valid value and is set to <${main_alias_maps_real}>") }
   validate_string($main_alias_maps_real)
-  validate_re($main_append_dot_mydomain_real, '^(yes|no)$', "main_append_dot_mydomain may be either 'yes' or 'no' and is set to <${main_append_dot_mydomain_real}>") #lint:ignore:140chars
-  validate_re($main_biff_real, '^(yes|no)$', "main_biff may be either 'yes' or 'no' and is set to <${main_biff_real}>")
+  validate_legacy(Enum['yes', 'no'], 'validate_re', $main_append_dot_mydomain_real, '^(yes|no)$')
+  validate_legacy(Enum['yes', 'no'], 'validate_re', $main_biff_real, '^(yes|no)$')
   validate_absolute_path($main_command_directory_real)
   validate_absolute_path($main_daemon_directory_real)
   validate_absolute_path($main_data_directory_real)
@@ -536,8 +536,8 @@ class postfix (
       fail("packages must contain a valid value and is set to <${packages_real}>")
     }
   }
-  if !is_bool($service_enable_real) { validate_re($service_enable_real, '^(true|false|manual)$', "service_enable may be either 'true', 'false' or 'manual' and is set to <${service_enable_real}>") } #lint:ignore:140chars
-  validate_re($service_ensure_real, '^(running|stopped)$', "service_ensure may be either 'running' or 'stopped' and is set to <${service_ensure_real}>") #lint:ignore:140chars
+  if !is_bool($service_enable_real) { validate_legacy(Enum['true', 'false', 'manual'], 'validate_re', $service_enable_real, '^(true|false|manual)$') }
+  validate_legacy(Enum['running', 'stopped'], 'validate_re', $service_ensure_real, '^(running|stopped)$')
   validate_bool($service_hasrestart_real)
   validate_bool($service_hasstatus_real)
   if empty($service_name_real) == true { fail("service_name must contain a valid value and is set to <${service_name_real}>") }
@@ -556,7 +556,7 @@ class postfix (
   validate_string($main_smtpd_tls_security_level)
   if $main_smtpd_tls_key_file != undef { validate_absolute_path($main_smtpd_tls_key_file) }
   if $main_smtpd_tls_cert_file != undef { validate_absolute_path($main_smtpd_tls_cert_file) }
-  if $main_smtpd_helo_required != undef { validate_re($main_smtpd_helo_required, '^(yes|no)$', "main_smtpd_helo_required may be either 'yes' or 'no' and is set to <${main_smtpd_helo_required}>") } #lint:ignore:140chars
+  if $main_smtpd_helo_required != undef { validate_legacy(Enum['yes', 'no'], 'validate_re', $main_smtpd_helo_required, '^(yes|no)$') }
   if $main_smtpd_helo_restrictions != undef { validate_array($main_smtpd_helo_restrictions) }
   if $main_smtpd_recipient_restrictions != undef { validate_array($main_smtpd_recipient_restrictions) }
   # </validating variables>

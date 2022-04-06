@@ -296,9 +296,9 @@ class postfix (
   $main_alias_maps                    = 'hash:/etc/aliases',
   $main_append_dot_mydomain           = 'no',
   $main_biff                          = 'no',
-  $main_command_directory             = 'USE_DEFAULTS',
-  $main_daemon_directory              = 'USE_DEFAULTS',
-  $main_data_directory                = 'USE_DEFAULTS',
+  $main_command_directory             = '/usr/sbin',
+  $main_daemon_directory              = undef,
+  $main_data_directory                = '/var/lib/postfix',
   $main_inet_interfaces               = '127.0.0.1',
   $main_inet_protocols                = 'ipv4',
   $main_mailbox_command               = undef,
@@ -308,12 +308,12 @@ class postfix (
   $main_myhostname                    = $::fqdn,
   $main_mynetworks                    = '127.0.0.0/8',
   $main_myorigin                      = '$myhostname',
-  $main_queue_directory               = 'USE_DEFAULTS',
+  $main_queue_directory               = '/var/spool/postfix',
   $main_recipient_delimiter           = '+',
   $main_relay_domains                 = undef,
   $main_relayhost                     = "mailhost.${::domain}",
   $main_relayhost_port                = '25',
-  $main_setgid_group                  = 'USE_DEFAULTS',
+  $main_setgid_group                  = undef,
   $main_smtpd_helo_required           = undef,
   $main_smtpd_helo_restrictions       = undef,
   $main_smtpd_recipient_restrictions  = undef,
@@ -328,7 +328,7 @@ class postfix (
   $main_transport_maps                = 'hash:/etc/postfix/transport',
   $main_virtual_alias_domains         = undef,
   $main_virtual_alias_maps            = 'hash:/etc/postfix/virtual',
-  $packages                           = 'USE_DEFAULTS',
+  $packages                           = 'postfix',
   $service_enable                     = true,
   $service_ensure                     = 'running',
   $service_hasrestart                 = true,
@@ -345,48 +345,13 @@ class postfix (
   # Set $os_defaults_missing to true for unspecified osfamilies
   case $::osfamily {
     'Debian': {
-      $main_command_directory_default   = '/usr/sbin'
-      $main_data_directory_default      = '/var/lib/postfix'
-      $main_mailbox_size_limit_default  = 51200000
-      $main_mydestination_default       = '$myhostname, localhost.$mydomain, localhost'
-      $main_queue_directory_default     = '/var/spool/postfix'
-      $main_recipient_delimiter_default = undef
-      $main_setgid_group_default        = 'postdrop'
-      $packages_default                 = 'postfix'
       $os_defaults_missing              = false
-      $main_daemon_directory_default = "${::operatingsystem}-${::operatingsystemrelease}" ? {
-        'Ubuntu-16.04' => '/usr/lib/postfix/sbin',
-        'Ubuntu-18.04' => '/usr/lib/postfix/sbin',
-        'Ubuntu-20.04' => '/usr/lib/postfix/sbin',
-        default        => '/usr/lib/postfix',
-      }
     }
     'RedHat': {
-      $main_command_directory_default   = '/usr/sbin'
-      $main_daemon_directory_default    = '/usr/libexec/postfix'
-      $main_data_directory_default      = '/var/lib/postfix'
-      $main_mailbox_size_limit_default  = 51200000
-      $main_mydestination_default       = '$myhostname, localhost.$mydomain, localhost'
-      $main_queue_directory_default     = '/var/spool/postfix'
-      $main_recipient_delimiter_default = undef
-      $main_setgid_group_default        = 'postdrop'
-      $packages_default                 = 'postfix'
       $os_defaults_missing              = false
     }
     'Suse': {
-      $main_command_directory_default   = '/usr/sbin'
-      $main_data_directory_default      = '/var/lib/postfix'
-      $main_mailbox_size_limit_default  = 51200000
-      $main_mydestination_default       = '$myhostname, localhost.$mydomain, localhost'
-      $main_queue_directory_default     = '/var/spool/postfix'
-      $main_recipient_delimiter_default = undef
-      $main_setgid_group_default        = 'maildrop'
-      $packages_default                 = 'postfix'
       $os_defaults_missing              = false
-      $main_daemon_directory_default    = "${::operatingsystem}-${::operatingsystemrelease}" ? {
-        /SLE[DS]-(1[01]\.|12\.[012])/ => '/usr/lib/postfix', # SLE[DS] 10, 11 and 12 up to 12.2
-        default                       => '/usr/lib/postfix/bin',
-      }
     }
     default: {
       $os_defaults_missing = true
@@ -397,54 +362,14 @@ class postfix (
   # <USE_DEFAULT vs OS defaults>
   # Check if 'USE_DEFAULTS' is used anywhere without having OS default value
   if $os_defaults_missing == true and (
-    ($main_command_directory == 'USE_DEFAULTS') or
-    ($main_daemon_directory  == 'USE_DEFAULTS') or
-    ($main_data_directory    == 'USE_DEFAULTS') or
-    ($main_queue_directory   == 'USE_DEFAULTS') or
-    ($main_setgid_group      == 'USE_DEFAULTS') or
-    ($packages               == 'USE_DEFAULTS')
+    ($main_daemon_directory  == undef) or
+    ($main_setgid_group      == undef)
   ) {
       fail("Sorry, I don't know default values for ${::osfamily} yet :( Please provide specific values to the postfix module.")
   }
   # </USE_DEFAULT vs OS defaults>
 
   # <USE_DEFAULTS ?>
-
-  $main_command_directory_real = $main_command_directory ? {
-    'USE_DEFAULTS' => $main_command_directory_default,
-    default        => $main_command_directory }
-
-  $main_daemon_directory_real = $main_daemon_directory ? {
-    'USE_DEFAULTS' => $main_daemon_directory_default,
-    default        => $main_daemon_directory }
-
-  $main_data_directory_real = $main_data_directory ? {
-    'USE_DEFAULTS' => $main_data_directory_default,
-    default        => $main_data_directory }
-
-  $main_mailbox_size_limit_real = $main_mailbox_size_limit ? {
-    'USE_DEFAULTS' => $main_mailbox_size_limit_default,
-    default        => $main_mailbox_size_limit }
-
-  $main_mydestination_real = $main_mydestination ? {
-    'USE_DEFAULTS' => $main_mydestination_default,
-    default        => $main_mydestination }
-
-  $main_queue_directory_real = $main_queue_directory ? {
-    'USE_DEFAULTS' => $main_queue_directory_default,
-    default        => $main_queue_directory }
-
-  $main_recipient_delimiter_real = $main_recipient_delimiter ? {
-    'USE_DEFAULTS' => $main_recipient_delimiter_default,
-    default        => $main_recipient_delimiter }
-
-  $main_setgid_group_real = $main_setgid_group ? {
-    'USE_DEFAULTS' => $main_setgid_group_default,
-    default        => $main_setgid_group }
-
-  $packages_real = $packages ? {
-    'USE_DEFAULTS' => $packages_default,
-    default        => $packages }
 
   $main_alias_database_real        = $main_alias_database
   $main_alias_maps_real            = $main_alias_maps
@@ -499,41 +424,41 @@ class postfix (
   validate_string($main_alias_maps_real)
   validate_legacy(Enum['yes', 'no'], 'validate_re', $main_append_dot_mydomain_real, '^(yes|no)$')
   validate_legacy(Enum['yes', 'no'], 'validate_re', $main_biff_real, '^(yes|no)$')
-  validate_absolute_path($main_command_directory_real)
-  validate_absolute_path($main_daemon_directory_real)
-  validate_absolute_path($main_data_directory_real)
+  validate_absolute_path($main_command_directory)
+  validate_absolute_path($main_daemon_directory)
+  validate_absolute_path($main_data_directory)
   if empty($main_inet_interfaces_real) == true { fail("main_inet_interfaces must contain a valid value and is set to <${main_inet_interfaces_real}>") } #lint:ignore:140chars
   validate_string($main_inet_interfaces_real)
   if empty($main_inet_protocols_real) == true { fail("main_inet_protocols must contain a valid value and is set to <${main_inet_protocols_real}>") } #lint:ignore:140chars
   validate_string($main_inet_protocols_real)
   if $main_mailbox_command { validate_string($main_mailbox_command) }
-  if is_integer($main_mailbox_size_limit_real) == false { fail("main_mailbox_size_limit must be an integer and is set to <${main_mailbox_size_limit_real}>") } #lint:ignore:140chars
-  if $main_mailbox_size_limit_real + 0 < 0 { fail("main_mailbox_size_limit needs a minimum value of 0 and is set to <${main_mailbox_size_limit_real}>") } #lint:ignore:140chars
-  validate_string($main_mydestination_real)
+  if is_integer($main_mailbox_size_limit) == false { fail("main_mailbox_size_limit must be an integer and is set to <${main_mailbox_size_limit}>") } #lint:ignore:140chars
+  if $main_mailbox_size_limit + 0 < 0 { fail("main_mailbox_size_limit needs a minimum value of 0 and is set to <${main_mailbox_size_limit}>") } #lint:ignore:140chars
+  validate_string($main_mydestination)
   if $main_mydomain != undef and is_domain_name($main_mydomain) == false { fail("main_mydomain must be a domain name and is set to <${main_mydomain}>") } #lint:ignore:140chars
   if is_domain_name($main_myhostname_real) == false { fail("main_myhostname must be a domain name and is set to <${main_myhostname_real}>") } #lint:ignore:140chars
   if empty($main_mynetworks_real) == true { fail("main_mynetworks must contain a valid value and is set to <${main_mynetworks_real}>") }
   validate_string($main_mynetworks_real)
   if empty($main_myorigin_real) == true { fail("main_myorigin must contain a valid value and is set to <${main_myorigin_real}>") }
   validate_string($main_myorigin_real)
-  validate_absolute_path($main_queue_directory_real)
+  validate_absolute_path($main_queue_directory)
   # main_recipient_delimiter can not be checkek, it can contain nothing to everything
   if $main_relay_domains { validate_string($main_relay_domains) }
   if is_domain_name($main_relayhost_real) == false { fail("main_relayhost must be a domain name and is set to <${$main_relayhost_real}>") }
   if is_integer($main_relayhost_port_real) == false { fail("main_relayhost_port must be an integer and is set to <${$main_relayhost_port_real}>") } #lint:ignore:140chars
-  if empty($main_setgid_group_real) == true { fail("main_setgid_group must contain a valid value and is set to <${main_setgid_group_real}>") } #lint:ignore:140chars
-  validate_string($main_setgid_group_real)
+  if empty($main_setgid_group) == true { fail("main_setgid_group must contain a valid value and is set to <${main_setgid_group}>") } #lint:ignore:140chars
+  validate_string($main_setgid_group)
   if empty($main_transport_maps_real) == true { fail("main_transport_maps must contain a valid value and is set to <${main_transport_maps_real}>") } #lint:ignore:140chars
   validate_string($main_transport_maps_real)
   if empty($main_virtual_alias_maps_real) == true { fail("main_virtual_alias_maps must contain a valid value and is set to <${main_virtual_alias_maps_real}>") } #lint:ignore:140chars
   validate_string($main_virtual_alias_maps_real)
   if $main_virtual_alias_domains_real { validate_string($main_virtual_alias_domains_real) }
-  case type3x($packages_real) {
+  case type3x($packages) {
     'string','array': {
-      if empty($packages_real) == true { fail("packages must contain a valid value and is set to <${packages_real}>") }
+      if empty($packages) == true { fail("packages must contain a valid value and is set to <${packages}>") }
     }
     default: {
-      fail("packages must contain a valid value and is set to <${packages_real}>")
+      fail("packages must contain a valid value and is set to <${packages}>")
     }
   }
   if !is_bool($service_enable_real) { validate_legacy(Enum['true', 'false', 'manual'], 'validate_re', $service_enable_real, '^(true|false|manual)$') }
@@ -562,7 +487,7 @@ class postfix (
   # </validating variables>
 
   # <Install & Config>
-  package { $packages_real:
+  package { $packages:
     ensure => installed,
     before => Package['sendmail'],
   }
@@ -573,7 +498,7 @@ class postfix (
     enable     => $service_enable_real,
     hasrestart => $service_hasrestart_real,
     hasstatus  => $service_hasstatus_real,
-    require    => Package[$packages_real],
+    require    => Package[$packages],
     subscribe  => [ File['postfix_main.cf'], File['postfix_virtual'], File['postfix_transport'], ],
   }
 
@@ -584,7 +509,7 @@ class postfix (
     group   => 'root',
     mode    => '0644',
     content => template($template_main_cf_real),
-    require => Package[$packages_real],
+    require => Package[$packages],
   }
 
   if $virtual_aliases != undef {
@@ -595,10 +520,10 @@ class postfix (
       group   => 'root',
       mode    => '0644',
       content => template('postfix/virtual.erb'),
-      require => Package[$packages_real],
+      require => Package[$packages],
     }
     exec { 'postfix_rebuild_virtual':
-      command     => "${main_command_directory_real}/postmap ${main_virtual_alias_maps_real}",
+      command     => "${main_command_directory}/postmap ${main_virtual_alias_maps_real}",
       refreshonly => true,
       subscribe   => File['postfix_virtual'],
     }
@@ -621,10 +546,10 @@ class postfix (
       group   => 'root',
       mode    => '0644',
       content => template('postfix/transport.erb'),
-      require => Package[$packages_real],
+      require => Package[$packages],
     }
     exec { 'postfix_rebuild_transport':
-      command     => "${main_command_directory_real}/postmap hash:/etc/postfix/transport",
+      command     => "${main_command_directory}/postmap hash:/etc/postfix/transport",
       refreshonly => true,
       subscribe   => File['postfix_transport'],
     }

@@ -11,14 +11,14 @@ append_dot_mydomain = <%= @main_append_dot_mydomain_real %>
 biff = <%= @main_biff_real %>
 
 # command_directory = /usr/sbin
-command_directory = <%= @main_command_directory_real %>
+command_directory = <%= @main_command_directory %>
 
 # daemon_directory = /usr/libexec/postfix (RHEL & Suse)
 # daemon_directory = /usr/lib/postfix (Debian & Ubuntu)
-daemon_directory = <%= @main_daemon_directory_real %>
+daemon_directory = <%= @main_daemon_directory %>
 
 # data_directory = /var/lib/postfix
-data_directory = <%= @main_data_directory_real %>
+data_directory = <%= @main_data_directory %>
 
 # inet_interfaces = all
 inet_interfaces = <%= @main_inet_interfaces_real %>
@@ -76,10 +76,10 @@ mailbox_command = <%= @main_mailbox_command %>
 <% end -%>
 
 # mailbox_size_limit = 51200000
-mailbox_size_limit = <%= @main_mailbox_size_limit_real %>
+mailbox_size_limit = <%= @main_mailbox_size_limit %>
 
 # mydestination = $myhostname, localhost.$mydomain, localhost
-mydestination = <%= @main_mydestination_real %>
+mydestination = <%= @main_mydestination %>
 <% if @main_mydomain -%>
 
 mydomain = <%= @main_mydomain %>
@@ -97,10 +97,10 @@ mynetworks = <%= @main_mynetworks_real %>
 myorigin = <%= @main_myorigin_real %>
 
 # queue_directory = /var/spool/postfix
-queue_directory = <%= @main_queue_directory_real %>
+queue_directory = <%= @main_queue_directory %>
 
 # recipient_delimiter =
-recipient_delimiter = <%= @main_recipient_delimiter_real %>
+recipient_delimiter = <%= @main_recipient_delimiter %>
 <% if @main_relay_domains -%>
 
 relay_domains = <%= @main_relay_domains %>
@@ -110,7 +110,7 @@ relay_domains = <%= @main_relay_domains %>
 relayhost = <%= @main_relayhost_real %>:<%= @main_relayhost_port_real %>
 
 # setgid_group = postdrop
-setgid_group = <%= @main_setgid_group_real %>
+setgid_group = <%= @main_setgid_group %>
 <% if @main_virtual_alias_domains_real -%>
 
 virtual_alias_domains = <%= @main_virtual_alias_domains_real %>

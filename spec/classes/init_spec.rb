@@ -36,6 +36,8 @@ describe 'postfix' do
       {
         operatingsystem:                  'SLED',
         operatingsystemrelease:           '10.4',
+        major:                            '10',
+        minor:                            '4',
         osfamily:                         'Suse',
         main_command_directory_default:   '/usr/sbin',
         main_daemon_directory_default:    '/usr/lib/postfix',
@@ -51,6 +53,8 @@ describe 'postfix' do
       {
         operatingsystem:                  'SLES',
         operatingsystemrelease:           '12.1',
+        major:                            '12',
+        minor:                            '1',
         osfamily:                         'Suse',
         main_command_directory_default:   '/usr/sbin',
         main_daemon_directory_default:    '/usr/lib/postfix',
@@ -66,6 +70,8 @@ describe 'postfix' do
       {
         operatingsystem:                  'SLES',
         operatingsystemrelease:           '12.3',
+        major:                            '12',
+        minor:                            '3',
         osfamily:                         'Suse',
         main_command_directory_default:   '/usr/sbin',
         main_daemon_directory_default:    '/usr/lib/postfix/bin',
@@ -81,6 +87,8 @@ describe 'postfix' do
       {
         operatingsystem:                  'SLES',
         operatingsystemrelease:           '15.0',
+        major:                            '15',
+        minor:                            '0',
         osfamily:                         'Suse',
         main_command_directory_default:   '/usr/sbin',
         main_daemon_directory_default:    '/usr/lib/postfix/bin',
@@ -97,6 +105,7 @@ describe 'postfix' do
       {
         operatingsystem:                  'Ubuntu',
         operatingsystemrelease:           '14.04',
+        major:                            '14.04',
         osfamily:                         'Debian',
         main_command_directory_default:   '/usr/sbin',
         main_daemon_directory_default:    '/usr/lib/postfix',
@@ -112,6 +121,7 @@ describe 'postfix' do
       {
         operatingsystem:                  'Ubuntu',
         operatingsystemrelease:           '16.04',
+        major:                            '16.04',
         osfamily:                         'Debian',
         main_command_directory_default:   '/usr/sbin',
         main_daemon_directory_default:    '/usr/lib/postfix/sbin',
@@ -127,6 +137,7 @@ describe 'postfix' do
       {
         operatingsystem:                  'Ubuntu',
         operatingsystemrelease:           '18.04',
+        major:                            '18.04',
         osfamily:                         'Debian',
         main_command_directory_default:   '/usr/sbin',
         main_daemon_directory_default:    '/usr/lib/postfix/sbin',
@@ -142,6 +153,7 @@ describe 'postfix' do
       {
         operatingsystem:                  'Ubuntu',
         operatingsystemrelease:           '20.04',
+        major:                            '20.04',
         osfamily:                         'Debian',
         main_command_directory_default:   '/usr/sbin',
         main_daemon_directory_default:    '/usr/lib/postfix/sbin',
@@ -165,10 +177,18 @@ describe 'postfix' do
             osfamily:               v[:osfamily],
             domain:                 'test.local',
             fqdn:                   'dummy.test.local',
+            os: {
+              family: v[:osfamily],
+              name:   v[:operatingsystem],
+              release: {
+                major: v[:major],
+                minor: v[:minor],
+              }
+            }
           }
         end
 
-        # package { $packages_real:}
+        # package { $packages:}
         it {
           is_expected.to contain_package(v[:packages_default]).with(
             {
@@ -412,7 +432,14 @@ describe 'postfix' do
   end
 
   describe 'validating variables on valid osfamily RedHat' do
-    let(:facts) { { osfamily: 'Redhat' } }
+    let(:facts) do
+      {
+        osfamily: 'Redhat',
+        os: {
+          family: 'RedHat',
+        }
+      }
+    end
 
     # <testing free string variables for main.cf>
     ['main_alias_database', 'main_alias_maps', 'main_inet_interfaces', 'main_inet_protocols', 'main_mailbox_command',
@@ -481,8 +508,8 @@ describe 'postfix' do
     end
     # </testing yes/no string type variables for main.cf>
 
-    context 'with main_mailbox_size_limit set to <USE_DEFAULTS>' do
-      let(:params) { { 'main_mailbox_size_limit' => 'USE_DEFAULTS' } }
+    context 'with main_mailbox_size_limit set to <51200000>' do
+      let(:params) { { 'main_mailbox_size_limit' => 51_200_000 } }
 
       it { is_expected.to contain_file('postfix_main.cf').with_content(%r{^mailbox_size_limit = 51200000$}) }
     end
@@ -763,7 +790,10 @@ describe 'postfix' do
     # set needed custom facts and variables
     let(:facts) do
       {
-        osfamily: 'RedHat',
+        osfamily: 'Redhat',
+        os: {
+          family: 'RedHat',
+        }
       }
     end
     let(:mandatory_params) do

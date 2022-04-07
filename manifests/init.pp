@@ -418,7 +418,7 @@ class postfix (
   # </USE_DEFAULTS ?>
 
   # <validating variables>
-  if empty($main_alias_database_real) == true { fail("main_alias_database must contain a valid value and is set to <${main_alias_database_real}>") } #lint:ignore:140chars
+  if empty($main_alias_database_real) == true { fail("main_alias_database must contain a valid value and is set to <${main_alias_database_real}>") }
   validate_string($main_alias_database_real)
   if empty($main_alias_maps_real) == true { fail("main_alias_maps must contain a valid value and is set to <${main_alias_maps_real}>") }
   validate_string($main_alias_maps_real)
@@ -427,16 +427,16 @@ class postfix (
   validate_absolute_path($main_command_directory)
   validate_absolute_path($main_daemon_directory)
   validate_absolute_path($main_data_directory)
-  if empty($main_inet_interfaces_real) == true { fail("main_inet_interfaces must contain a valid value and is set to <${main_inet_interfaces_real}>") } #lint:ignore:140chars
+  if empty($main_inet_interfaces_real) == true { fail("main_inet_interfaces must contain a valid value and is set to <${main_inet_interfaces_real}>") }
   validate_string($main_inet_interfaces_real)
-  if empty($main_inet_protocols_real) == true { fail("main_inet_protocols must contain a valid value and is set to <${main_inet_protocols_real}>") } #lint:ignore:140chars
+  if empty($main_inet_protocols_real) == true { fail("main_inet_protocols must contain a valid value and is set to <${main_inet_protocols_real}>") }
   validate_string($main_inet_protocols_real)
   if $main_mailbox_command { validate_string($main_mailbox_command) }
-  if is_integer($main_mailbox_size_limit) == false { fail("main_mailbox_size_limit must be an integer and is set to <${main_mailbox_size_limit}>") } #lint:ignore:140chars
-  if $main_mailbox_size_limit + 0 < 0 { fail("main_mailbox_size_limit needs a minimum value of 0 and is set to <${main_mailbox_size_limit}>") } #lint:ignore:140chars
+  if is_integer($main_mailbox_size_limit) == false { fail("main_mailbox_size_limit must be an integer and is set to <${main_mailbox_size_limit}>") }
+  if $main_mailbox_size_limit + 0 < 0 { fail("main_mailbox_size_limit needs a minimum value of 0 and is set to <${main_mailbox_size_limit}>") }
   validate_string($main_mydestination)
-  if $main_mydomain != undef and is_domain_name($main_mydomain) == false { fail("main_mydomain must be a domain name and is set to <${main_mydomain}>") } #lint:ignore:140chars
-  if is_domain_name($main_myhostname_real) == false { fail("main_myhostname must be a domain name and is set to <${main_myhostname_real}>") } #lint:ignore:140chars
+  if $main_mydomain != undef and is_domain_name($main_mydomain) == false { fail("main_mydomain must be a domain name and is set to <${main_mydomain}>") }
+  if is_domain_name($main_myhostname_real) == false { fail("main_myhostname must be a domain name and is set to <${main_myhostname_real}>") }
   if empty($main_mynetworks_real) == true { fail("main_mynetworks must contain a valid value and is set to <${main_mynetworks_real}>") }
   validate_string($main_mynetworks_real)
   if empty($main_myorigin_real) == true { fail("main_myorigin must contain a valid value and is set to <${main_myorigin_real}>") }
@@ -445,12 +445,12 @@ class postfix (
   # main_recipient_delimiter can not be checkek, it can contain nothing to everything
   if $main_relay_domains { validate_string($main_relay_domains) }
   if is_domain_name($main_relayhost_real) == false { fail("main_relayhost must be a domain name and is set to <${$main_relayhost_real}>") }
-  if is_integer($main_relayhost_port_real) == false { fail("main_relayhost_port must be an integer and is set to <${$main_relayhost_port_real}>") } #lint:ignore:140chars
-  if empty($main_setgid_group) == true { fail("main_setgid_group must contain a valid value and is set to <${main_setgid_group}>") } #lint:ignore:140chars
+  if is_integer($main_relayhost_port_real) == false { fail("main_relayhost_port must be an integer and is set to <${$main_relayhost_port_real}>") }
+  if empty($main_setgid_group) == true { fail("main_setgid_group must contain a valid value and is set to <${main_setgid_group}>") }
   validate_string($main_setgid_group)
-  if empty($main_transport_maps_real) == true { fail("main_transport_maps must contain a valid value and is set to <${main_transport_maps_real}>") } #lint:ignore:140chars
+  if empty($main_transport_maps_real) == true { fail("main_transport_maps must contain a valid value and is set to <${main_transport_maps_real}>") }
   validate_string($main_transport_maps_real)
-  if empty($main_virtual_alias_maps_real) == true { fail("main_virtual_alias_maps must contain a valid value and is set to <${main_virtual_alias_maps_real}>") } #lint:ignore:140chars
+  if empty($main_virtual_alias_maps_real) == true { fail("main_virtual_alias_maps must contain a valid value and is set to <${main_virtual_alias_maps_real}>") }
   validate_string($main_virtual_alias_maps_real)
   if $main_virtual_alias_domains_real { validate_string($main_virtual_alias_domains_real) }
   case type3x($packages) {

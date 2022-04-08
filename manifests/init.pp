@@ -294,8 +294,8 @@
 class postfix (
   $main_alias_database                = 'hash:/etc/aliases',
   $main_alias_maps                    = 'hash:/etc/aliases',
-  $main_append_dot_mydomain           = 'no',
-  $main_biff                          = 'no',
+  Enum['yes', 'no'] $main_append_dot_mydomain                   = 'no',
+  Enum['yes', 'no'] $main_biff                                  = 'no',
   $main_command_directory             = '/usr/sbin',
   $main_daemon_directory              = undef,
   $main_data_directory                = '/var/lib/postfix',
@@ -373,8 +373,6 @@ class postfix (
 
   $main_alias_database_real        = $main_alias_database
   $main_alias_maps_real            = $main_alias_maps
-  $main_append_dot_mydomain_real   = $main_append_dot_mydomain
-  $main_biff_real                  = $main_biff
   $main_inet_interfaces_real       = $main_inet_interfaces
   $main_inet_protocols_real        = $main_inet_protocols
   $main_myhostname_real            = $main_myhostname
@@ -399,8 +397,8 @@ class postfix (
   validate_string($main_alias_database_real)
   if empty($main_alias_maps_real) == true { fail("main_alias_maps must contain a valid value and is set to <${main_alias_maps_real}>") }
   validate_string($main_alias_maps_real)
-  validate_legacy(Enum['yes', 'no'], 'validate_re', $main_append_dot_mydomain_real, '^(yes|no)$')
-  validate_legacy(Enum['yes', 'no'], 'validate_re', $main_biff_real, '^(yes|no)$')
+  validate_legacy(Enum['yes', 'no'], 'validate_re', $main_append_dot_mydomain, '^(yes|no)$')
+  validate_legacy(Enum['yes', 'no'], 'validate_re', $main_biff, '^(yes|no)$')
   validate_absolute_path($main_command_directory)
   validate_absolute_path($main_daemon_directory)
   validate_absolute_path($main_data_directory)

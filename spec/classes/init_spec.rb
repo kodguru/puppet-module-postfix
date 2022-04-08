@@ -659,9 +659,9 @@ describe 'postfix' do
       end
     end
 
-    ['true', 'false', true, false].each do |value|
+    [true, false].each do |value|
       context "with service_hasrestart set to <#{value}>" do
-        let(:params) { { service_hasrestart: value.to_s } }
+        let(:params) { { service_hasrestart: value } }
 
         it {
           is_expected.to contain_service('postfix_service').with(
@@ -669,7 +669,7 @@ describe 'postfix' do
               'ensure'     => 'running',
               'name'       => 'postfix',
               'enable'     => 'true',
-              'hasrestart' => value.to_s,
+              'hasrestart' => value,
               'hasstatus'  => 'true',
               'require'    => 'Package[postfix]',
               'subscribe'  => ['File[postfix_main.cf]', 'File[postfix_virtual]', 'File[postfix_transport]'],
@@ -679,9 +679,9 @@ describe 'postfix' do
       end
     end
 
-    ['true', 'false', true, false].each do |value|
+    [true, false].each do |value|
       context "with service_hasstatus set to <#{value}>" do
-        let(:params) { { service_hasstatus: value.to_s } }
+        let(:params) { { service_hasstatus: value } }
 
         it {
           is_expected.to contain_service('postfix_service').with(
@@ -690,7 +690,7 @@ describe 'postfix' do
               'name'       => 'postfix',
               'enable'     => 'true',
               'hasrestart' => 'true',
-              'hasstatus'  => value.to_s,
+              'hasstatus'  => value,
               'require'    => 'Package[postfix]',
               'subscribe'  => ['File[postfix_main.cf]', 'File[postfix_virtual]', 'File[postfix_transport]'],
             },
@@ -767,7 +767,7 @@ describe 'postfix' do
       it { is_expected.to contain_file('postfix_main.cf').with_content(%r{^transport_maps = hash:\/etc\/postfix\/transport$}) }
     end
 
-    [true, false, 'true', 'false'].each do |value|
+    [true, false].each do |value|
       context "where virtual_aliases_external is set to valid #{value} (as #{value.class})" do
         let(:params) do
           {
@@ -777,7 +777,7 @@ describe 'postfix' do
           }
         end
 
-        if value.to_s == 'true'
+        if value == true
           it { is_expected.to contain_file('postfix_main.cf').with_content(%r{^virtual_alias_maps = hash:\/etc\/postfix\/spec_testing$}) }
         else
           it { is_expected.to contain_file('postfix_main.cf').without_content(%r{virtual_alias_maps}) }
@@ -818,9 +818,9 @@ describe 'postfix' do
       },
       'bool_stringified' => {
         name:    ['service_hasrestart', 'service_hasstatus', 'transport_maps_external', 'virtual_aliases_external'],
-        valid:   [true, 'true', false, 'false'],
-        invalid: [nil, 'invalid', 3, 2.42, ['array'], { 'ha' => 'sh' }],
-        message: 'str2bool',
+        valid:   [true, false],
+        invalid: ['true', 'false', nil, 'invalid', 3, 2.42, ['array'], { 'ha' => 'sh' }],
+        message: 'expects a Boolean',
       },
       'domain_name' => {
         name:    ['main_mydomain', 'main_myhostname', 'main_relayhost'],

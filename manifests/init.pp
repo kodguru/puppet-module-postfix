@@ -331,13 +331,13 @@ class postfix (
   $packages                           = 'postfix',
   $service_enable                     = true,
   $service_ensure                     = 'running',
-  $service_hasrestart                 = true,
-  $service_hasstatus                  = true,
+  Boolean $service_hasrestart                                   = true,
+  Boolean $service_hasstatus                                    = true,
   $service_name                       = 'postfix',
   $template_main_cf                   = 'postfix/main.cf.erb',
-  $transport_maps_external            = false,
+  Boolean $transport_maps_external                              = false,
   $transport_maps                     = undef,
-  $virtual_aliases_external           = false,
+  Boolean $virtual_aliases_external                             = false,
   $virtual_aliases                    = undef,
 ) {
 
@@ -392,29 +392,6 @@ class postfix (
   $transport_maps_real             = $transport_maps
   $virtual_aliases_real            = $virtual_aliases
 
-  if is_bool($service_hasrestart) == true {
-    $service_hasrestart_real = $service_hasrestart
-  } else {
-    $service_hasrestart_real = str2bool($service_hasrestart)
-  }
-
-  if is_bool($service_hasstatus) == true {
-    $service_hasstatus_real = $service_hasstatus
-  } else {
-    $service_hasstatus_real = str2bool($service_hasstatus)
-  }
-
-  if is_bool($transport_maps_external) == true {
-    $transport_maps_external_real = $transport_maps_external
-  } else {
-    $transport_maps_external_real = str2bool($transport_maps_external)
-  }
-
-  if is_bool($virtual_aliases_external) == true {
-    $virtual_aliases_external_real = $virtual_aliases_external
-  } else {
-    $virtual_aliases_external_real = str2bool($virtual_aliases_external)
-  }
   # </USE_DEFAULTS ?>
 
   # <validating variables>
@@ -463,16 +440,12 @@ class postfix (
   }
   if !is_bool($service_enable_real) { validate_legacy(Enum['true', 'false', 'manual'], 'validate_re', $service_enable_real, '^(true|false|manual)$') }
   validate_legacy(Enum['running', 'stopped'], 'validate_re', $service_ensure_real, '^(running|stopped)$')
-  validate_bool($service_hasrestart_real)
-  validate_bool($service_hasstatus_real)
   if empty($service_name_real) == true { fail("service_name must contain a valid value and is set to <${service_name_real}>") }
   validate_string($service_name_real)
   if empty($template_main_cf_real) == true { fail("template_main_cf must contain a valid value and is set to <${template_main_cf_real}>") }
   validate_string($template_main_cf_real)
   if $transport_maps_real != undef { validate_hash($transport_maps_real) }
-  validate_bool($transport_maps_external_real)
   if $virtual_aliases_real != undef { validate_hash($virtual_aliases_real) }
-  validate_bool($virtual_aliases_external_real)
   validate_string($main_smtp_tls_mandatory_protocols)
   validate_string($main_smtp_tls_protocols)
   validate_string($main_smtp_tls_security_level)
@@ -496,8 +469,8 @@ class postfix (
     ensure     => $service_ensure_real,
     name       => $service_name_real,
     enable     => $service_enable_real,
-    hasrestart => $service_hasrestart_real,
-    hasstatus  => $service_hasstatus_real,
+    hasrestart => $service_hasrestart,
+    hasstatus  => $service_hasstatus,
     require    => Package[$packages],
     subscribe  => [ File['postfix_main.cf'], File['postfix_virtual'], File['postfix_transport'], ],
   }

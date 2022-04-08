@@ -490,7 +490,7 @@ describe 'postfix' do
         it do
           expect {
             is_expected.to contain_class('postfix')
-          }.to raise_error(Puppet::Error, %r{main_#{Regexp.escape(variable)} must contain a valid value and is set to <>})
+          }.to raise_error(Puppet::Error, %r{(main_#{Regexp.escape(variable)} must contain a valid value and is set to <>|expects a String)})
         end
       end
     end
@@ -723,7 +723,7 @@ describe 'postfix' do
       it do
         expect {
           is_expected.to contain_class('postfix')
-        }.to raise_error(Puppet::Error, %r{template_main_cf must contain a valid value and is set to <>})
+        }.to raise_error(Puppet::Error, %r{expects a String\[1\] value})
       end
     end
 
@@ -841,8 +841,8 @@ describe 'postfix' do
         message: 'must be an integer',
       },
       'not_empty_string' => {
-        name:    ['main_alias_database', 'main_alias_maps', 'main_inet_interfaces', 'main_inet_protocols', 'main_mynetworks',
-                  'main_myorigin', 'main_setgid_group', 'main_transport_maps', 'main_virtual_alias_maps', 'service_name'],
+        name:    ['main_inet_interfaces', 'main_inet_protocols', 'main_mynetworks',
+                  'main_setgid_group'],
         valid:   ['valid'],
         invalid: ['', [], {}],
         message: 'must contain a valid value',
@@ -878,14 +878,26 @@ describe 'postfix' do
         message: 'expects an undef value or a match for Enum',
       },
       'string' => {
-        name:    ['main_alias_database', 'main_alias_maps', 'main_inet_interfaces', 'main_inet_protocols', 'main_mailbox_command',
-                  'main_mydestination', 'main_mynetworks', 'main_myorigin', 'main_relay_domains', 'main_setgid_group',
-                  'main_smtp_tls_mandatory_protocols', 'main_smtp_tls_protocols', 'main_smtp_tls_security_level',
-                  'main_smtpd_tls_mandatory_protocols', 'main_smtpd_tls_protocols', 'main_smtpd_tls_security_level',
-                  'main_transport_maps', 'main_virtual_alias_domains', 'main_virtual_alias_maps', 'service_name'],
+        name:    ['main_inet_interfaces', 'main_inet_protocols', 'main_mailbox_command',
+                  'main_mydestination', 'main_mynetworks', 'main_relay_domains', 'main_setgid_group',
+                  'main_virtual_alias_domains'],
         valid:   ['valid'],
         invalid: [['array'], { 'ha' => 'sh' }],
         message: 'is not a string',
+      },
+      'String' => {
+        name:    ['main_alias_database', 'main_alias_maps', 'main_myorigin', 'main_recipient_delimiter', 'main_transport_maps',
+                  'main_virtual_alias_maps', 'service_name'],
+        valid:   ['valid'],
+        invalid: [['array'], { 'ha' => 'sh' }],
+        message: 'expects a String value',
+      },
+      'Optional[String[1]]' => {
+        name:    ['main_smtpd_tls_mandatory_protocols', 'main_smtpd_tls_protocols', 'main_smtpd_tls_security_level',
+                  'main_smtp_tls_mandatory_protocols', 'main_smtp_tls_protocols', 'main_smtp_tls_security_level'],
+        valid:   ['valid'],
+        invalid: [['array'], { 'ha' => 'sh' }],
+        message: 'expects a value of type Undef or String',
       },
     }
 

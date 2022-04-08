@@ -292,8 +292,8 @@
 #   $main_virtual_alias_maps.
 #
 class postfix (
-  $main_alias_database                = 'hash:/etc/aliases',
-  $main_alias_maps                    = 'hash:/etc/aliases',
+  String[1] $main_alias_database                                = 'hash:/etc/aliases',
+  String[1] $main_alias_maps                                    = 'hash:/etc/aliases',
   Enum['yes', 'no'] $main_append_dot_mydomain                   = 'no',
   Enum['yes', 'no'] $main_biff                                  = 'no',
   $main_command_directory             = '/usr/sbin',
@@ -307,9 +307,9 @@ class postfix (
   $main_mydomain                      = undef,
   $main_myhostname                    = $::fqdn,
   $main_mynetworks                    = '127.0.0.0/8',
-  $main_myorigin                      = '$myhostname',
+  String[1] $main_myorigin                                      = '$myhostname',
   $main_queue_directory               = '/var/spool/postfix',
-  $main_recipient_delimiter           = '+',
+  String[1] $main_recipient_delimiter                           = '+',
   $main_relay_domains                 = undef,
   $main_relayhost                     = "mailhost.${::domain}",
   $main_relayhost_port                = '25',
@@ -319,22 +319,22 @@ class postfix (
   $main_smtpd_recipient_restrictions  = undef,
   $main_smtpd_tls_cert_file           = undef,
   $main_smtpd_tls_key_file            = undef,
-  $main_smtpd_tls_mandatory_protocols = undef,
-  $main_smtpd_tls_protocols           = undef,
-  $main_smtpd_tls_security_level      = undef,
-  $main_smtp_tls_mandatory_protocols  = undef,
-  $main_smtp_tls_protocols            = undef,
-  $main_smtp_tls_security_level       = undef,
-  $main_transport_maps                = 'hash:/etc/postfix/transport',
+  Optional[String[1]] $main_smtpd_tls_mandatory_protocols       = undef,
+  Optional[String[1]] $main_smtpd_tls_protocols                 = undef,
+  Optional[String[1]] $main_smtpd_tls_security_level            = undef,
+  Optional[String[1]] $main_smtp_tls_mandatory_protocols        = undef,
+  Optional[String[1]] $main_smtp_tls_protocols                  = undef,
+  Optional[String[1]] $main_smtp_tls_security_level             = undef,
+  String[1] $main_transport_maps                                = 'hash:/etc/postfix/transport',
   $main_virtual_alias_domains         = undef,
-  $main_virtual_alias_maps            = 'hash:/etc/postfix/virtual',
+  String[1] $main_virtual_alias_maps                            = 'hash:/etc/postfix/virtual',
   $packages                           = 'postfix',
   $service_enable                     = true,
   $service_ensure                     = 'running',
   Boolean $service_hasrestart                                   = true,
   Boolean $service_hasstatus                                    = true,
-  $service_name                       = 'postfix',
-  $template_main_cf                   = 'postfix/main.cf.erb',
+  String[1] $service_name                                       = 'postfix',
+  String[1] $template_main_cf                                   = 'postfix/main.cf.erb',
   Boolean $transport_maps_external                              = false,
   $transport_maps                     = undef,
   Boolean $virtual_aliases_external                             = false,
@@ -371,32 +371,21 @@ class postfix (
 
   # <USE_DEFAULTS ?>
 
-  $main_alias_database_real        = $main_alias_database
-  $main_alias_maps_real            = $main_alias_maps
   $main_inet_interfaces_real       = $main_inet_interfaces
   $main_inet_protocols_real        = $main_inet_protocols
   $main_myhostname_real            = $main_myhostname
   $main_mynetworks_real            = $main_mynetworks
-  $main_myorigin_real              = $main_myorigin
   $main_relayhost_port_real        = $main_relayhost_port
   $main_relayhost_real             = $main_relayhost
-  $main_transport_maps_real        = $main_transport_maps
   $main_virtual_alias_domains_real = $main_virtual_alias_domains
-  $main_virtual_alias_maps_real    = $main_virtual_alias_maps
   $service_enable_real             = $service_enable
   $service_ensure_real             = $service_ensure
-  $service_name_real               = $service_name
-  $template_main_cf_real           = $template_main_cf
   $transport_maps_real             = $transport_maps
   $virtual_aliases_real            = $virtual_aliases
 
   # </USE_DEFAULTS ?>
 
   # <validating variables>
-  if empty($main_alias_database_real) == true { fail("main_alias_database must contain a valid value and is set to <${main_alias_database_real}>") }
-  validate_string($main_alias_database_real)
-  if empty($main_alias_maps_real) == true { fail("main_alias_maps must contain a valid value and is set to <${main_alias_maps_real}>") }
-  validate_string($main_alias_maps_real)
   validate_legacy(Enum['yes', 'no'], 'validate_re', $main_append_dot_mydomain, '^(yes|no)$')
   validate_legacy(Enum['yes', 'no'], 'validate_re', $main_biff, '^(yes|no)$')
   validate_absolute_path($main_command_directory)
@@ -414,19 +403,12 @@ class postfix (
   if is_domain_name($main_myhostname_real) == false { fail("main_myhostname must be a domain name and is set to <${main_myhostname_real}>") }
   if empty($main_mynetworks_real) == true { fail("main_mynetworks must contain a valid value and is set to <${main_mynetworks_real}>") }
   validate_string($main_mynetworks_real)
-  if empty($main_myorigin_real) == true { fail("main_myorigin must contain a valid value and is set to <${main_myorigin_real}>") }
-  validate_string($main_myorigin_real)
   validate_absolute_path($main_queue_directory)
-  # main_recipient_delimiter can not be checkek, it can contain nothing to everything
   if $main_relay_domains { validate_string($main_relay_domains) }
   if is_domain_name($main_relayhost_real) == false { fail("main_relayhost must be a domain name and is set to <${$main_relayhost_real}>") }
   if is_integer($main_relayhost_port_real) == false { fail("main_relayhost_port must be an integer and is set to <${$main_relayhost_port_real}>") }
   if empty($main_setgid_group) == true { fail("main_setgid_group must contain a valid value and is set to <${main_setgid_group}>") }
   validate_string($main_setgid_group)
-  if empty($main_transport_maps_real) == true { fail("main_transport_maps must contain a valid value and is set to <${main_transport_maps_real}>") }
-  validate_string($main_transport_maps_real)
-  if empty($main_virtual_alias_maps_real) == true { fail("main_virtual_alias_maps must contain a valid value and is set to <${main_virtual_alias_maps_real}>") }
-  validate_string($main_virtual_alias_maps_real)
   if $main_virtual_alias_domains_real { validate_string($main_virtual_alias_domains_real) }
   case type3x($packages) {
     'string','array': {
@@ -438,18 +420,8 @@ class postfix (
   }
   if !is_bool($service_enable_real) { validate_legacy(Enum['true', 'false', 'manual'], 'validate_re', $service_enable_real, '^(true|false|manual)$') }
   validate_legacy(Enum['running', 'stopped'], 'validate_re', $service_ensure_real, '^(running|stopped)$')
-  if empty($service_name_real) == true { fail("service_name must contain a valid value and is set to <${service_name_real}>") }
-  validate_string($service_name_real)
-  if empty($template_main_cf_real) == true { fail("template_main_cf must contain a valid value and is set to <${template_main_cf_real}>") }
-  validate_string($template_main_cf_real)
   if $transport_maps_real != undef { validate_hash($transport_maps_real) }
   if $virtual_aliases_real != undef { validate_hash($virtual_aliases_real) }
-  validate_string($main_smtp_tls_mandatory_protocols)
-  validate_string($main_smtp_tls_protocols)
-  validate_string($main_smtp_tls_security_level)
-  validate_string($main_smtpd_tls_mandatory_protocols)
-  validate_string($main_smtpd_tls_protocols)
-  validate_string($main_smtpd_tls_security_level)
   if $main_smtpd_tls_key_file != undef { validate_absolute_path($main_smtpd_tls_key_file) }
   if $main_smtpd_tls_cert_file != undef { validate_absolute_path($main_smtpd_tls_cert_file) }
   if $main_smtpd_helo_restrictions != undef { validate_array($main_smtpd_helo_restrictions) }
@@ -464,7 +436,7 @@ class postfix (
 
   service { 'postfix_service' :
     ensure     => $service_ensure_real,
-    name       => $service_name_real,
+    name       => $service_name,
     enable     => $service_enable_real,
     hasrestart => $service_hasrestart,
     hasstatus  => $service_hasstatus,
@@ -478,7 +450,7 @@ class postfix (
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
-    content => template($template_main_cf_real),
+    content => template($template_main_cf),
     require => Package[$packages],
   }
 
@@ -493,7 +465,7 @@ class postfix (
       require => Package[$packages],
     }
     exec { 'postfix_rebuild_virtual':
-      command     => "${main_command_directory}/postmap ${main_virtual_alias_maps_real}",
+      command     => "${main_command_directory}/postmap ${main_virtual_alias_maps}",
       refreshonly => true,
       subscribe   => File['postfix_virtual'],
     }

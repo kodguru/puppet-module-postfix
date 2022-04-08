@@ -314,7 +314,7 @@ class postfix (
   $main_relayhost                     = "mailhost.${::domain}",
   $main_relayhost_port                = '25',
   $main_setgid_group                  = undef,
-  $main_smtpd_helo_required           = undef,
+  Optional[Enum['yes', 'no']] $main_smtpd_helo_required         = undef,
   $main_smtpd_helo_restrictions       = undef,
   $main_smtpd_recipient_restrictions  = undef,
   $main_smtpd_tls_cert_file           = undef,
@@ -452,7 +452,6 @@ class postfix (
   validate_string($main_smtpd_tls_security_level)
   if $main_smtpd_tls_key_file != undef { validate_absolute_path($main_smtpd_tls_key_file) }
   if $main_smtpd_tls_cert_file != undef { validate_absolute_path($main_smtpd_tls_cert_file) }
-  if $main_smtpd_helo_required != undef { validate_legacy(Enum['yes', 'no'], 'validate_re', $main_smtpd_helo_required, '^(yes|no)$') }
   if $main_smtpd_helo_restrictions != undef { validate_array($main_smtpd_helo_restrictions) }
   if $main_smtpd_recipient_restrictions != undef { validate_array($main_smtpd_recipient_restrictions) }
   # </validating variables>

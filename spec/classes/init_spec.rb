@@ -866,10 +866,16 @@ describe 'postfix' do
         message: 'validate_legacy',
       },
       'Enum[yes, no]' => {
-        name:    ['main_append_dot_mydomain', 'main_biff', 'main_smtpd_helo_required'],
+        name:    ['main_append_dot_mydomain', 'main_biff'],
         valid:   ['yes', 'no'],
         invalid: [true, false, 'invalid', 3, 2.42, ['array'], { 'ha' => 'sh' }],
         message: 'expects a match for Enum',
+      },
+      'Optional[Enum[yes, no]]' => {
+        name:    ['main_smtpd_helo_required'],
+        valid:   ['yes', 'no'],
+        invalid: [true, false, 'invalid', 3, 2.42, ['array'], { 'ha' => 'sh' }],
+        message: 'expects an undef value or a match for Enum',
       },
       'string' => {
         name:    ['main_alias_database', 'main_alias_maps', 'main_inet_interfaces', 'main_inet_protocols', 'main_mailbox_command',

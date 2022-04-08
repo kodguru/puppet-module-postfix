@@ -255,13 +255,13 @@
 #
 # @param service_hasrestart
 #  Specify that an init script has a restart command. If this is false and you do
-#  not specify a command in the restart attribute, the init script’s stop and
+#  not specify a command in the restart attribute, the init scripts stop and
 #  start commands will be used. Defaults to false. Valid values are 'true' or
 #  'false'.
 #
 # @param service_hasstatus
-#   Declare whether the service’s init script has a functional status command;
-#   defaults to true. This attribute’s default value changed in Puppet 2.7.0.
+#   Declare whether the services init script has a functional status command;
+#   defaults to true. This attributes default value changed in Puppet 2.7.0.
 #   Valid values are 'true' or 'false'.
 #
 # @param service_name

@@ -803,13 +803,6 @@ describe 'postfix' do
     end
 
     validations = {
-      'absolute_path' => {
-        name:    ['main_command_directory', 'main_daemon_directory', 'main_data_directory', 'main_queue_directory',
-                  'main_smtpd_tls_cert_file', 'main_smtpd_tls_key_file'],
-        valid:   ['/absolute/filepath', '/absolute/directory/'],
-        invalid: ['invalid', 3, 2.42, ['array'], { 'ha' => 'sh' }],
-        message: 'is not an absolute path',
-      },
       'array' => {
         name:    ['main_smtpd_helo_restrictions', 'main_smtpd_recipient_restrictions'],
         valid:   [['array'], ['array', 'array']],
@@ -884,6 +877,12 @@ describe 'postfix' do
         valid:   ['valid'],
         invalid: [['array'], { 'ha' => 'sh' }],
         message: 'is not a string',
+      },
+      'Stdlib::Absolutepath & Optional[Stdlib::Absolutepath]' => {
+        name:    ['main_command_directory', 'main_daemon_directory', 'main_data_directory', 'main_queue_directory', 'main_smtpd_tls_cert_file', 'main_smtpd_tls_key_file'],
+        valid:   ['/absolute/filepath', '/absolute/directory/'], # cant test undef :(
+        invalid: ['relative/path', 3, 2.42, ['array'], { 'ha' => 'sh' }],
+        message: 'expects a Stdlib::Absolutepath',
       },
       'String' => {
         name:    ['main_alias_database', 'main_alias_maps', 'main_myorigin', 'main_recipient_delimiter', 'main_transport_maps',

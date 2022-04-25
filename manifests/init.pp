@@ -296,9 +296,9 @@ class postfix (
   String[1] $main_alias_maps                                    = 'hash:/etc/aliases',
   Enum['yes', 'no'] $main_append_dot_mydomain                   = 'no',
   Enum['yes', 'no'] $main_biff                                  = 'no',
-  $main_command_directory             = '/usr/sbin',
-  $main_daemon_directory              = undef,
-  $main_data_directory                = '/var/lib/postfix',
+  Stdlib::Absolutepath $main_command_directory                  = '/usr/sbin',
+  Optional[Stdlib::Absolutepath] $main_daemon_directory         = undef,
+  Stdlib::Absolutepath $main_data_directory                     = '/var/lib/postfix',
   $main_inet_interfaces               = '127.0.0.1',
   $main_inet_protocols                = 'ipv4',
   $main_mailbox_command               = undef,
@@ -308,7 +308,7 @@ class postfix (
   $main_myhostname                    = $::fqdn,
   $main_mynetworks                    = '127.0.0.0/8',
   String[1] $main_myorigin                                      = '$myhostname',
-  $main_queue_directory               = '/var/spool/postfix',
+  Stdlib::Absolutepath $main_queue_directory                    = '/var/spool/postfix',
   String[1] $main_recipient_delimiter                           = '+',
   $main_relay_domains                 = undef,
   $main_relayhost                     = "mailhost.${::domain}",
@@ -317,8 +317,8 @@ class postfix (
   Optional[Enum['yes', 'no']] $main_smtpd_helo_required         = undef,
   $main_smtpd_helo_restrictions       = undef,
   $main_smtpd_recipient_restrictions  = undef,
-  $main_smtpd_tls_cert_file           = undef,
-  $main_smtpd_tls_key_file            = undef,
+  Optional[Stdlib::Absolutepath] $main_smtpd_tls_cert_file      = undef,
+  Optional[Stdlib::Absolutepath] $main_smtpd_tls_key_file       = undef,
   Optional[String[1]] $main_smtpd_tls_mandatory_protocols       = undef,
   Optional[String[1]] $main_smtpd_tls_protocols                 = undef,
   Optional[String[1]] $main_smtpd_tls_security_level            = undef,
@@ -388,9 +388,6 @@ class postfix (
   # <validating variables>
   validate_legacy(Enum['yes', 'no'], 'validate_re', $main_append_dot_mydomain, '^(yes|no)$')
   validate_legacy(Enum['yes', 'no'], 'validate_re', $main_biff, '^(yes|no)$')
-  validate_absolute_path($main_command_directory)
-  validate_absolute_path($main_daemon_directory)
-  validate_absolute_path($main_data_directory)
   if empty($main_inet_interfaces_real) == true { fail("main_inet_interfaces must contain a valid value and is set to <${main_inet_interfaces_real}>") }
   validate_string($main_inet_interfaces_real)
   if empty($main_inet_protocols_real) == true { fail("main_inet_protocols must contain a valid value and is set to <${main_inet_protocols_real}>") }
@@ -403,7 +400,6 @@ class postfix (
   if is_domain_name($main_myhostname_real) == false { fail("main_myhostname must be a domain name and is set to <${main_myhostname_real}>") }
   if empty($main_mynetworks_real) == true { fail("main_mynetworks must contain a valid value and is set to <${main_mynetworks_real}>") }
   validate_string($main_mynetworks_real)
-  validate_absolute_path($main_queue_directory)
   if $main_relay_domains { validate_string($main_relay_domains) }
   if is_domain_name($main_relayhost_real) == false { fail("main_relayhost must be a domain name and is set to <${$main_relayhost_real}>") }
   if is_integer($main_relayhost_port_real) == false { fail("main_relayhost_port must be an integer and is set to <${$main_relayhost_port_real}>") }
@@ -422,8 +418,6 @@ class postfix (
   validate_legacy(Enum['running', 'stopped'], 'validate_re', $service_ensure_real, '^(running|stopped)$')
   if $transport_maps_real != undef { validate_hash($transport_maps_real) }
   if $virtual_aliases_real != undef { validate_hash($virtual_aliases_real) }
-  if $main_smtpd_tls_key_file != undef { validate_absolute_path($main_smtpd_tls_key_file) }
-  if $main_smtpd_tls_cert_file != undef { validate_absolute_path($main_smtpd_tls_cert_file) }
   if $main_smtpd_helo_restrictions != undef { validate_array($main_smtpd_helo_restrictions) }
   if $main_smtpd_recipient_restrictions != undef { validate_array($main_smtpd_recipient_restrictions) }
   # </validating variables>

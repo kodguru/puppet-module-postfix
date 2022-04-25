@@ -490,7 +490,7 @@ describe 'postfix' do
         it do
           expect {
             is_expected.to contain_class('postfix')
-          }.to raise_error(Puppet::Error, %r{(main_#{Regexp.escape(variable)} must contain a valid value and is set to <>|expects a String)})
+          }.to raise_error(Puppet::Error, %r{(main_#{Regexp.escape(variable)} must contain a valid value and is set to <>|expects a String|expects)})
         end
       end
     end
@@ -815,12 +815,6 @@ describe 'postfix' do
         invalid: ['true', 'false', nil, 'invalid', 3, 2.42, ['array'], { 'ha' => 'sh' }],
         message: 'expects a Boolean',
       },
-      'domain_name' => {
-        name:    ['main_mydomain', 'main_myhostname', 'main_relayhost'],
-        valid:   ['v.al.id', 'val.id'],
-        invalid: ['in,val.id', 'in_val.id', 2.42, ['array'], { 'ha' => 'sh' }],
-        message: 'must be a domain name and is set to',
-      },
       'hash' => {
         name:    ['transport_maps', 'virtual_aliases'],
         valid:   [{ 'ha' => 'sh' }, { 'test1@test.void' => 'destination1', 'test2@test.void' => ['destination2', 'destination3'] }],
@@ -834,8 +828,7 @@ describe 'postfix' do
         message: 'must be an integer',
       },
       'not_empty_string' => {
-        name:    ['main_inet_interfaces', 'main_inet_protocols', 'main_mynetworks',
-                  'main_setgid_group'],
+        name:    ['main_inet_protocols', 'main_setgid_group'],
         valid:   ['valid'],
         invalid: ['', [], {}],
         message: 'must contain a valid value',
@@ -871,9 +864,7 @@ describe 'postfix' do
         message: 'expects an undef value or a match for Enum',
       },
       'string' => {
-        name:    ['main_inet_interfaces', 'main_inet_protocols', 'main_mailbox_command',
-                  'main_mydestination', 'main_mynetworks', 'main_relay_domains', 'main_setgid_group',
-                  'main_virtual_alias_domains'],
+        name:    ['main_inet_protocols', 'main_mailbox_command', 'main_relay_domains', 'main_setgid_group', 'main_virtual_alias_domains'],
         valid:   ['valid'],
         invalid: [['array'], { 'ha' => 'sh' }],
         message: 'is not a string',
@@ -883,6 +874,12 @@ describe 'postfix' do
         valid:   ['/absolute/filepath', '/absolute/directory/'], # cant test undef :(
         invalid: ['relative/path', 3, 2.42, ['array'], { 'ha' => 'sh' }],
         message: 'expects a Stdlib::Absolutepath',
+      },
+      'Stdlib::Host & Optional[Stdlib::Host]' => {
+        name:    ['main_inet_interfaces', 'main_mydestination', 'main_mydomain', 'main_myhostname', 'main_mynetworks', 'main_relayhost'],
+        valid:   ['127.0.0.1', 'localhost', 'v.al.id', 'val.id'],
+        invalid: ['in valid', 3, 2.42, ['array'], { 'ha' => 'sh' }],
+        message: 'expects a Stdlib::Host',
       },
       'String' => {
         name:    ['main_alias_database', 'main_alias_maps', 'main_myorigin', 'main_recipient_delimiter', 'main_transport_maps',

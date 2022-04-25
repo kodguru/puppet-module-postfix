@@ -21,7 +21,7 @@ daemon_directory = <%= @main_daemon_directory %>
 data_directory = <%= @main_data_directory %>
 
 # inet_interfaces = all
-inet_interfaces = <%= @main_inet_interfaces_real %>
+inet_interfaces = <%= @main_inet_interfaces %>
 
 # inet_protocols = ipv4 (RHEL & Suse)
 # inet_protocols = all (Debian & Ubuntu)
@@ -87,11 +87,11 @@ mydomain = <%= @main_mydomain %>
 
 # myhostname = <%= @hostname %>.localdomain (Debian, Suse & Ubuntu)
 # myhostname = <%= @fqdn %> (RHEL)
-myhostname = <%= @main_myhostname_real %>
+myhostname = <%= @main_myhostname %>
 
 # mynetworks = 127.0.0.0/8 <%= @network_eth0 %>/<%= @netmask_eth0 %> (RHEL & Suse)
 # mynetworks = 127.0.0.0/8 <%= @network_eth0 %>/<%= @netmask_eth0 %> [::1]/128 [fe80::]/64 (Debian & Ubuntu)
-mynetworks = <%= @main_mynetworks_real %>
+mynetworks = <%= @main_mynetworks %>
 
 # myorigin = $myhostname
 myorigin = <%= @main_myorigin %>
@@ -107,7 +107,7 @@ relay_domains = <%= @main_relay_domains %>
 <% end -%>
 
 # relayhost =
-relayhost = <%= @main_relayhost_real %>:<%= @main_relayhost_port_real %>
+relayhost = <%= @main_relayhost %>:<%= @main_relayhost_port_real %>
 
 # setgid_group = postdrop
 setgid_group = <%= @main_setgid_group %>

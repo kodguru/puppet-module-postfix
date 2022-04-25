@@ -299,19 +299,19 @@ class postfix (
   Stdlib::Absolutepath $main_command_directory                  = '/usr/sbin',
   Optional[Stdlib::Absolutepath] $main_daemon_directory         = undef,
   Stdlib::Absolutepath $main_data_directory                     = '/var/lib/postfix',
-  $main_inet_interfaces               = '127.0.0.1',
+  Stdlib::Host $main_inet_interfaces                            = '127.0.0.1',
   $main_inet_protocols                = 'ipv4',
   $main_mailbox_command               = undef,
   $main_mailbox_size_limit            = '0',
-  $main_mydestination                 = 'localhost',
-  $main_mydomain                      = undef,
-  $main_myhostname                    = $::fqdn,
-  $main_mynetworks                    = '127.0.0.0/8',
+  Stdlib::Host $main_mydestination                              = 'localhost',
+  Optional[Stdlib::Host] $main_mydomain                         = undef,
+  Stdlib::Host $main_myhostname                                 = $::fqdn,
+  Stdlib::Host $main_mynetworks                                 = '127.0.0.0/8',
   String[1] $main_myorigin                                      = '$myhostname',
   Stdlib::Absolutepath $main_queue_directory                    = '/var/spool/postfix',
   String[1] $main_recipient_delimiter                           = '+',
   $main_relay_domains                 = undef,
-  $main_relayhost                     = "mailhost.${::domain}",
+  Stdlib::Host $main_relayhost                                  = "mailhost.${::domain}",
   $main_relayhost_port                = '25',
   $main_setgid_group                  = undef,
   Optional[Enum['yes', 'no']] $main_smtpd_helo_required         = undef,
@@ -371,12 +371,8 @@ class postfix (
 
   # <USE_DEFAULTS ?>
 
-  $main_inet_interfaces_real       = $main_inet_interfaces
   $main_inet_protocols_real        = $main_inet_protocols
-  $main_myhostname_real            = $main_myhostname
-  $main_mynetworks_real            = $main_mynetworks
   $main_relayhost_port_real        = $main_relayhost_port
-  $main_relayhost_real             = $main_relayhost
   $main_virtual_alias_domains_real = $main_virtual_alias_domains
   $service_enable_real             = $service_enable
   $service_ensure_real             = $service_ensure
@@ -388,20 +384,12 @@ class postfix (
   # <validating variables>
   validate_legacy(Enum['yes', 'no'], 'validate_re', $main_append_dot_mydomain, '^(yes|no)$')
   validate_legacy(Enum['yes', 'no'], 'validate_re', $main_biff, '^(yes|no)$')
-  if empty($main_inet_interfaces_real) == true { fail("main_inet_interfaces must contain a valid value and is set to <${main_inet_interfaces_real}>") }
-  validate_string($main_inet_interfaces_real)
   if empty($main_inet_protocols_real) == true { fail("main_inet_protocols must contain a valid value and is set to <${main_inet_protocols_real}>") }
   validate_string($main_inet_protocols_real)
   if $main_mailbox_command { validate_string($main_mailbox_command) }
   if is_integer($main_mailbox_size_limit) == false { fail("main_mailbox_size_limit must be an integer and is set to <${main_mailbox_size_limit}>") }
   if $main_mailbox_size_limit + 0 < 0 { fail("main_mailbox_size_limit needs a minimum value of 0 and is set to <${main_mailbox_size_limit}>") }
-  validate_string($main_mydestination)
-  if $main_mydomain != undef and is_domain_name($main_mydomain) == false { fail("main_mydomain must be a domain name and is set to <${main_mydomain}>") }
-  if is_domain_name($main_myhostname_real) == false { fail("main_myhostname must be a domain name and is set to <${main_myhostname_real}>") }
-  if empty($main_mynetworks_real) == true { fail("main_mynetworks must contain a valid value and is set to <${main_mynetworks_real}>") }
-  validate_string($main_mynetworks_real)
   if $main_relay_domains { validate_string($main_relay_domains) }
-  if is_domain_name($main_relayhost_real) == false { fail("main_relayhost must be a domain name and is set to <${$main_relayhost_real}>") }
   if is_integer($main_relayhost_port_real) == false { fail("main_relayhost_port must be an integer and is set to <${$main_relayhost_port_real}>") }
   if empty($main_setgid_group) == true { fail("main_setgid_group must contain a valid value and is set to <${main_setgid_group}>") }
   validate_string($main_setgid_group)

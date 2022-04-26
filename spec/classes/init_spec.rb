@@ -875,15 +875,9 @@ describe 'postfix' do
         invalid: ['in valid', 3, 2.42, ['array'], { 'ha' => 'sh' }],
         message: 'expects a Stdlib::Host',
       },
-      'String' => {
-        name:    ['main_alias_database', 'main_alias_maps', 'main_myorigin', 'main_recipient_delimiter', 'main_transport_maps',
-                  'main_virtual_alias_maps', 'service_name'],
-        valid:   ['valid'],
-        invalid: [['array'], { 'ha' => 'sh' }],
-        message: 'expects a String value',
-      },
       'String[1]' => {
-        name:    ['main_inet_protocols', 'main_setgid_group'],
+        name:    ['main_alias_database', 'main_alias_maps', 'main_inet_protocols', 'main_myorigin', 'main_recipient_delimiter', 'main_setgid_group', 'main_transport_maps',
+                  'main_virtual_alias_maps', 'service_name'],
         valid:   ['valid'],
         invalid: ['', 3, 2.42, ['array'], { 'ha' => 'sh' }],
         message: '(expects a String value|expects a String\[1\] value)',

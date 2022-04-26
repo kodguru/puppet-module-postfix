@@ -803,12 +803,6 @@ describe 'postfix' do
     end
 
     validations = {
-      'array' => {
-        name:    ['main_smtpd_helo_restrictions', 'main_smtpd_recipient_restrictions'],
-        valid:   [['array'], ['array', 'array']],
-        invalid: ['invalid', 3, 2.42, { 'ha' => 'sh' }, true, false],
-        message: 'is not an Array',
-      },
       'bool_stringified' => {
         name:    ['service_hasrestart', 'service_hasstatus', 'transport_maps_external', 'virtual_aliases_external'],
         valid:   [true, false],
@@ -850,6 +844,12 @@ describe 'postfix' do
         valid:   ['yes', 'no'],
         invalid: [true, false, 'invalid', 3, 2.42, ['array'], { 'ha' => 'sh' }],
         message: 'expects a match for Enum',
+      },
+      'Optional[Array[String[1]]]' => {
+        name:    ['main_smtpd_helo_restrictions', 'main_smtpd_recipient_restrictions'],
+        valid:   [['array'], ['array', 'array']],
+        invalid: ['invalid', [1], [[1]], [{ 'ha' => 'sh' }], 3, 2.42, { 'ha' => 'sh' }, true, false],
+        message: '(expects a value of type Undef or Array|index \d+ expects a String value)',
       },
       'Optional[Enum[yes, no]]' => {
         name:    ['main_smtpd_helo_required'],

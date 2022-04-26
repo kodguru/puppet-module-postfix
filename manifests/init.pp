@@ -315,8 +315,8 @@ class postfix (
   Integer[0] $main_relayhost_port                               = 25,
   String[1] $main_setgid_group                                  = undef,
   Optional[Enum['yes', 'no']] $main_smtpd_helo_required         = undef,
-  $main_smtpd_helo_restrictions       = undef,
-  $main_smtpd_recipient_restrictions  = undef,
+  Optional[Array[String[1]]] $main_smtpd_helo_restrictions      = undef,
+  Optional[Array[String[1]]] $main_smtpd_recipient_restrictions = undef,
   Optional[Stdlib::Absolutepath] $main_smtpd_tls_cert_file      = undef,
   Optional[Stdlib::Absolutepath] $main_smtpd_tls_key_file       = undef,
   Optional[String[1]] $main_smtpd_tls_mandatory_protocols       = undef,
@@ -395,8 +395,6 @@ class postfix (
   validate_legacy(Enum['running', 'stopped'], 'validate_re', $service_ensure_real, '^(running|stopped)$')
   if $transport_maps_real != undef { validate_hash($transport_maps_real) }
   if $virtual_aliases_real != undef { validate_hash($virtual_aliases_real) }
-  if $main_smtpd_helo_restrictions != undef { validate_array($main_smtpd_helo_restrictions) }
-  if $main_smtpd_recipient_restrictions != undef { validate_array($main_smtpd_recipient_restrictions) }
   # </validating variables>
 
   # <Install & Config>

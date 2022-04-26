@@ -528,7 +528,7 @@ describe 'postfix' do
       it do
         expect {
           is_expected.to contain_class('postfix')
-        }.to raise_error(Puppet::Error, %r{main_mailbox_size_limit needs a minimum value of 0 and is set to <-1>})
+        }.to raise_error(Puppet::Error, %r{expects an Integer\[0\] value})
       end
     end
 
@@ -541,7 +541,7 @@ describe 'postfix' do
     context 'with main_relayhost_port set to <587>' do
       let(:params) do
         {
-          'main_relayhost_port' => '587',
+          'main_relayhost_port' => 587,
           # workaround to avoid needing to set the domain fact
           'main_relayhost' => 'relayhost.valid.test',
         }
@@ -821,11 +821,11 @@ describe 'postfix' do
         invalid: [true, false, 'invalid', 3, 2.42, ['array']],
         message: 'is not a Hash',
       },
-      'integer' => {
+      'Integer[0]' => {
         name:    ['main_mailbox_size_limit', 'main_relayhost_port'],
-        valid:   ['242'],
-        invalid: ['invalid', 2.42, ['array'], { 'ha' => 'sh' }],
-        message: 'must be an integer',
+        valid:   [0, 242, 51_200_000 ],
+        invalid: [-1, 2.42, 'string', ['array'], { 'ha' => 'sh' }],
+        message: '(expects an Integer value|expects an Integer\[0\] value)',
       },
       'not_empty_string/array' => {
         name:    ['packages'],

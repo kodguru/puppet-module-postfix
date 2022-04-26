@@ -76,7 +76,7 @@ mailbox_command = <%= @main_mailbox_command %>
 <% end -%>
 
 # mailbox_size_limit = 51200000
-mailbox_size_limit = <%= @main_mailbox_size_limit %>
+mailbox_size_limit = <%= @main_mailbox_size_limit.to_s %>
 
 # mydestination = $myhostname, localhost.$mydomain, localhost
 mydestination = <%= @main_mydestination %>
@@ -107,7 +107,7 @@ relay_domains = <%= @main_relay_domains %>
 <% end -%>
 
 # relayhost =
-relayhost = <%= @main_relayhost %>:<%= @main_relayhost_port_real %>
+relayhost = <%= @main_relayhost %>:<%= @main_relayhost_port.to_s %>
 
 # setgid_group = postdrop
 setgid_group = <%= @main_setgid_group %>

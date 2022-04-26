@@ -302,7 +302,7 @@ class postfix (
   Stdlib::Host $main_inet_interfaces                            = '127.0.0.1',
   String[1] $main_inet_protocols                                = 'ipv4',
   Optional[String[1]] $main_mailbox_command                     = undef,
-  $main_mailbox_size_limit            = '0',
+  Integer[0] $main_mailbox_size_limit                           = 0,
   Stdlib::Host $main_mydestination                              = 'localhost',
   Optional[Stdlib::Host] $main_mydomain                         = undef,
   Stdlib::Host $main_myhostname                                 = $::fqdn,
@@ -312,7 +312,7 @@ class postfix (
   String[1] $main_recipient_delimiter                           = '+',
   Optional[String[1]] $main_relay_domains                       = undef,
   Stdlib::Host $main_relayhost                                  = "mailhost.${::domain}",
-  $main_relayhost_port                = '25',
+  Integer[0] $main_relayhost_port                               = 25,
   String[1] $main_setgid_group                                  = undef,
   Optional[Enum['yes', 'no']] $main_smtpd_helo_required         = undef,
   $main_smtpd_helo_restrictions       = undef,
@@ -371,7 +371,6 @@ class postfix (
 
   # <USE_DEFAULTS ?>
 
-  $main_relayhost_port_real        = $main_relayhost_port
   $service_enable_real             = $service_enable
   $service_ensure_real             = $service_ensure
   $transport_maps_real             = $transport_maps
@@ -383,10 +382,7 @@ class postfix (
   validate_legacy(Enum['yes', 'no'], 'validate_re', $main_append_dot_mydomain, '^(yes|no)$')
   validate_legacy(Enum['yes', 'no'], 'validate_re', $main_biff, '^(yes|no)$')
   if $main_mailbox_command { validate_string($main_mailbox_command) }
-  if is_integer($main_mailbox_size_limit) == false { fail("main_mailbox_size_limit must be an integer and is set to <${main_mailbox_size_limit}>") }
-  if $main_mailbox_size_limit + 0 < 0 { fail("main_mailbox_size_limit needs a minimum value of 0 and is set to <${main_mailbox_size_limit}>") }
   if $main_relay_domains { validate_string($main_relay_domains) }
-  if is_integer($main_relayhost_port_real) == false { fail("main_relayhost_port must be an integer and is set to <${$main_relayhost_port_real}>") }
   case type3x($packages) {
     'string','array': {
       if empty($packages) == true { fail("packages must contain a valid value and is set to <${packages}>") }

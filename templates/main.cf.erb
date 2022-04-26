@@ -111,9 +111,9 @@ relayhost = <%= @main_relayhost %>:<%= @main_relayhost_port_real %>
 
 # setgid_group = postdrop
 setgid_group = <%= @main_setgid_group %>
-<% if @main_virtual_alias_domains_real -%>
+<% if @main_virtual_alias_domains -%>
 
-virtual_alias_domains = <%= @main_virtual_alias_domains_real %>
+virtual_alias_domains = <%= @main_virtual_alias_domains %>
 <% end -%>
 <% if @main_virtual_alias_maps and (@virtual_aliases_real or @virtual_aliases_external) -%>
 

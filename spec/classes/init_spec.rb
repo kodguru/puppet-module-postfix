@@ -857,12 +857,6 @@ describe 'postfix' do
         invalid: [true, false, 'invalid', 3, 2.42, ['array'], { 'ha' => 'sh' }],
         message: 'expects an undef value or a match for Enum',
       },
-      'string' => {
-        name:    ['main_mailbox_command', 'main_relay_domains', 'main_virtual_alias_domains'],
-        valid:   ['valid'],
-        invalid: [['array'], { 'ha' => 'sh' }],
-        message: 'is not a string',
-      },
       'Stdlib::Absolutepath & Optional[Stdlib::Absolutepath]' => {
         name:    ['main_command_directory', 'main_daemon_directory', 'main_data_directory', 'main_queue_directory', 'main_smtpd_tls_cert_file', 'main_smtpd_tls_key_file'],
         valid:   ['/absolute/filepath', '/absolute/directory/'], # cant test undef :(
@@ -883,8 +877,8 @@ describe 'postfix' do
         message: '(expects a String value|expects a String\[1\] value)',
       },
       'Optional[String[1]]' => {
-        name:    ['main_smtpd_tls_mandatory_protocols', 'main_smtpd_tls_protocols', 'main_smtpd_tls_security_level',
-                  'main_smtp_tls_mandatory_protocols', 'main_smtp_tls_protocols', 'main_smtp_tls_security_level'],
+        name:    ['main_mailbox_command', 'main_relay_domains', 'main_smtpd_tls_mandatory_protocols', 'main_smtpd_tls_protocols', 'main_smtpd_tls_security_level',
+                  'main_smtp_tls_mandatory_protocols', 'main_smtp_tls_protocols', 'main_smtp_tls_security_level', 'main_virtual_alias_domains'],
         valid:   ['valid'],
         invalid: [['array'], { 'ha' => 'sh' }],
         message: 'expects a value of type Undef or String',

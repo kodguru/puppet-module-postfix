@@ -427,7 +427,7 @@ describe 'postfix' do
     it do
       expect {
         is_expected.to contain_class('postfix')
-      }.to raise_error(Puppet::Error, %r{Sorry, I don\'t know default values for UnknownOS yet :\( Please provide specific values to the postfix module\.})
+      }.to raise_error(Puppet::Error, %r{(Sorry, I don\'t know default values for UnknownOS yet :\( Please provide specific values to the postfix module\.|expects a String value)})
     end
   end
 
@@ -827,12 +827,6 @@ describe 'postfix' do
         invalid: ['invalid', 2.42, ['array'], { 'ha' => 'sh' }],
         message: 'must be an integer',
       },
-      'not_empty_string' => {
-        name:    ['main_inet_protocols', 'main_setgid_group'],
-        valid:   ['valid'],
-        invalid: ['', [], {}],
-        message: 'must contain a valid value',
-      },
       'not_empty_string/array' => {
         name:    ['packages'],
         valid:   ['valid', ['array']],
@@ -864,7 +858,7 @@ describe 'postfix' do
         message: 'expects an undef value or a match for Enum',
       },
       'string' => {
-        name:    ['main_inet_protocols', 'main_mailbox_command', 'main_relay_domains', 'main_setgid_group', 'main_virtual_alias_domains'],
+        name:    ['main_mailbox_command', 'main_relay_domains', 'main_virtual_alias_domains'],
         valid:   ['valid'],
         invalid: [['array'], { 'ha' => 'sh' }],
         message: 'is not a string',
@@ -887,6 +881,12 @@ describe 'postfix' do
         valid:   ['valid'],
         invalid: [['array'], { 'ha' => 'sh' }],
         message: 'expects a String value',
+      },
+      'String[1]' => {
+        name:    ['main_inet_protocols', 'main_setgid_group'],
+        valid:   ['valid'],
+        invalid: ['', 3, 2.42, ['array'], { 'ha' => 'sh' }],
+        message: '(expects a String value|expects a String\[1\] value)',
       },
       'Optional[String[1]]' => {
         name:    ['main_smtpd_tls_mandatory_protocols', 'main_smtpd_tls_protocols', 'main_smtpd_tls_security_level',

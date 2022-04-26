@@ -25,7 +25,7 @@ inet_interfaces = <%= @main_inet_interfaces %>
 
 # inet_protocols = ipv4 (RHEL & Suse)
 # inet_protocols = all (Debian & Ubuntu)
-inet_protocols = <%= @main_inet_protocols_real %>
+inet_protocols = <%= @main_inet_protocols %>
 <% if @main_smtp_tls_mandatory_protocols -%>
 
 smtp_tls_mandatory_protocols = <%= @main_smtp_tls_mandatory_protocols %>

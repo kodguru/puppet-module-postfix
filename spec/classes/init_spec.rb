@@ -827,12 +827,6 @@ describe 'postfix' do
         invalid: [-1, 2.42, 'string', ['array'], { 'ha' => 'sh' }],
         message: '(expects an Integer value|expects an Integer\[0\] value)',
       },
-      'regex_running/stopped' => {
-        name:    ['service_ensure'],
-        valid:   ['running', 'stopped'],
-        invalid: ['invalid', 3, 2.42, ['array'], { 'ha' => 'sh' }],
-        message: 'validate_legacy',
-      },
       'regex_true/false/manual' => {
         name:    ['service_enable'],
         valid:   [true, 'true', false, 'false', 'manual'],
@@ -862,6 +856,12 @@ describe 'postfix' do
         valid:   ['/absolute/filepath', '/absolute/directory/'], # cant test undef :(
         invalid: ['relative/path', 3, 2.42, ['array'], { 'ha' => 'sh' }],
         message: 'expects a Stdlib::Absolutepath',
+      },
+      'Stdlib::Ensure::Service' => {
+        name:    ['service_ensure'],
+        valid:   ['running', 'stopped'],
+        invalid: ['invalid', 3, 2.42, ['array'], { 'ha' => 'sh' }],
+        message: 'Enum\[\'running\', \'stopped\'\]',
       },
       'Stdlib::Host & Optional[Stdlib::Host]' => {
         name:    ['main_inet_interfaces', 'main_mydestination', 'main_mydomain', 'main_myhostname', 'main_mynetworks', 'main_relayhost'],

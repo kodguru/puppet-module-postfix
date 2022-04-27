@@ -330,7 +330,7 @@ class postfix (
   String[1] $main_virtual_alias_maps                            = 'hash:/etc/postfix/virtual',
   Array[String[1]] $packages                                    = ['postfix'],
   $service_enable                     = true,
-  $service_ensure                     = 'running',
+  Stdlib::Ensure::Service $service_ensure                       = 'running',
   Boolean $service_hasrestart                                   = true,
   Boolean $service_hasstatus                                    = true,
   String[1] $service_name                                       = 'postfix',
@@ -372,7 +372,6 @@ class postfix (
   # <USE_DEFAULTS ?>
 
   $service_enable_real             = $service_enable
-  $service_ensure_real             = $service_ensure
   $transport_maps_real             = $transport_maps
   $virtual_aliases_real            = $virtual_aliases
 
@@ -384,7 +383,6 @@ class postfix (
   if $main_mailbox_command { validate_string($main_mailbox_command) }
   if $main_relay_domains { validate_string($main_relay_domains) }
   if !is_bool($service_enable_real) { validate_legacy(Enum['true', 'false', 'manual'], 'validate_re', $service_enable_real, '^(true|false|manual)$') }
-  validate_legacy(Enum['running', 'stopped'], 'validate_re', $service_ensure_real, '^(running|stopped)$')
   if $transport_maps_real != undef { validate_hash($transport_maps_real) }
   if $virtual_aliases_real != undef { validate_hash($virtual_aliases_real) }
   # </validating variables>
@@ -396,7 +394,7 @@ class postfix (
   }
 
   service { 'postfix_service' :
-    ensure     => $service_ensure_real,
+    ensure     => $service_ensure,
     name       => $service_name,
     enable     => $service_enable_real,
     hasrestart => $service_hasrestart,

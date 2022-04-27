@@ -207,7 +207,7 @@ describe 'postfix' do
               'enable'     => 'true',
               'hasrestart' => 'true',
               'hasstatus'  => 'true',
-              'require'    => "Package[#{v[:packages_default]}]",
+              'require'    => ["Package[#{v[:packages_default]}]"],
               'subscribe'  => ['File[postfix_main.cf]', 'File[postfix_virtual]', 'File[postfix_transport]'],
             },
           )
@@ -222,7 +222,7 @@ describe 'postfix' do
               'owner'      => 'root',
               'group'      => 'root',
               'mode'       => '0644',
-              'require'    => "Package[#{v[:packages_default]}]",
+              'require'    => ["Package[#{v[:packages_default]}]"],
             },
           )
         }
@@ -304,7 +304,7 @@ describe 'postfix' do
         'main_data_directory'    => '/uOS/data',
         'main_queue_directory'   => '/uOS/queue',
         'main_setgid_group'      => 'uOSuser',
-        'packages'               => 'uOSpostfix',
+        'packages'               => ['uOSpostfix'],
       }
     end
 
@@ -327,7 +327,7 @@ describe 'postfix' do
           'enable'     => 'true',
           'hasrestart' => 'true',
           'hasstatus'  => 'true',
-          'require'    => 'Package[uOSpostfix]',
+          'require'    => ['Package[uOSpostfix]'],
           'subscribe'  => ['File[postfix_main.cf]', 'File[postfix_virtual]', 'File[postfix_transport]'],
         },
       )
@@ -342,7 +342,7 @@ describe 'postfix' do
           'owner'      => 'root',
           'group'      => 'root',
           'mode'       => '0644',
-          'require'    => 'Package[uOSpostfix]',
+          'require'    => ['Package[uOSpostfix]'],
         },
       )
     }
@@ -550,8 +550,8 @@ describe 'postfix' do
       it { is_expected.to contain_file('postfix_main.cf').with_content(%r{^relayhost = relayhost.valid.test:587$}) }
     end
 
-    context 'with packages set to <postfix_alt>' do
-      let(:params) { { packages: 'postfix_alt' } }
+    context 'with packages set to <[postfix_alt]>' do
+      let(:params) { { packages: ['postfix_alt'] } }
 
       it {
         is_expected.to contain_package('postfix_alt').with(
@@ -631,7 +631,7 @@ describe 'postfix' do
               'enable'     => value.to_s,
               'hasrestart' => 'true',
               'hasstatus'  => 'true',
-              'require'    => 'Package[postfix]',
+              'require'    => ['Package[postfix]'],
               'subscribe'  => ['File[postfix_main.cf]', 'File[postfix_virtual]', 'File[postfix_transport]'],
             },
           )
@@ -651,7 +651,7 @@ describe 'postfix' do
               'enable'     => 'true',
               'hasrestart' => 'true',
               'hasstatus'  => 'true',
-              'require'    => 'Package[postfix]',
+              'require'    => ['Package[postfix]'],
               'subscribe'  => ['File[postfix_main.cf]', 'File[postfix_virtual]', 'File[postfix_transport]'],
             },
           )
@@ -671,7 +671,7 @@ describe 'postfix' do
               'enable'     => 'true',
               'hasrestart' => value,
               'hasstatus'  => 'true',
-              'require'    => 'Package[postfix]',
+              'require'    => ['Package[postfix]'],
               'subscribe'  => ['File[postfix_main.cf]', 'File[postfix_virtual]', 'File[postfix_transport]'],
             },
           )
@@ -691,7 +691,7 @@ describe 'postfix' do
               'enable'     => 'true',
               'hasrestart' => 'true',
               'hasstatus'  => value,
-              'require'    => 'Package[postfix]',
+              'require'    => ['Package[postfix]'],
               'subscribe'  => ['File[postfix_main.cf]', 'File[postfix_virtual]', 'File[postfix_transport]'],
             },
           )
@@ -710,7 +710,7 @@ describe 'postfix' do
             'enable'     => 'true',
             'hasrestart' => 'true',
             'hasstatus'  => 'true',
-            'require'    => 'Package[postfix]',
+            'require'    => ['Package[postfix]'],
             'subscribe'  => ['File[postfix_main.cf]', 'File[postfix_virtual]', 'File[postfix_transport]'],
           },
         )
@@ -803,6 +803,12 @@ describe 'postfix' do
     end
 
     validations = {
+      'Array[String[1]]' => {
+        name:    ['packages'],
+        valid:   [['string'], ['string1', 'string2']],
+        invalid: ['', 'invalid', [1], [[1]], [{ 'ha' => 'sh' }], 3, 2.42, { 'ha' => 'sh' }, true, false],
+        message: '(expects an Array value|index \d+ expects a String value)',
+      },
       'bool_stringified' => {
         name:    ['service_hasrestart', 'service_hasstatus', 'transport_maps_external', 'virtual_aliases_external'],
         valid:   [true, false],
@@ -820,12 +826,6 @@ describe 'postfix' do
         valid:   [0, 242, 51_200_000 ],
         invalid: [-1, 2.42, 'string', ['array'], { 'ha' => 'sh' }],
         message: '(expects an Integer value|expects an Integer\[0\] value)',
-      },
-      'not_empty_string/array' => {
-        name:    ['packages'],
-        valid:   ['valid', ['array']],
-        invalid: ['', [], 3, 2.42, { 'ha' => 'sh' }],
-        message: 'must contain a valid value',
       },
       'regex_running/stopped' => {
         name:    ['service_ensure'],

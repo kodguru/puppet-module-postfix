@@ -328,7 +328,7 @@ class postfix (
   String[1] $main_transport_maps                                = 'hash:/etc/postfix/transport',
   Optional[String[1]] $main_virtual_alias_domains               = undef,
   String[1] $main_virtual_alias_maps                            = 'hash:/etc/postfix/virtual',
-  $packages                           = 'postfix',
+  Array[String[1]] $packages                                    = ['postfix'],
   $service_enable                     = true,
   $service_ensure                     = 'running',
   Boolean $service_hasrestart                                   = true,
@@ -383,14 +383,6 @@ class postfix (
   validate_legacy(Enum['yes', 'no'], 'validate_re', $main_biff, '^(yes|no)$')
   if $main_mailbox_command { validate_string($main_mailbox_command) }
   if $main_relay_domains { validate_string($main_relay_domains) }
-  case type3x($packages) {
-    'string','array': {
-      if empty($packages) == true { fail("packages must contain a valid value and is set to <${packages}>") }
-    }
-    default: {
-      fail("packages must contain a valid value and is set to <${packages}>")
-    }
-  }
   if !is_bool($service_enable_real) { validate_legacy(Enum['true', 'false', 'manual'], 'validate_re', $service_enable_real, '^(true|false|manual)$') }
   validate_legacy(Enum['running', 'stopped'], 'validate_re', $service_ensure_real, '^(running|stopped)$')
   if $transport_maps_real != undef { validate_hash($transport_maps_real) }

@@ -827,12 +827,6 @@ describe 'postfix' do
         invalid: [-1, 2.42, 'string', ['array'], { 'ha' => 'sh' }],
         message: '(expects an Integer value|expects an Integer\[0\] value)',
       },
-      'regex_true/false/manual' => {
-        name:    ['service_enable'],
-        valid:   [true, 'true', false, 'false', 'manual'],
-        invalid: ['invalid', 3, 2.42, ['array'], { 'ha' => 'sh' }],
-        message: 'validate_legacy',
-      },
       'Enum[yes, no]' => {
         name:    ['main_append_dot_mydomain', 'main_biff'],
         valid:   ['yes', 'no'],
@@ -882,6 +876,12 @@ describe 'postfix' do
         valid:   ['valid'],
         invalid: [['array'], { 'ha' => 'sh' }],
         message: 'expects a value of type Undef or String',
+      },
+      'Variant[Boolean, Enum[\'true\', \'false\', \'manual\']]' => {
+        name:    ['service_enable'],
+        valid:   [true, false, 'true', 'false', 'manual'],
+        invalid: ['invalid', 3, 2.42, ['array'], { 'ha' => 'sh' }],
+        message: 'value of type Boolean or Enum',
       },
     }
 

@@ -292,89 +292,54 @@
 #   $main_virtual_alias_maps.
 #
 class postfix (
-  String[1] $main_alias_database                                = 'hash:/etc/aliases',
-  String[1] $main_alias_maps                                    = 'hash:/etc/aliases',
-  Enum['yes', 'no'] $main_append_dot_mydomain                   = 'no',
-  Enum['yes', 'no'] $main_biff                                  = 'no',
-  Stdlib::Absolutepath $main_command_directory                  = '/usr/sbin',
-  Optional[Stdlib::Absolutepath] $main_daemon_directory         = undef,
-  Stdlib::Absolutepath $main_data_directory                     = '/var/lib/postfix',
-  Stdlib::Host $main_inet_interfaces                            = '127.0.0.1',
-  String[1] $main_inet_protocols                                = 'ipv4',
-  Optional[String[1]] $main_mailbox_command                     = undef,
-  Integer[0] $main_mailbox_size_limit                           = 0,
-  Stdlib::Host $main_mydestination                              = 'localhost',
-  Optional[Stdlib::Host] $main_mydomain                         = undef,
-  Stdlib::Host $main_myhostname                                 = $::fqdn,
-  Stdlib::Host $main_mynetworks                                 = '127.0.0.0/8',
-  String[1] $main_myorigin                                      = '$myhostname',
-  Stdlib::Absolutepath $main_queue_directory                    = '/var/spool/postfix',
-  String[1] $main_recipient_delimiter                           = '+',
-  Optional[String[1]] $main_relay_domains                       = undef,
-  Stdlib::Host $main_relayhost                                  = "mailhost.${::domain}",
-  Integer[0] $main_relayhost_port                               = 25,
-  String[1] $main_setgid_group                                  = undef,
-  Optional[Enum['yes', 'no']] $main_smtpd_helo_required         = undef,
-  Optional[Array[String[1]]] $main_smtpd_helo_restrictions      = undef,
-  Optional[Array[String[1]]] $main_smtpd_recipient_restrictions = undef,
-  Optional[Stdlib::Absolutepath] $main_smtpd_tls_cert_file      = undef,
-  Optional[Stdlib::Absolutepath] $main_smtpd_tls_key_file       = undef,
-  Optional[String[1]] $main_smtpd_tls_mandatory_protocols       = undef,
-  Optional[String[1]] $main_smtpd_tls_protocols                 = undef,
-  Optional[String[1]] $main_smtpd_tls_security_level            = undef,
-  Optional[String[1]] $main_smtp_tls_mandatory_protocols        = undef,
-  Optional[String[1]] $main_smtp_tls_protocols                  = undef,
-  Optional[String[1]] $main_smtp_tls_security_level             = undef,
-  String[1] $main_transport_maps                                = 'hash:/etc/postfix/transport',
-  Optional[String[1]] $main_virtual_alias_domains               = undef,
-  String[1] $main_virtual_alias_maps                            = 'hash:/etc/postfix/virtual',
-  Array[String[1]] $packages                                    = ['postfix'],
+  String[1] $main_alias_database                                    = 'hash:/etc/aliases',
+  String[1] $main_alias_maps                                        = 'hash:/etc/aliases',
+  Enum['yes', 'no'] $main_append_dot_mydomain                       = 'no',
+  Enum['yes', 'no'] $main_biff                                      = 'no',
+  Stdlib::Absolutepath $main_command_directory                      = '/usr/sbin',
+  Optional[Stdlib::Absolutepath] $main_daemon_directory             = undef,
+  Stdlib::Absolutepath $main_data_directory                         = '/var/lib/postfix',
+  Stdlib::Host $main_inet_interfaces                                = '127.0.0.1',
+  String[1] $main_inet_protocols                                    = 'ipv4',
+  Optional[String[1]] $main_mailbox_command                         = undef,
+  Integer[0] $main_mailbox_size_limit                               = 0,
+  Stdlib::Host $main_mydestination                                  = 'localhost',
+  Optional[Stdlib::Host] $main_mydomain                             = undef,
+  Stdlib::Host $main_myhostname                                     = $::fqdn,
+  Stdlib::Host $main_mynetworks                                     = '127.0.0.0/8',
+  String[1] $main_myorigin                                          = '$myhostname',
+  Stdlib::Absolutepath $main_queue_directory                        = '/var/spool/postfix',
+  String[1] $main_recipient_delimiter                               = '+',
+  Optional[String[1]] $main_relay_domains                           = undef,
+  Stdlib::Host $main_relayhost                                      = "mailhost.${::domain}",
+  Integer[0] $main_relayhost_port                                   = 25,
+  String[1] $main_setgid_group                                      = undef,
+  Optional[Enum['yes', 'no']] $main_smtpd_helo_required             = undef,
+  Optional[Array[String[1]]] $main_smtpd_helo_restrictions          = undef,
+  Optional[Array[String[1]]] $main_smtpd_recipient_restrictions     = undef,
+  Optional[Stdlib::Absolutepath] $main_smtpd_tls_cert_file          = undef,
+  Optional[Stdlib::Absolutepath] $main_smtpd_tls_key_file           = undef,
+  Optional[String[1]] $main_smtpd_tls_mandatory_protocols           = undef,
+  Optional[String[1]] $main_smtpd_tls_protocols                     = undef,
+  Optional[String[1]] $main_smtpd_tls_security_level                = undef,
+  Optional[String[1]] $main_smtp_tls_mandatory_protocols            = undef,
+  Optional[String[1]] $main_smtp_tls_protocols                      = undef,
+  Optional[String[1]] $main_smtp_tls_security_level                 = undef,
+  String[1] $main_transport_maps                                    = 'hash:/etc/postfix/transport',
+  Optional[String[1]] $main_virtual_alias_domains                   = undef,
+  String[1] $main_virtual_alias_maps                                = 'hash:/etc/postfix/virtual',
+  Array[String[1]] $packages                                        = ['postfix'],
   Variant[Boolean, Enum['true', 'false', 'manual']] $service_enable = true,
-  Stdlib::Ensure::Service $service_ensure                       = 'running',
-  Boolean $service_hasrestart                                   = true,
-  Boolean $service_hasstatus                                    = true,
-  String[1] $service_name                                       = 'postfix',
-  String[1] $template_main_cf                                   = 'postfix/main.cf.erb',
-  Boolean $transport_maps_external                              = false,
-  Optional[Hash] $transport_maps                                = undef,
-  Boolean $virtual_aliases_external                             = false,
-  Optional[Hash] $virtual_aliases                               = undef,
+  Stdlib::Ensure::Service $service_ensure                           = 'running',
+  Boolean $service_hasrestart                                       = true,
+  Boolean $service_hasstatus                                        = true,
+  String[1] $service_name                                           = 'postfix',
+  String[1] $template_main_cf                                       = 'postfix/main.cf.erb',
+  Boolean $transport_maps_external                                  = false,
+  Optional[Hash] $transport_maps                                    = undef,
+  Boolean $virtual_aliases_external                                 = false,
+  Optional[Hash] $virtual_aliases                                   = undef,
 ) {
-
-  # <provide os default values>
-  # Set $os_defaults_missing to true for unspecified osfamilies
-  case $::osfamily {
-    'Debian': {
-      $os_defaults_missing              = false
-    }
-    'RedHat': {
-      $os_defaults_missing              = false
-    }
-    'Suse': {
-      $os_defaults_missing              = false
-    }
-    default: {
-      $os_defaults_missing = true
-    }
-  }
-  # </provide os default values>
-
-  # <USE_DEFAULT vs OS defaults>
-  # Check if 'USE_DEFAULTS' is used anywhere without having OS default value
-  if $os_defaults_missing == true and (
-    ($main_daemon_directory  == undef) or
-    ($main_setgid_group      == undef)
-  ) {
-      fail("Sorry, I don't know default values for ${::osfamily} yet :( Please provide specific values to the postfix module.")
-  }
-  # </USE_DEFAULT vs OS defaults>
-
-  # <validating variables>
-  validate_legacy(Enum['yes', 'no'], 'validate_re', $main_append_dot_mydomain, '^(yes|no)$')
-  validate_legacy(Enum['yes', 'no'], 'validate_re', $main_biff, '^(yes|no)$')
-  if $main_mailbox_command { validate_string($main_mailbox_command) }
-  if $main_relay_domains { validate_string($main_relay_domains) }
-  # </validating variables>
 
   # <Install & Config>
   package { $packages:

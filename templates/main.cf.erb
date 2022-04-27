@@ -115,11 +115,11 @@ setgid_group = <%= @main_setgid_group %>
 
 virtual_alias_domains = <%= @main_virtual_alias_domains %>
 <% end -%>
-<% if @main_virtual_alias_maps and (@virtual_aliases_real or @virtual_aliases_external) -%>
+<% if @main_virtual_alias_maps and (@virtual_aliases or @virtual_aliases_external) -%>
 
 virtual_alias_maps = <%= @main_virtual_alias_maps %>
 <% end -%>
-<% if @main_transport_maps and (@transport_maps_real or @transport_maps_external) -%>
+<% if @main_transport_maps and (@transport_maps or @transport_maps_external) -%>
 
 transport_maps = <%= @main_transport_maps %>
 <% end -%>

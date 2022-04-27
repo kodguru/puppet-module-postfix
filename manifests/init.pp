@@ -336,9 +336,9 @@ class postfix (
   String[1] $service_name                                       = 'postfix',
   String[1] $template_main_cf                                   = 'postfix/main.cf.erb',
   Boolean $transport_maps_external                              = false,
-  $transport_maps                     = undef,
+  Optional[Hash] $transport_maps                                = undef,
   Boolean $virtual_aliases_external                             = false,
-  $virtual_aliases                    = undef,
+  Optional[Hash] $virtual_aliases                               = undef,
 ) {
 
   # <provide os default values>
@@ -369,20 +369,11 @@ class postfix (
   }
   # </USE_DEFAULT vs OS defaults>
 
-  # <USE_DEFAULTS ?>
-
-  $transport_maps_real             = $transport_maps
-  $virtual_aliases_real            = $virtual_aliases
-
-  # </USE_DEFAULTS ?>
-
   # <validating variables>
   validate_legacy(Enum['yes', 'no'], 'validate_re', $main_append_dot_mydomain, '^(yes|no)$')
   validate_legacy(Enum['yes', 'no'], 'validate_re', $main_biff, '^(yes|no)$')
   if $main_mailbox_command { validate_string($main_mailbox_command) }
   if $main_relay_domains { validate_string($main_relay_domains) }
-  if $transport_maps_real != undef { validate_hash($transport_maps_real) }
-  if $virtual_aliases_real != undef { validate_hash($virtual_aliases_real) }
   # </validating variables>
 
   # <Install & Config>

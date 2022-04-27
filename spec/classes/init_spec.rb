@@ -815,12 +815,6 @@ describe 'postfix' do
         invalid: ['true', 'false', nil, 'invalid', 3, 2.42, ['array'], { 'ha' => 'sh' }],
         message: 'expects a Boolean',
       },
-      'hash' => {
-        name:    ['transport_maps', 'virtual_aliases'],
-        valid:   [{ 'ha' => 'sh' }, { 'test1@test.void' => 'destination1', 'test2@test.void' => ['destination2', 'destination3'] }],
-        invalid: [true, false, 'invalid', 3, 2.42, ['array']],
-        message: 'is not a Hash',
-      },
       'Integer[0]' => {
         name:    ['main_mailbox_size_limit', 'main_relayhost_port'],
         valid:   [0, 242, 51_200_000 ],
@@ -844,6 +838,12 @@ describe 'postfix' do
         valid:   ['yes', 'no'],
         invalid: [true, false, 'invalid', 3, 2.42, ['array'], { 'ha' => 'sh' }],
         message: 'expects an undef value or a match for Enum',
+      },
+      'Optional[Hash]' => {
+        name:    ['transport_maps', 'virtual_aliases'],
+        valid:   [{ 'ha' => 'sh' }, { 'test1@test.void' => 'destination1', 'test2@test.void' => ['destination2', 'destination3'] }],
+        invalid: [true, false, 'invalid', 3, 2.42, ['array']],
+        message: 'expects a value of type Undef or Hash',
       },
       'Stdlib::Absolutepath & Optional[Stdlib::Absolutepath]' => {
         name:    ['main_command_directory', 'main_daemon_directory', 'main_data_directory', 'main_queue_directory', 'main_smtpd_tls_cert_file', 'main_smtpd_tls_key_file'],

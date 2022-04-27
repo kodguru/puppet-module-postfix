@@ -809,23 +809,23 @@ describe 'postfix' do
         invalid: ['', 'invalid', [1], [[1]], [{ 'ha' => 'sh' }], 3, 2.42, { 'ha' => 'sh' }, true, false],
         message: '(expects an Array value|index \d+ expects a String value)',
       },
-      'bool_stringified' => {
+      'Boolean' => {
         name:    ['service_hasrestart', 'service_hasstatus', 'transport_maps_external', 'virtual_aliases_external'],
         valid:   [true, false],
         invalid: ['true', 'false', nil, 'invalid', 3, 2.42, ['array'], { 'ha' => 'sh' }],
         message: 'expects a Boolean',
-      },
-      'Integer[0]' => {
-        name:    ['main_mailbox_size_limit', 'main_relayhost_port'],
-        valid:   [0, 242, 51_200_000 ],
-        invalid: [-1, 2.42, 'string', ['array'], { 'ha' => 'sh' }],
-        message: '(expects an Integer value|expects an Integer\[0\] value)',
       },
       'Enum[yes, no]' => {
         name:    ['main_append_dot_mydomain', 'main_biff'],
         valid:   ['yes', 'no'],
         invalid: [true, false, 'invalid', 3, 2.42, ['array'], { 'ha' => 'sh' }],
         message: 'expects a match for Enum',
+      },
+      'Integer[0]' => {
+        name:    ['main_mailbox_size_limit', 'main_relayhost_port'],
+        valid:   [0, 242, 51_200_000 ],
+        invalid: [-1, 2.42, 'string', ['array'], { 'ha' => 'sh' }],
+        message: '(expects an Integer value|expects an Integer\[0\] value)',
       },
       'Optional[Array[String[1]]]' => {
         name:    ['main_smtpd_helo_restrictions', 'main_smtpd_recipient_restrictions'],
@@ -844,6 +844,13 @@ describe 'postfix' do
         valid:   [{ 'ha' => 'sh' }, { 'test1@test.void' => 'destination1', 'test2@test.void' => ['destination2', 'destination3'] }],
         invalid: [true, false, 'invalid', 3, 2.42, ['array']],
         message: 'expects a value of type Undef or Hash',
+      },
+      'Optional[String[1]]' => {
+        name:    ['main_mailbox_command', 'main_relay_domains', 'main_smtpd_tls_mandatory_protocols', 'main_smtpd_tls_protocols', 'main_smtpd_tls_security_level',
+                  'main_smtp_tls_mandatory_protocols', 'main_smtp_tls_protocols', 'main_smtp_tls_security_level', 'main_virtual_alias_domains'],
+        valid:   ['valid'],
+        invalid: [['array'], { 'ha' => 'sh' }],
+        message: 'expects a value of type Undef or String',
       },
       'Stdlib::Absolutepath & Optional[Stdlib::Absolutepath]' => {
         name:    ['main_command_directory', 'main_daemon_directory', 'main_data_directory', 'main_queue_directory', 'main_smtpd_tls_cert_file', 'main_smtpd_tls_key_file'],
@@ -869,13 +876,6 @@ describe 'postfix' do
         valid:   ['valid'],
         invalid: ['', 3, 2.42, ['array'], { 'ha' => 'sh' }],
         message: '(expects a String value|expects a String\[1\] value)',
-      },
-      'Optional[String[1]]' => {
-        name:    ['main_mailbox_command', 'main_relay_domains', 'main_smtpd_tls_mandatory_protocols', 'main_smtpd_tls_protocols', 'main_smtpd_tls_security_level',
-                  'main_smtp_tls_mandatory_protocols', 'main_smtp_tls_protocols', 'main_smtp_tls_security_level', 'main_virtual_alias_domains'],
-        valid:   ['valid'],
-        invalid: [['array'], { 'ha' => 'sh' }],
-        message: 'expects a value of type Undef or String',
       },
       'Variant[Boolean, Enum[\'true\', \'false\', \'manual\']]' => {
         name:    ['service_enable'],

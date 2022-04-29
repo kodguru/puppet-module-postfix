@@ -193,7 +193,7 @@ describe 'postfix' do
           is_expected.to contain_package(v[:packages_default]).with(
             {
               'ensure' => 'installed',
-              'before' => 'Package[sendmail]',
+              'before' => ['Service[postfix_service]', 'Package[sendmail]'],
             },
           )
         }
@@ -207,7 +207,6 @@ describe 'postfix' do
               'enable'     => 'true',
               'hasrestart' => 'true',
               'hasstatus'  => 'true',
-              'require'    => ["Package[#{v[:packages_default]}]"],
               'subscribe'  => ['File[postfix_main.cf]', 'File[postfix_virtual]', 'File[postfix_transport]'],
             },
           )
@@ -222,7 +221,6 @@ describe 'postfix' do
               'owner'      => 'root',
               'group'      => 'root',
               'mode'       => '0644',
-              'require'    => ["Package[#{v[:packages_default]}]"],
             },
           )
         }
@@ -313,7 +311,7 @@ describe 'postfix' do
       is_expected.to contain_package('uOSpostfix').with(
         {
           'ensure' => 'installed',
-          'before' => 'Package[sendmail]',
+          'before' => ['Service[postfix_service]', 'Package[sendmail]'],
         },
       )
     }
@@ -327,7 +325,6 @@ describe 'postfix' do
           'enable'     => 'true',
           'hasrestart' => 'true',
           'hasstatus'  => 'true',
-          'require'    => ['Package[uOSpostfix]'],
           'subscribe'  => ['File[postfix_main.cf]', 'File[postfix_virtual]', 'File[postfix_transport]'],
         },
       )
@@ -342,7 +339,6 @@ describe 'postfix' do
           'owner'      => 'root',
           'group'      => 'root',
           'mode'       => '0644',
-          'require'    => ['Package[uOSpostfix]'],
         },
       )
     }
@@ -557,7 +553,7 @@ describe 'postfix' do
         is_expected.to contain_package('postfix_alt').with(
           {
             'ensure' => 'installed',
-            'before' => 'Package[sendmail]',
+            'before' => ['Service[postfix_service]', 'Package[sendmail]'],
           },
         )
       }
@@ -604,7 +600,7 @@ describe 'postfix' do
         is_expected.to contain_package('postfix').with(
           {
             'ensure' => 'installed',
-            'before' => 'Package[sendmail]',
+            'before' => ['Service[postfix_service]', 'Package[sendmail]'],
           },
         )
       }
@@ -613,7 +609,7 @@ describe 'postfix' do
         is_expected.to contain_package('postfix-helper').with(
           {
             'ensure' => 'installed',
-            'before' => 'Package[sendmail]',
+            'before' => ['Service[postfix_service]', 'Package[sendmail]'],
           },
         )
       }
@@ -631,7 +627,6 @@ describe 'postfix' do
               'enable'     => value.to_s,
               'hasrestart' => 'true',
               'hasstatus'  => 'true',
-              'require'    => ['Package[postfix]'],
               'subscribe'  => ['File[postfix_main.cf]', 'File[postfix_virtual]', 'File[postfix_transport]'],
             },
           )
@@ -651,7 +646,6 @@ describe 'postfix' do
               'enable'     => 'true',
               'hasrestart' => 'true',
               'hasstatus'  => 'true',
-              'require'    => ['Package[postfix]'],
               'subscribe'  => ['File[postfix_main.cf]', 'File[postfix_virtual]', 'File[postfix_transport]'],
             },
           )
@@ -671,7 +665,6 @@ describe 'postfix' do
               'enable'     => 'true',
               'hasrestart' => value,
               'hasstatus'  => 'true',
-              'require'    => ['Package[postfix]'],
               'subscribe'  => ['File[postfix_main.cf]', 'File[postfix_virtual]', 'File[postfix_transport]'],
             },
           )
@@ -691,7 +684,6 @@ describe 'postfix' do
               'enable'     => 'true',
               'hasrestart' => 'true',
               'hasstatus'  => value,
-              'require'    => ['Package[postfix]'],
               'subscribe'  => ['File[postfix_main.cf]', 'File[postfix_virtual]', 'File[postfix_transport]'],
             },
           )
@@ -710,7 +702,6 @@ describe 'postfix' do
             'enable'     => 'true',
             'hasrestart' => 'true',
             'hasstatus'  => 'true',
-            'require'    => ['Package[postfix]'],
             'subscribe'  => ['File[postfix_main.cf]', 'File[postfix_virtual]', 'File[postfix_transport]'],
           },
         )

@@ -361,7 +361,7 @@ class postfix (
   # <Install & Config>
   package { $packages:
     ensure => installed,
-    before => Package['sendmail'],
+    before => [ Service['postfix_service'], Package['sendmail'], ],
   }
 
   service { 'postfix_service' :
@@ -370,7 +370,6 @@ class postfix (
     enable     => $service_enable,
     hasrestart => $service_hasrestart,
     hasstatus  => $service_hasstatus,
-    require    => Package[$packages],
     subscribe  => [ File['postfix_main.cf'], File['postfix_virtual'], File['postfix_transport'], ],
   }
 
@@ -381,7 +380,6 @@ class postfix (
     group   => 'root',
     mode    => '0644',
     content => template($template_main_cf),
-    require => Package[$packages],
   }
 
   if $virtual_aliases != undef {
@@ -392,7 +390,6 @@ class postfix (
       group   => 'root',
       mode    => '0644',
       content => template('postfix/virtual.erb'),
-      require => Package[$packages],
     }
     exec { 'postfix_rebuild_virtual':
       command     => "${main_command_directory}/postmap ${main_virtual_alias_maps}",
@@ -418,7 +415,6 @@ class postfix (
       group   => 'root',
       mode    => '0644',
       content => template('postfix/transport.erb'),
-      require => Package[$packages],
     }
     exec { 'postfix_rebuild_transport':
       command     => "${main_command_directory}/postmap hash:/etc/postfix/transport",

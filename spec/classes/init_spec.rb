@@ -36,6 +36,8 @@ describe 'postfix' do
       {
         operatingsystem:                  'SLED',
         operatingsystemrelease:           '10.4',
+        major:                            '10',
+        minor:                            '4',
         osfamily:                         'Suse',
         main_command_directory_default:   '/usr/sbin',
         main_daemon_directory_default:    '/usr/lib/postfix',
@@ -51,6 +53,8 @@ describe 'postfix' do
       {
         operatingsystem:                  'SLES',
         operatingsystemrelease:           '12.1',
+        major:                            '12',
+        minor:                            '1',
         osfamily:                         'Suse',
         main_command_directory_default:   '/usr/sbin',
         main_daemon_directory_default:    '/usr/lib/postfix',
@@ -66,6 +70,8 @@ describe 'postfix' do
       {
         operatingsystem:                  'SLES',
         operatingsystemrelease:           '12.3',
+        major:                            '12',
+        minor:                            '3',
         osfamily:                         'Suse',
         main_command_directory_default:   '/usr/sbin',
         main_daemon_directory_default:    '/usr/lib/postfix/bin',
@@ -81,6 +87,8 @@ describe 'postfix' do
       {
         operatingsystem:                  'SLES',
         operatingsystemrelease:           '15.0',
+        major:                            '15',
+        minor:                            '0',
         osfamily:                         'Suse',
         main_command_directory_default:   '/usr/sbin',
         main_daemon_directory_default:    '/usr/lib/postfix/bin',
@@ -97,6 +105,7 @@ describe 'postfix' do
       {
         operatingsystem:                  'Ubuntu',
         operatingsystemrelease:           '14.04',
+        major:                            '14.04',
         osfamily:                         'Debian',
         main_command_directory_default:   '/usr/sbin',
         main_daemon_directory_default:    '/usr/lib/postfix',
@@ -112,6 +121,7 @@ describe 'postfix' do
       {
         operatingsystem:                  'Ubuntu',
         operatingsystemrelease:           '16.04',
+        major:                            '16.04',
         osfamily:                         'Debian',
         main_command_directory_default:   '/usr/sbin',
         main_daemon_directory_default:    '/usr/lib/postfix/sbin',
@@ -127,6 +137,7 @@ describe 'postfix' do
       {
         operatingsystem:                  'Ubuntu',
         operatingsystemrelease:           '18.04',
+        major:                            '18.04',
         osfamily:                         'Debian',
         main_command_directory_default:   '/usr/sbin',
         main_daemon_directory_default:    '/usr/lib/postfix/sbin',
@@ -142,6 +153,7 @@ describe 'postfix' do
       {
         operatingsystem:                  'Ubuntu',
         operatingsystemrelease:           '20.04',
+        major:                            '20.04',
         osfamily:                         'Debian',
         main_command_directory_default:   '/usr/sbin',
         main_daemon_directory_default:    '/usr/lib/postfix/sbin',
@@ -165,10 +177,18 @@ describe 'postfix' do
             osfamily:               v[:osfamily],
             domain:                 'test.local',
             fqdn:                   'dummy.test.local',
+            os: {
+              family: v[:osfamily],
+              name:   v[:operatingsystem],
+              release: {
+                major: v[:major],
+                minor: v[:minor],
+              }
+            }
           }
         end
 
-        # package { $packages_real:}
+        # package { $packages:}
         it {
           is_expected.to contain_package(v[:packages_default]).with(
             {
@@ -187,7 +207,7 @@ describe 'postfix' do
               'enable'     => 'true',
               'hasrestart' => 'true',
               'hasstatus'  => 'true',
-              'require'    => "Package[#{v[:packages_default]}]",
+              'require'    => ["Package[#{v[:packages_default]}]"],
               'subscribe'  => ['File[postfix_main.cf]', 'File[postfix_virtual]', 'File[postfix_transport]'],
             },
           )
@@ -202,7 +222,7 @@ describe 'postfix' do
               'owner'      => 'root',
               'group'      => 'root',
               'mode'       => '0644',
-              'require'    => "Package[#{v[:packages_default]}]",
+              'require'    => ["Package[#{v[:packages_default]}]"],
             },
           )
         }
@@ -284,7 +304,7 @@ describe 'postfix' do
         'main_data_directory'    => '/uOS/data',
         'main_queue_directory'   => '/uOS/queue',
         'main_setgid_group'      => 'uOSuser',
-        'packages'               => 'uOSpostfix',
+        'packages'               => ['uOSpostfix'],
       }
     end
 
@@ -307,7 +327,7 @@ describe 'postfix' do
           'enable'     => 'true',
           'hasrestart' => 'true',
           'hasstatus'  => 'true',
-          'require'    => 'Package[uOSpostfix]',
+          'require'    => ['Package[uOSpostfix]'],
           'subscribe'  => ['File[postfix_main.cf]', 'File[postfix_virtual]', 'File[postfix_transport]'],
         },
       )
@@ -322,7 +342,7 @@ describe 'postfix' do
           'owner'      => 'root',
           'group'      => 'root',
           'mode'       => '0644',
-          'require'    => 'Package[uOSpostfix]',
+          'require'    => ['Package[uOSpostfix]'],
         },
       )
     }
@@ -407,12 +427,19 @@ describe 'postfix' do
     it do
       expect {
         is_expected.to contain_class('postfix')
-      }.to raise_error(Puppet::Error, %r{Sorry, I don\'t know default values for UnknownOS yet :\( Please provide specific values to the postfix module\.})
+      }.to raise_error(Puppet::Error, %r{(Sorry, I don\'t know default values for UnknownOS yet :\( Please provide specific values to the postfix module\.|expects a String value)})
     end
   end
 
   describe 'validating variables on valid osfamily RedHat' do
-    let(:facts) { { osfamily: 'Redhat' } }
+    let(:facts) do
+      {
+        osfamily: 'Redhat',
+        os: {
+          family: 'RedHat',
+        }
+      }
+    end
 
     # <testing free string variables for main.cf>
     ['main_alias_database', 'main_alias_maps', 'main_inet_interfaces', 'main_inet_protocols', 'main_mailbox_command',
@@ -463,7 +490,7 @@ describe 'postfix' do
         it do
           expect {
             is_expected.to contain_class('postfix')
-          }.to raise_error(Puppet::Error, %r{main_#{Regexp.escape(variable)} must contain a valid value and is set to <>})
+          }.to raise_error(Puppet::Error, %r{(main_#{Regexp.escape(variable)} must contain a valid value and is set to <>|expects a String|expects)})
         end
       end
     end
@@ -481,8 +508,8 @@ describe 'postfix' do
     end
     # </testing yes/no string type variables for main.cf>
 
-    context 'with main_mailbox_size_limit set to <USE_DEFAULTS>' do
-      let(:params) { { 'main_mailbox_size_limit' => 'USE_DEFAULTS' } }
+    context 'with main_mailbox_size_limit set to <51200000>' do
+      let(:params) { { 'main_mailbox_size_limit' => 51_200_000 } }
 
       it { is_expected.to contain_file('postfix_main.cf').with_content(%r{^mailbox_size_limit = 51200000$}) }
     end
@@ -501,7 +528,7 @@ describe 'postfix' do
       it do
         expect {
           is_expected.to contain_class('postfix')
-        }.to raise_error(Puppet::Error, %r{main_mailbox_size_limit needs a minimum value of 0 and is set to <-1>})
+        }.to raise_error(Puppet::Error, %r{expects an Integer\[0\] value})
       end
     end
 
@@ -514,7 +541,7 @@ describe 'postfix' do
     context 'with main_relayhost_port set to <587>' do
       let(:params) do
         {
-          'main_relayhost_port' => '587',
+          'main_relayhost_port' => 587,
           # workaround to avoid needing to set the domain fact
           'main_relayhost' => 'relayhost.valid.test',
         }
@@ -523,8 +550,8 @@ describe 'postfix' do
       it { is_expected.to contain_file('postfix_main.cf').with_content(%r{^relayhost = relayhost.valid.test:587$}) }
     end
 
-    context 'with packages set to <postfix_alt>' do
-      let(:params) { { packages: 'postfix_alt' } }
+    context 'with packages set to <[postfix_alt]>' do
+      let(:params) { { packages: ['postfix_alt'] } }
 
       it {
         is_expected.to contain_package('postfix_alt').with(
@@ -604,7 +631,7 @@ describe 'postfix' do
               'enable'     => value.to_s,
               'hasrestart' => 'true',
               'hasstatus'  => 'true',
-              'require'    => 'Package[postfix]',
+              'require'    => ['Package[postfix]'],
               'subscribe'  => ['File[postfix_main.cf]', 'File[postfix_virtual]', 'File[postfix_transport]'],
             },
           )
@@ -624,7 +651,7 @@ describe 'postfix' do
               'enable'     => 'true',
               'hasrestart' => 'true',
               'hasstatus'  => 'true',
-              'require'    => 'Package[postfix]',
+              'require'    => ['Package[postfix]'],
               'subscribe'  => ['File[postfix_main.cf]', 'File[postfix_virtual]', 'File[postfix_transport]'],
             },
           )
@@ -632,9 +659,9 @@ describe 'postfix' do
       end
     end
 
-    ['true', 'false', true, false].each do |value|
+    [true, false].each do |value|
       context "with service_hasrestart set to <#{value}>" do
-        let(:params) { { service_hasrestart: value.to_s } }
+        let(:params) { { service_hasrestart: value } }
 
         it {
           is_expected.to contain_service('postfix_service').with(
@@ -642,9 +669,9 @@ describe 'postfix' do
               'ensure'     => 'running',
               'name'       => 'postfix',
               'enable'     => 'true',
-              'hasrestart' => value.to_s,
+              'hasrestart' => value,
               'hasstatus'  => 'true',
-              'require'    => 'Package[postfix]',
+              'require'    => ['Package[postfix]'],
               'subscribe'  => ['File[postfix_main.cf]', 'File[postfix_virtual]', 'File[postfix_transport]'],
             },
           )
@@ -652,9 +679,9 @@ describe 'postfix' do
       end
     end
 
-    ['true', 'false', true, false].each do |value|
+    [true, false].each do |value|
       context "with service_hasstatus set to <#{value}>" do
-        let(:params) { { service_hasstatus: value.to_s } }
+        let(:params) { { service_hasstatus: value } }
 
         it {
           is_expected.to contain_service('postfix_service').with(
@@ -663,8 +690,8 @@ describe 'postfix' do
               'name'       => 'postfix',
               'enable'     => 'true',
               'hasrestart' => 'true',
-              'hasstatus'  => value.to_s,
-              'require'    => 'Package[postfix]',
+              'hasstatus'  => value,
+              'require'    => ['Package[postfix]'],
               'subscribe'  => ['File[postfix_main.cf]', 'File[postfix_virtual]', 'File[postfix_transport]'],
             },
           )
@@ -683,7 +710,7 @@ describe 'postfix' do
             'enable'     => 'true',
             'hasrestart' => 'true',
             'hasstatus'  => 'true',
-            'require'    => 'Package[postfix]',
+            'require'    => ['Package[postfix]'],
             'subscribe'  => ['File[postfix_main.cf]', 'File[postfix_virtual]', 'File[postfix_transport]'],
           },
         )
@@ -696,7 +723,7 @@ describe 'postfix' do
       it do
         expect {
           is_expected.to contain_class('postfix')
-        }.to raise_error(Puppet::Error, %r{template_main_cf must contain a valid value and is set to <>})
+        }.to raise_error(Puppet::Error, %r{expects a String\[1\] value})
       end
     end
 
@@ -740,7 +767,7 @@ describe 'postfix' do
       it { is_expected.to contain_file('postfix_main.cf').with_content(%r{^transport_maps = hash:\/etc\/postfix\/transport$}) }
     end
 
-    [true, false, 'true', 'false'].each do |value|
+    [true, false].each do |value|
       context "where virtual_aliases_external is set to valid #{value} (as #{value.class})" do
         let(:params) do
           {
@@ -750,7 +777,7 @@ describe 'postfix' do
           }
         end
 
-        if value.to_s == 'true'
+        if value == true
           it { is_expected.to contain_file('postfix_main.cf').with_content(%r{^virtual_alias_maps = hash:\/etc\/postfix\/spec_testing$}) }
         else
           it { is_expected.to contain_file('postfix_main.cf').without_content(%r{virtual_alias_maps}) }
@@ -763,7 +790,10 @@ describe 'postfix' do
     # set needed custom facts and variables
     let(:facts) do
       {
-        osfamily: 'RedHat',
+        osfamily: 'Redhat',
+        os: {
+          family: 'RedHat',
+        }
       }
     end
     let(:mandatory_params) do
@@ -773,83 +803,85 @@ describe 'postfix' do
     end
 
     validations = {
-      'absolute_path' => {
-        name:    ['main_command_directory', 'main_daemon_directory', 'main_data_directory', 'main_queue_directory',
-                  'main_smtpd_tls_cert_file', 'main_smtpd_tls_key_file'],
-        valid:   ['/absolute/filepath', '/absolute/directory/'],
-        invalid: ['invalid', 3, 2.42, ['array'], { 'ha' => 'sh' }],
-        message: 'is not an absolute path',
+      'Array[String[1]]' => {
+        name:    ['packages'],
+        valid:   [['string'], ['string1', 'string2']],
+        invalid: ['', 'invalid', [1], [[1]], [{ 'ha' => 'sh' }], 3, 2.42, { 'ha' => 'sh' }, true, false],
+        message: '(expects an Array value|index \d+ expects a String value)',
       },
-      'array' => {
+      'Boolean' => {
+        name:    ['service_hasrestart', 'service_hasstatus', 'transport_maps_external', 'virtual_aliases_external'],
+        valid:   [true, false],
+        invalid: ['true', 'false', nil, 'invalid', 3, 2.42, ['array'], { 'ha' => 'sh' }],
+        message: 'expects a Boolean',
+      },
+      'Enum[yes, no]' => {
+        name:    ['main_append_dot_mydomain', 'main_biff'],
+        valid:   ['yes', 'no'],
+        invalid: [true, false, 'invalid', 3, 2.42, ['array'], { 'ha' => 'sh' }],
+        message: 'expects a match for Enum',
+      },
+      'Integer[0]' => {
+        name:    ['main_mailbox_size_limit', 'main_relayhost_port'],
+        valid:   [0, 242, 51_200_000 ],
+        invalid: [-1, 2.42, 'string', ['array'], { 'ha' => 'sh' }],
+        message: '(expects an Integer value|expects an Integer\[0\] value)',
+      },
+      'Optional[Array[String[1]]]' => {
         name:    ['main_smtpd_helo_restrictions', 'main_smtpd_recipient_restrictions'],
         valid:   [['array'], ['array', 'array']],
-        invalid: ['invalid', 3, 2.42, { 'ha' => 'sh' }, true, false],
-        message: 'is not an Array',
+        invalid: ['invalid', [1], [[1]], [{ 'ha' => 'sh' }], 3, 2.42, { 'ha' => 'sh' }, true, false],
+        message: '(expects a value of type Undef or Array|index \d+ expects a String value)',
       },
-      'bool_stringified' => {
-        name:    ['service_hasrestart', 'service_hasstatus', 'transport_maps_external', 'virtual_aliases_external'],
-        valid:   [true, 'true', false, 'false'],
-        invalid: [nil, 'invalid', 3, 2.42, ['array'], { 'ha' => 'sh' }],
-        message: 'str2bool',
+      'Optional[Enum[yes, no]]' => {
+        name:    ['main_smtpd_helo_required'],
+        valid:   ['yes', 'no'],
+        invalid: [true, false, 'invalid', 3, 2.42, ['array'], { 'ha' => 'sh' }],
+        message: 'expects an undef value or a match for Enum',
       },
-      'domain_name' => {
-        name:    ['main_mydomain', 'main_myhostname', 'main_relayhost'],
-        valid:   ['v.al.id', 'val.id'],
-        invalid: ['in,val.id', 'in_val.id', 2.42, ['array'], { 'ha' => 'sh' }],
-        message: 'must be a domain name and is set to',
-      },
-      'hash' => {
+      'Optional[Hash]' => {
         name:    ['transport_maps', 'virtual_aliases'],
         valid:   [{ 'ha' => 'sh' }, { 'test1@test.void' => 'destination1', 'test2@test.void' => ['destination2', 'destination3'] }],
         invalid: [true, false, 'invalid', 3, 2.42, ['array']],
-        message: 'is not a Hash',
+        message: 'expects a value of type Undef or Hash',
       },
-      'integer' => {
-        name:    ['main_mailbox_size_limit', 'main_relayhost_port'],
-        valid:   ['242'],
-        invalid: ['invalid', 2.42, ['array'], { 'ha' => 'sh' }],
-        message: 'must be an integer',
-      },
-      'not_empty_string' => {
-        name:    ['main_alias_database', 'main_alias_maps', 'main_inet_interfaces', 'main_inet_protocols', 'main_mynetworks',
-                  'main_myorigin', 'main_setgid_group', 'main_transport_maps', 'main_virtual_alias_maps', 'service_name'],
+      'Optional[String[1]]' => {
+        name:    ['main_mailbox_command', 'main_relay_domains', 'main_smtpd_tls_mandatory_protocols', 'main_smtpd_tls_protocols', 'main_smtpd_tls_security_level',
+                  'main_smtp_tls_mandatory_protocols', 'main_smtp_tls_protocols', 'main_smtp_tls_security_level', 'main_virtual_alias_domains'],
         valid:   ['valid'],
-        invalid: ['', [], {}],
-        message: 'must contain a valid value',
+        invalid: [['array'], { 'ha' => 'sh' }],
+        message: 'expects a value of type Undef or String',
       },
-      'not_empty_string/array' => {
-        name:    ['packages'],
-        valid:   ['valid', ['array']],
-        invalid: ['', [], 3, 2.42, { 'ha' => 'sh' }],
-        message: 'must contain a valid value',
+      'Stdlib::Absolutepath & Optional[Stdlib::Absolutepath]' => {
+        name:    ['main_command_directory', 'main_daemon_directory', 'main_data_directory', 'main_queue_directory', 'main_smtpd_tls_cert_file', 'main_smtpd_tls_key_file'],
+        valid:   ['/absolute/filepath', '/absolute/directory/'], # cant test undef :(
+        invalid: ['relative/path', 3, 2.42, ['array'], { 'ha' => 'sh' }],
+        message: 'expects a Stdlib::Absolutepath',
       },
-      'regex_running/stopped' => {
+      'Stdlib::Ensure::Service' => {
         name:    ['service_ensure'],
         valid:   ['running', 'stopped'],
         invalid: ['invalid', 3, 2.42, ['array'], { 'ha' => 'sh' }],
-        message: 'may be either \'running\' or \'stopped\'',
+        message: 'Enum\[\'running\', \'stopped\'\]',
       },
-      'regex_true/false/manual' => {
-        name:    ['service_enable'],
-        valid:   [true, 'true', false, 'false', 'manual'],
-        invalid: ['invalid', 3, 2.42, ['array'], { 'ha' => 'sh' }],
-        message: 'may be either \'true\', \'false\' or \'manual\'',
+      'Stdlib::Host & Optional[Stdlib::Host]' => {
+        name:    ['main_inet_interfaces', 'main_mydestination', 'main_mydomain', 'main_myhostname', 'main_mynetworks', 'main_relayhost'],
+        valid:   ['127.0.0.1', 'localhost', 'v.al.id', 'val.id'],
+        invalid: ['in valid', 3, 2.42, ['array'], { 'ha' => 'sh' }],
+        message: 'expects a Stdlib::Host',
       },
-      'regex_yes/no' => {
-        name:    ['main_append_dot_mydomain', 'main_biff', 'main_smtpd_helo_required'],
-        valid:   ['yes', 'no'],
-        invalid: [true, false, 'invalid', 3, 2.42, ['array'], { 'ha' => 'sh' }],
-        message: 'may be either \'yes\' or \'no\'',
-      },
-      'string' => {
-        name:    ['main_alias_database', 'main_alias_maps', 'main_inet_interfaces', 'main_inet_protocols', 'main_mailbox_command',
-                  'main_mydestination', 'main_mynetworks', 'main_myorigin', 'main_relay_domains', 'main_setgid_group',
-                  'main_smtp_tls_mandatory_protocols', 'main_smtp_tls_protocols', 'main_smtp_tls_security_level',
-                  'main_smtpd_tls_mandatory_protocols', 'main_smtpd_tls_protocols', 'main_smtpd_tls_security_level',
-                  'main_transport_maps', 'main_virtual_alias_domains', 'main_virtual_alias_maps', 'service_name'],
+      'String[1]' => {
+        name:    ['main_alias_database', 'main_alias_maps', 'main_inet_protocols', 'main_myorigin', 'main_recipient_delimiter', 'main_setgid_group', 'main_transport_maps',
+                  'main_virtual_alias_maps', 'service_name'],
         valid:   ['valid'],
-        invalid: [['array'], { 'ha' => 'sh' }],
-        message: 'is not a string',
+        invalid: ['', 3, 2.42, ['array'], { 'ha' => 'sh' }],
+        message: '(expects a String value|expects a String\[1\] value)',
+      },
+      'Variant[Boolean, Enum[\'true\', \'false\', \'manual\']]' => {
+        name:    ['service_enable'],
+        valid:   [true, false, 'true', 'false', 'manual'],
+        invalid: ['invalid', 3, 2.42, ['array'], { 'ha' => 'sh' }],
+        message: 'value of type Boolean or Enum',
       },
     }
 

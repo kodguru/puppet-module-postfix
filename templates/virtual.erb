@@ -1,8 +1,8 @@
 # This file is being maintained by Puppet.
 # DO NOT EDIT
 
-<% if @virtual_aliases_real -%>
-<% @virtual_aliases_real.sort.each do |key, value| -%>
+<% if @virtual_aliases -%>
+<% @virtual_aliases.sort.each do |key, value| -%>
 <%= key %>		<% if value.is_a? Array -%>
 <%= value.join(',') %>
 <% else -%>

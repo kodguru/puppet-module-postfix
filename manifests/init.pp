@@ -197,7 +197,24 @@
 #  for Postfix releases after the middle of 2015, "!SSLv2" for older releases.
 #
 # @param main_smtpd_tls_protocols
-#   FIXME: Add description
+#   TLS protocols accepted by the Postfix SMTP server with opportunistic TLS
+#   encryption. If the list is empty, the server supports all available TLS
+#   protocol versions. A non-empty value is a list of protocol names to include
+#   or exclude, separated by whitespace, commas or colons.
+#   The valid protocol names (see SSL_get_version(3)) are "SSLv2", "SSLv3",
+#   "TLSv1", "TLSv1.1", "TLSv1.2" and "TLSv1.3". Starting with Postfix 3.6,
+#   the default value is ">=TLSv1", which sets TLS 1.0 as the lowest supported
+#   TLS protocol version (see below). Older releases use the "!" exclusion
+#   syntax, also described below.
+#   As of Postfix 3.6, the preferred way to limit the range of acceptable
+#   protocols is to set the lowest acceptable TLS protocol version and/or the
+#   highest acceptable TLS protocol version. To set the lower bound include an
+#   element of the form: ">=version" where version is a either one of the TLS
+#   protocol names listed above, or a hexadecimal number corresponding to the
+#   desired TLS protocol version (0301 for TLS 1.0, 0302 for TLS 1.1, etc.).
+#   For the upper bound, use "<=version". There must be no whitespace between
+#   the ">=" or "<=" symbols and the protocol name or number. 
+#   Read more in man pages.
 #
 # @param main_smtpd_tls_security_level
 #   The SMTP TLS security level for the Postfix SMTP server. Specify one of the

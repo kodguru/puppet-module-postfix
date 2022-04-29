@@ -132,28 +132,28 @@
 #   SMTP recipient restrictions.
 #
 # @param main_relayhost
-#  The next-hop destination of non-local mail; overrides non-local domains
-#  in recipient addresses. This information is overruled with relay_transport,
-#  sender_dependent_default_transport_maps, default_transport,
-#  sender_dependent_relayhost_maps and with the transport(5) table.
-#  In the case of SMTP, specify a domain name, hostname, hostname:port,
-#  [hostname]:port, [hostaddress] or [hostaddress]:port. The form [hostname]
-#  turns off MX lookups.
+#   The next-hop destination of non-local mail; overrides non-local domains
+#   in recipient addresses. This information is overruled with relay_transport,
+#   sender_dependent_default_transport_maps, default_transport,
+#   sender_dependent_relayhost_maps and with the transport(5) table.
+#   In the case of SMTP, specify a domain name, hostname, hostname:port,
+#   [hostname]:port, [hostaddress] or [hostaddress]:port. The form [hostname]
+#   turns off MX lookups.
 #
 # @param main_relayhost_port
-#  The next-hop destination of non-local mail; overrides non-local domains
-#  in recipient addresses. This information is overruled with relay_transport,
-#  sender_dependent_default_transport_maps, default_transport,
-#  sender_dependent_relayhost_maps and with the transport(5) table.
-#  In the case of SMTP, specify a domain name, hostname, hostname:port,
-#  [hostname]:port, [hostaddress] or [hostaddress]:port. The form [hostname]
-#  turns off MX lookups.
+#   The next-hop destination of non-local mail; overrides non-local domains
+#   in recipient addresses. This information is overruled with relay_transport,
+#   sender_dependent_default_transport_maps, default_transport,
+#   sender_dependent_relayhost_maps and with the transport(5) table.
+#   In the case of SMTP, specify a domain name, hostname, hostname:port,
+#   [hostname]:port, [hostaddress] or [hostaddress]:port. The form [hostname]
+#   turns off MX lookups.
 #
 # @param main_setgid_group
-#  The group ownership of set-gid Postfix commands and of group-writable
-#  Postfix directories. When this parameter value is changed you need to re-run
-#  "postfix set-permissions" (with Postfix version 2.0 and earlier:
-#  "/etc/postfix/post-install set-permissions".
+#   The group ownership of set-gid Postfix commands and of group-writable
+#   Postfix directories. When this parameter value is changed you need to re-run
+#   "postfix set-permissions" (with Postfix version 2.0 and earlier:
+#   "/etc/postfix/post-install set-permissions".
 #
 # @param main_smtpd_helo_required
 #   Require that a remote SMTP client introduces itself with the HELO or EHLO
@@ -191,10 +191,10 @@
 #   File with the Postfix SMTP server RSA private key in PEM format.
 #
 # @param main_smtpd_tls_mandatory_protocols
-#  List of SSL/TLS protocols that the Postfix SMTP server will use with mandatory
-#  TLS encryption. An empty value means allow all protocols. The valid protocol
-#  names, are "SSLv2", "SSLv3" and "TLSv1". The default value is "!SSLv2, !SSLv3"
-#  for Postfix releases after the middle of 2015, "!SSLv2" for older releases.
+#   List of SSL/TLS protocols that the Postfix SMTP server will use with mandatory
+#   TLS encryption. An empty value means allow all protocols. The valid protocol
+#   names, are "SSLv2", "SSLv3" and "TLSv1". The default value is "!SSLv2, !SSLv3"
+#   for Postfix releases after the middle of 2015, "!SSLv2" for older releases.
 #
 # @param main_smtpd_tls_protocols
 #   TLS protocols accepted by the Postfix SMTP server with opportunistic TLS
@@ -240,18 +240,18 @@
 #   fingerprint, verify, secure.
 #
 # @param main_transport_maps
-#  Optional lookup tables with mappings from recipient address to (message
-#  delivery transport, next-hop destination). See transport(5) for details.
-#  This parameter can be used to specify a file not managed by this puppet module
-#  to provide alternative lookup sources. For example ldap, nis, mysql, pcre, etc.
-#  For more information see the man pages for postmap(1), transport(5)
+#   Optional lookup tables with mappings from recipient address to (message
+#   delivery transport, next-hop destination). See transport(5) for details.
+#   This parameter can be used to specify a file not managed by this puppet module
+#   to provide alternative lookup sources. For example ldap, nis, mysql, pcre, etc.
+#   For more information see the man pages for postmap(1), transport(5)
 #
 # @param main_virtual_alias_domains
-#  Postfix is final destination for the specified list of virtual alias domains,
-#  that is, domains for which all addresses are aliased to addresses in other
-#  local or remote domains. The SMTP server validates recipient addresses with
-#  $virtual_alias_maps and rejects non-existent recipients. See also the virtual
-#  alias domain class in the ADDRESS_CLASS_README file.
+#   Postfix is final destination for the specified list of virtual alias domains,
+#   that is, domains for which all addresses are aliased to addresses in other
+#   local or remote domains. The SMTP server validates recipient addresses with
+#   $virtual_alias_maps and rejects non-existent recipients. See also the virtual
+#   alias domain class in the ADDRESS_CLASS_README file.
 #
 # @param main_virtual_alias_maps
 #   Optional lookup tables that alias specific mail addresses or domains to other
@@ -271,10 +271,10 @@
 #   Whether a service should be running. Valid values are 'stopped' or 'running'.
 #
 # @param service_hasrestart
-#  Specify that an init script has a restart command. If this is false and you do
-#  not specify a command in the restart attribute, the init scripts stop and
-#  start commands will be used. Defaults to false. Valid values are 'true' or
-#  'false'.
+#   Specify that an init script has a restart command. If this is false and you do
+#   not specify a command in the restart attribute, the init scripts stop and
+#   start commands will be used. Defaults to false. Valid values are 'true' or
+#   'false'.
 #
 # @param service_hasstatus
 #   Declare whether the services init script has a functional status command;

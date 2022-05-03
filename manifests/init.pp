@@ -286,9 +286,6 @@
 #   platforms where services have short system names and long display names,
 #   this should be the short name.
 #
-# @param template_main_cf
-#   The name of the template file to use for main.cf.
-#
 # @param transport_maps_external
 #   Use a non-puppet managed source for the transport_maps, for example nis: or
 #   ldap:. This parameter will cause the value of main_transport_maps to be
@@ -351,7 +348,6 @@ class postfix (
   Boolean $service_hasrestart                                       = true,
   Boolean $service_hasstatus                                        = true,
   String[1] $service_name                                           = 'postfix',
-  String[1] $template_main_cf                                       = 'postfix/main.cf.erb',
   Boolean $transport_maps_external                                  = false,
   Optional[Hash] $transport_maps                                    = undef,
   Boolean $virtual_aliases_external                                 = false,
@@ -379,7 +375,7 @@ class postfix (
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
-    content => template($template_main_cf),
+    content => template('postfix/main.cf.erb'),
   }
 
   if $virtual_aliases != undef {

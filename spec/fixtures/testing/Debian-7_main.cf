@@ -1,0 +1,57 @@
+# alias_database = hash:/etc/aliases
+alias_database = hash:/etc/aliases
+
+# alias_maps = hash:/etc/aliases, nis:mail.aliases
+alias_maps = hash:/etc/aliases
+
+# append_dot_mydomain = yes
+append_dot_mydomain = no
+
+# biff = yes
+biff = no
+
+# command_directory = /usr/sbin
+command_directory = /usr/sbin
+
+# daemon_directory = /usr/libexec/postfix (RHEL & Suse)
+# daemon_directory = /usr/lib/postfix (Debian & Ubuntu)
+daemon_directory = /usr/lib/postfix
+
+# data_directory = /var/lib/postfix
+data_directory = /var/lib/postfix
+
+# inet_interfaces = all
+inet_interfaces = 127.0.0.1
+
+# inet_protocols = ipv4 (RHEL & Suse)
+# inet_protocols = all (Debian & Ubuntu)
+inet_protocols = ipv4
+
+# mailbox_size_limit = 51200000
+mailbox_size_limit = 0
+
+# mydestination = $myhostname, localhost.$mydomain, localhost
+mydestination = localhost
+
+# myhostname = foo.localdomain (Debian, Suse & Ubuntu)
+# myhostname = foo.example.com (RHEL)
+myhostname = foo.example.com
+
+# mynetworks = 127.0.0.0/8 10.32.112.0/255.255.240.0 (RHEL & Suse)
+# mynetworks = 127.0.0.0/8 10.32.112.0/255.255.240.0 [::1]/128 [fe80::]/64 (Debian & Ubuntu)
+mynetworks = 127.0.0.0/8
+
+# myorigin = $myhostname
+myorigin = $myhostname
+
+# queue_directory = /var/spool/postfix
+queue_directory = /var/spool/postfix
+
+# recipient_delimiter =
+recipient_delimiter = +
+
+# relayhost =
+relayhost = mailhost.example.com:25
+
+# setgid_group = postdrop
+setgid_group = postdrop

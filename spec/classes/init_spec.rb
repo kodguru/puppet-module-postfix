@@ -324,8 +324,7 @@ describe 'postfix' do
       let(:params) { { main_transport_maps: 'hash:/test/ing', transport_maps: { 'test@test.ing' => 'test' } } }
 
       it { is_expected.to contain_file('postfix_main.cf').with_content(%r{transport_maps = hash:/test/ing}) }
-      # FIXME: exec(postfix_rebuild_transport) should use main_transport_maps too but it is hardcoded instead
-      it { is_expected.to contain_exec('postfix_rebuild_transport').with_command('/usr/sbin/postmap hash:/etc/postfix/transport') }
+      it { is_expected.to contain_exec('postfix_rebuild_transport').with_command('/usr/sbin/postmap hash:/test/ing') }
     end
 
     context "on #{os} with main_transport_maps set to valid hash:/test/ing when transport_maps_external is set to valid value" do

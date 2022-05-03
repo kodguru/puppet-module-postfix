@@ -417,7 +417,7 @@ class postfix (
       content => template('postfix/transport.erb'),
     }
     exec { 'postfix_rebuild_transport':
-      command     => "${main_command_directory}/postmap hash:/etc/postfix/transport",
+      command     => "${main_command_directory}/postmap ${main_transport_maps}",
       refreshonly => true,
       subscribe   => File['postfix_transport'],
     }

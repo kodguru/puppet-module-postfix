@@ -1,125 +1,69 @@
-# alias_database = hash:/etc/aliases
 alias_database = <%= @main_alias_database %>
-
-# alias_maps = hash:/etc/aliases, nis:mail.aliases
 alias_maps = <%= @main_alias_maps %>
-
-# append_dot_mydomain = yes
 append_dot_mydomain = <%= @main_append_dot_mydomain %>
-
-# biff = yes
 biff = <%= @main_biff %>
-
-# command_directory = /usr/sbin
 command_directory = <%= @main_command_directory %>
-
-# daemon_directory = /usr/libexec/postfix (RHEL & Suse)
-# daemon_directory = /usr/lib/postfix (Debian & Ubuntu)
 daemon_directory = <%= @main_daemon_directory %>
-
-# data_directory = /var/lib/postfix
 data_directory = <%= @main_data_directory %>
-
-# inet_interfaces = all
 inet_interfaces = <%= @main_inet_interfaces %>
-
-# inet_protocols = ipv4 (RHEL & Suse)
-# inet_protocols = all (Debian & Ubuntu)
 inet_protocols = <%= @main_inet_protocols %>
 <% if @main_smtp_tls_mandatory_protocols -%>
-
 smtp_tls_mandatory_protocols = <%= @main_smtp_tls_mandatory_protocols %>
 <% end -%>
 <% if @main_smtp_tls_protocols -%>
-
 smtp_tls_protocols = <%= @main_smtp_tls_protocols %>
 <% end -%>
 <% if @main_smtp_tls_security_level -%>
-
 smtp_tls_security_level = <%= @main_smtp_tls_security_level %>
 <% end -%>
 <% if @main_smtpd_helo_required -%>
-
 smtpd_helo_required = <%= @main_smtpd_helo_required %>
 <% end -%>
 <% if @main_smtpd_helo_restrictions -%>
-
 smtpd_helo_restrictions = <%= @main_smtpd_helo_restrictions.join(",\n    ") %>
 <% end -%>
 <% if @main_smtpd_recipient_restrictions -%>
-
 smtpd_recipient_restrictions = <%= @main_smtpd_recipient_restrictions.join(",\n    ") %>
 <% end -%>
 <% if @main_smtpd_tls_mandatory_protocols -%>
-
 smtpd_tls_mandatory_protocols = <%= @main_smtpd_tls_mandatory_protocols %>
 <% end -%>
 <% if @main_smtpd_tls_protocols -%>
-
 smtpd_tls_protocols = <%= @main_smtpd_tls_protocols %>
 <% end -%>
 <% if @main_smtpd_tls_security_level -%>
-
 smtpd_tls_security_level = <%= @main_smtpd_tls_security_level %>
 <% end -%>
 <% if @main_smtpd_tls_key_file -%>
-
 smtpd_tls_key_file = <%= @main_smtpd_tls_key_file %>
 <% end -%>
 <% if @main_smtpd_tls_cert_file -%>
-
 smtpd_tls_cert_file = <%= @main_smtpd_tls_cert_file %>
 <% end -%>
 <% if @main_mailbox_command -%>
-
 mailbox_command = <%= @main_mailbox_command %>
 <% end -%>
-
-# mailbox_size_limit = 51200000
 mailbox_size_limit = <%= @main_mailbox_size_limit.to_s %>
-
-# mydestination = $myhostname, localhost.$mydomain, localhost
 mydestination = <%= @main_mydestination %>
 <% if @main_mydomain -%>
-
 mydomain = <%= @main_mydomain %>
 <% end -%>
-
-# myhostname = <%= @hostname %>.localdomain (Debian, Suse & Ubuntu)
-# myhostname = <%= @fqdn %> (RHEL)
 myhostname = <%= @main_myhostname %>
-
-# mynetworks = 127.0.0.0/8 <%= @network_eth0 %>/<%= @netmask_eth0 %> (RHEL & Suse)
-# mynetworks = 127.0.0.0/8 <%= @network_eth0 %>/<%= @netmask_eth0 %> [::1]/128 [fe80::]/64 (Debian & Ubuntu)
 mynetworks = <%= @main_mynetworks %>
-
-# myorigin = $myhostname
 myorigin = <%= @main_myorigin %>
-
-# queue_directory = /var/spool/postfix
 queue_directory = <%= @main_queue_directory %>
-
-# recipient_delimiter =
 recipient_delimiter = <%= @main_recipient_delimiter %>
 <% if @main_relay_domains -%>
-
 relay_domains = <%= @main_relay_domains %>
 <% end -%>
-
-# relayhost =
 relayhost = <%= @main_relayhost %>:<%= @main_relayhost_port.to_s %>
-
-# setgid_group = postdrop
 setgid_group = <%= @main_setgid_group %>
 <% if @main_virtual_alias_domains -%>
-
 virtual_alias_domains = <%= @main_virtual_alias_domains %>
 <% end -%>
 <% if @main_virtual_alias_maps and (@virtual_aliases or @virtual_aliases_external) -%>
-
 virtual_alias_maps = <%= @main_virtual_alias_maps %>
 <% end -%>
 <% if @main_transport_maps and (@transport_maps or @transport_maps_external) -%>
-
 transport_maps = <%= @main_transport_maps %>
 <% end -%>

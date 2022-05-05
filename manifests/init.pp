@@ -29,6 +29,14 @@
 # @param main_command_directory
 #   The location of all postfix administrative commands.
 #
+# @param main_compatibility_level
+#   A safety net that causes Postfix to run with backwards-compatible default
+#   settings after an upgrade to a newer Postfix version.
+#   With backwards compatibility turned on (the main.cf compatibility_level
+#   value is less than the Postfix built-in value), Postfix looks for settings
+#   that are left at their implicit default value, and logs a message when a
+#   backwards-compatible default setting is required. 
+#
 # @param main_daemon_directory
 #   The directory with Postfix support programs and daemon programs. These should
 #   not be invoked directly by humans. The directory must be owned by root.
@@ -38,6 +46,16 @@
 #   pseudo-random numbers). This directory must be owned by the mail_owner
 #   account, and must not be shared with non-Postfix software. This feature
 #   is available in Postfix 2.5 and later.
+#
+# @param main_debug_peer_level
+#  The increment in verbose logging level when a nexthop destination, remote
+#  client or server name or network address matches a pattern given with the
+#  debug_peer_list parameter.
+#  Per-nexthop debug logging is available in Postfix 3.6 and later.
+#
+# @param main_html_directory
+#   The location of Postfix HTML files that describe how to build, configure
+#   or operate a specific Postfix subsystem or feature.
 #
 # @param main_inet_interfaces
 #   The network interface addresses that this mail system receives mail on.
@@ -72,12 +90,39 @@
 #   1) mail for root should always be aliased to a real user and 2) do not log
 #   in as root, use "su" instead.
 #
+# @param main_manpage_directory
+#   Where the Postfix manual pages are installed.
+#
 # @param main_mailbox_size_limit
 #   The maximal size of any local(8) individual mailbox or maildir file, or
 #   zero (no limit). In fact, this limits the size of any file that is written
 #   to upon local delivery, including files written by external commands that
 #   are executed by the local(8) delivery agent.
 #   Note: This limit must not be smaller than the message size limit.
+#
+# @param main_mailq_path
+#   Sendmail compatibility feature that specifies where the Postfix mailq(1)
+#   command is installed. This command can be used to list the Postfix mail
+#   queue.
+#
+# @param main_mail_owner
+#   The UNIX system account that owns the Postfix queue and most Postfix daemon
+#   processes. Specify the name of an unprivileged user account that does not
+#   share a user or group ID with other accounts, and that owns no other files
+#   or processes on the system. In particular, do not specify nobody or daemon.
+#   PLEASE USE A DEDICATED USER ID AND GROUP ID.
+#
+#   When this parameter value is changed you need to re-run
+#   "postfix set-permissions" (with Postfix version 2.0 and earlier:
+#   "/etc/postfix/post-install set-permissions".
+#
+# @param main_meta_directory
+#  The location of non-executable files that are shared among multiple Postfix
+#  instances, such as postfix-files, dynamicmaps.cf, and the multi-instance
+#  template files main.cf.proto and master.cf.proto. This directory should
+#  contain only Postfix-related files. Typically, the meta_directory parameter
+#  has the same default as the config_directory parameter (/etc/postfix or
+#  /usr/local/etc/postfix). 
 #
 # @param main_mydestination
 #   The list of domains that are delivered via the $local_transport mail
@@ -114,9 +159,18 @@
 #   change this to $mydomain and (2) set up a domain-wide alias database that
 #   aliases each user to user@that.users.mailhost.
 #
+# @param main_newaliases_path
+#  Sendmail compatibility feature that specifies the location of the
+#  newaliases(1) command. This command can be used to rebuild the local(8)
+#  aliases(5) database.
+#
 # @param main_queue_directory
 #   The location of the Postfix top-level queue directory. This is the root
 #   directory of Postfix daemon processes that run chrooted.
+#
+# @param main_readme_directory
+#   The location of Postfix README files that describe how to build, configure
+#   or operate a specific Postfix subsystem or feature. 
 #
 # @param main_recipient_delimiter
 #   The set of characters that can separate a user name from its address
@@ -148,6 +202,16 @@
 #   In the case of SMTP, specify a domain name, hostname, hostname:port,
 #   [hostname]:port, [hostaddress] or [hostaddress]:port. The form [hostname]
 #   turns off MX lookups.
+#
+# @param main_sample_directory
+#  The name of the directory with example Postfix configuration files. Starting
+#  with Postfix 2.1, these files have been replaced with the postconf(5) manual
+#  page.
+#
+# @param main_sendmail_path
+#   A Sendmail compatibility feature that specifies the location of the Postfix
+#   sendmail(1) command. This command can be used to submit mail into the Postfix
+#   queue.
 #
 # @param main_setgid_group
 #   The group ownership of set-gid Postfix commands and of group-writable
@@ -182,6 +246,20 @@
 #   smtpd_recipient_restrictions will no longer result in a permissive mail relay
 #   policy.
 #   Read more in man pages.
+#
+# @param main_smtpd_relay_restrictions
+#   Access restrictions for mail relay control that the Postfix SMTP server
+#   applies in the context of the RCPT TO command, before
+#   smtpd_recipient_restrictions.
+#   Read more in man pages.
+#
+# @param main_shlib_directory
+#  The location of Postfix dynamically-linked libraries (libpostfix-*.so), and
+#  the default location of Postfix database plugins (postfix-*.so) that have a
+#  relative pathname in the dynamicmaps.cf file. The shlib_directory parameter
+#  defaults to "no" when Postfix dynamically-linked libraries and database
+#  plugins are disabled at compile time, otherwise it typically defaults to
+#  /usr/lib/postfix or /usr/local/lib/postfix.
 #
 # @param main_smtpd_tls_cert_file
 #   File with the Postfix SMTP server RSA certificate in PEM format. This file
@@ -219,6 +297,32 @@
 # @param main_smtpd_tls_security_level
 #   The SMTP TLS security level for the Postfix SMTP server. Specify one of the
 #   following security levels: none, may, encrypt.
+#
+# @param main_smtpd_banner
+#   The text that follows the 220 status code in the  SMTP  greeting banner.
+#
+# @param main_smtp_tls_cafile
+#   A file containing CA certificates of root CAs trusted to sign either remote
+#   SMTP server certificates or intermediate CA certificates. These are loaded
+#   into memory before the smtp(8) client enters the chroot jail. If the number
+#   of trusted roots is large, consider using smtp_tls_CApath instead, but note
+#   that the latter directory must be present in the chroot jail if the smtp(8)
+#   client is chrooted. This file may also be used to augment the client
+#   certificate trust chain, but it is best to include all the required
+#   certificates directly in $smtp_tls_cert_file
+#   (or, Postfix >= 3.4 $smtp_tls_chain_files).
+#   Specify "smtp_tls_CAfile = /path/to/system_CA_file" to use ONLY the system-
+#   supplied default Certification Authority certificates.
+#   Specify "tls_append_default_CA = no" to prevent Postfix from appending the
+#   system-supplied default CAs and trusting third-party certificates. 
+#
+# @param main_smtp_tls_capath
+#   Directory with PEM format Certification Authority certificates that the
+#   Postfix SMTP client uses to verify a remote SMTP server certificate. Do not
+#   forget to create the necessary "hash" links with, for example,
+#   "$OPENSSL_HOME/bin/c_rehash /etc/postfix/certs".
+#   To use this option in chroot mode, this directory (or a copy) must be inside
+#   the chroot jail. 
 #
 # @param main_smtp_tls_mandatory_protocols
 #   List of SSL/TLS protocols that the Postfix SMTP client will use with
@@ -295,6 +399,15 @@
 #   Hash of entries to add to transport_maps file defined by
 #   $main_transport_maps. The value must be a string.
 #
+# @param main_unknown_local_recipient_reject_code
+#   The numerical Postfix SMTP server response code when a recipient address is
+#   local, and $local_recipient_maps specifies a list of lookup tables that does
+#   not match the recipient. A recipient address is local when its domain matches
+#   $mydestination, $proxy_interfaces or $inet_interfaces.
+#   The default setting is 550 (reject mail) but it is safer to initially use 450
+#   (try again later) so you have time to find out if your local_recipient_maps 
+#   settings are OK.
+#
 # @param virtual_aliases_external
 #   Use a non-puppet managed source for the virtual_aliases parameter, for
 #   example nis: or ldap:. This parameter will cause the value of
@@ -311,31 +424,47 @@ class postfix (
   Enum['yes', 'no'] $main_append_dot_mydomain                       = 'no',
   Enum['yes', 'no'] $main_biff                                      = 'no',
   Stdlib::Absolutepath $main_command_directory                      = '/usr/sbin',
+  Optional[String[1]] $main_compatibility_level                     = undef,
   Optional[Stdlib::Absolutepath] $main_daemon_directory             = undef,
   Stdlib::Absolutepath $main_data_directory                         = '/var/lib/postfix',
+  Optional[String[1]] $main_debug_peer_level                        = undef,
+  Optional[Stdlib::Absolutepath] $main_html_directory               = undef,
   Stdlib::Host $main_inet_interfaces                                = '127.0.0.1',
   String[1] $main_inet_protocols                                    = 'ipv4',
   Optional[String[1]] $main_mailbox_command                         = undef,
+  Optional[Stdlib::Absolutepath] $main_manpage_directory            = undef,
   Integer[0] $main_mailbox_size_limit                               = 0,
+  Optional[Stdlib::Absolutepath] $main_mailq_path                   = undef,
+  Optional[String[1]] $main_mail_owner                              = undef,
+  Optional[Stdlib::Absolutepath] $main_meta_directory               = undef,
   Stdlib::Host $main_mydestination                                  = 'localhost',
   Optional[Stdlib::Host] $main_mydomain                             = undef,
   Stdlib::Host $main_myhostname                                     = $::fqdn,
   Stdlib::Host $main_mynetworks                                     = '127.0.0.0/8',
   String[1] $main_myorigin                                          = '$myhostname',
+  Optional[Stdlib::Absolutepath] $main_newaliases_path              = undef,
   Stdlib::Absolutepath $main_queue_directory                        = '/var/spool/postfix',
+  Optional[String[1]] $main_readme_directory                        = undef,
   String[1] $main_recipient_delimiter                               = '+',
   Optional[String[1]] $main_relay_domains                           = undef,
+  Optional[Stdlib::Absolutepath] $main_sample_directory             = undef,
+  Optional[Stdlib::Absolutepath] $main_sendmail_path                = undef,
   Stdlib::Host $main_relayhost                                      = "mailhost.${::domain}",
   Integer[0] $main_relayhost_port                                   = 25,
   String[1] $main_setgid_group                                      = undef,
   Optional[Enum['yes', 'no']] $main_smtpd_helo_required             = undef,
   Optional[Array[String[1]]] $main_smtpd_helo_restrictions          = undef,
   Optional[Array[String[1]]] $main_smtpd_recipient_restrictions     = undef,
+  Optional[String[1]] $main_smtpd_relay_restrictions                = undef,
+  Optional[Stdlib::Absolutepath] $main_shlib_directory              = undef,
+  Optional[String[1]] $main_smtpd_banner                            = undef,
   Optional[Stdlib::Absolutepath] $main_smtpd_tls_cert_file          = undef,
   Optional[Stdlib::Absolutepath] $main_smtpd_tls_key_file           = undef,
   Optional[String[1]] $main_smtpd_tls_mandatory_protocols           = undef,
   Optional[String[1]] $main_smtpd_tls_protocols                     = undef,
   Optional[String[1]] $main_smtpd_tls_security_level                = undef,
+  Optional[Stdlib::Absolutepath] $main_smtp_tls_cafile              = undef,
+  Optional[Stdlib::Absolutepath] $main_smtp_tls_capath              = undef,
   Optional[String[1]] $main_smtp_tls_mandatory_protocols            = undef,
   Optional[String[1]] $main_smtp_tls_protocols                      = undef,
   Optional[String[1]] $main_smtp_tls_security_level                 = undef,
@@ -350,6 +479,7 @@ class postfix (
   String[1] $service_name                                           = 'postfix',
   Boolean $transport_maps_external                                  = false,
   Optional[Hash] $transport_maps                                    = undef,
+  Optional[Integer[0]] $main_unknown_local_recipient_reject_code    = undef,
   Boolean $virtual_aliases_external                                 = false,
   Optional[Hash] $virtual_aliases                                   = undef,
 ) {

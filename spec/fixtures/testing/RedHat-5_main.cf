@@ -1,3 +1,6 @@
+# This file is being maintained by Puppet.
+# DO NOT EDIT
+
 alias_database = hash:/etc/aliases
 alias_maps = hash:/etc/aliases
 append_dot_mydomain = no

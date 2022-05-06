@@ -121,3 +121,8 @@ virtual_alias_maps = <%= @main_virtual_alias_maps %>
 <% if @main_transport_maps and (@transport_maps or @transport_maps_external) -%>
 transport_maps = <%= @main_transport_maps %>
 <% end -%>
+<% if @main_custom -%>
+<%   @main_custom.each do |line| -%>
+<%= line %>
+<%   end -%>
+<% end -%>

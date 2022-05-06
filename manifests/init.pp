@@ -37,6 +37,17 @@
 #   that are left at their implicit default value, and logs a message when a
 #   backwards-compatible default setting is required. 
 #
+# @param main_custom
+#   Array of custom lines to be added to Postfix configuration file main.cf.
+#   Each array item will add one line in the given order. Examples:
+#   ```['param = value']``` will add this line to main.cf:
+#   ```param = value```
+#   Multiline parameters can be added by setting the Postfix parameter in the
+#   first line like above. Additional values are placed as next array items
+#   with space(s) before the value(s).
+#   ```['param = value1', '  value2']``` will add these line to main.cf:
+#   ```param = value1\n value2```
+#
 # @param main_daemon_directory
 #   The directory with Postfix support programs and daemon programs. These should
 #   not be invoked directly by humans. The directory must be owned by root.
@@ -425,6 +436,7 @@ class postfix (
   Enum['yes', 'no'] $main_biff                                      = 'no',
   Stdlib::Absolutepath $main_command_directory                      = '/usr/sbin',
   Optional[String[1]] $main_compatibility_level                     = undef,
+  Optional[Array[String[1]]] $main_custom                           = undef,
   Optional[Stdlib::Absolutepath] $main_daemon_directory             = undef,
   Stdlib::Absolutepath $main_data_directory                         = '/var/lib/postfix',
   Optional[String[1]] $main_debug_peer_level                        = undef,

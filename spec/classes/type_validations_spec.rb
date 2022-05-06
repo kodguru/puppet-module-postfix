@@ -40,7 +40,7 @@ describe 'postfix' do
           message: '(expects an Integer value|expects an Integer\[0\] value)',
         },
         'Optional[Array[String[1]]]' => {
-          name:    ['main_smtpd_helo_restrictions', 'main_smtpd_recipient_restrictions'],
+          name:    ['main_custom', 'main_smtpd_helo_restrictions', 'main_smtpd_recipient_restrictions'],
           valid:   [['array'], ['array', 'array']],
           invalid: ['invalid', [1], [[1]], [{ 'ha' => 'sh' }], 3, 2.42, { 'ha' => 'sh' }, true, false],
           message: '(expects a value of type Undef or Array|index \d+ expects a String value)',

@@ -440,7 +440,7 @@ class postfix (
   Optional[Stdlib::Absolutepath] $main_daemon_directory             = undef,
   Stdlib::Absolutepath $main_data_directory                         = '/var/lib/postfix',
   Optional[String[1]] $main_debug_peer_level                        = undef,
-  Optional[Stdlib::Absolutepath] $main_html_directory               = undef,
+  Optional[String[1]] $main_html_directory                          = undef,
   Stdlib::Host $main_inet_interfaces                                = '127.0.0.1',
   String[1] $main_inet_protocols                                    = 'ipv4',
   Optional[String[1]] $main_mailbox_command                         = undef,

@@ -65,7 +65,7 @@ describe 'postfix' do
         },
         'Optional[String[1]]' => {
           name:    ['main_compatibility_level', 'main_html_directory', 'main_debug_peer_level', 'main_mailbox_command', 'main_mail_owner',
-                    'main_readme_directory', 'main_relay_domains', 'main_smtpd_banner', 'main_smtpd_relay_restrictions',
+                    'main_readme_directory', 'main_relay_domains', 'main_setgid_group', 'main_smtpd_banner', 'main_smtpd_relay_restrictions',
                     'main_smtpd_tls_mandatory_protocols', 'main_smtpd_tls_protocols', 'main_smtpd_tls_security_level',
                     'main_smtp_tls_mandatory_protocols', 'main_smtp_tls_protocols', 'main_smtp_tls_security_level', 'main_virtual_alias_domains'],
           valid:   ['valid'],
@@ -87,14 +87,14 @@ describe 'postfix' do
           message: 'Enum\[\'running\', \'stopped\'\]',
         },
         'Stdlib::Host & Optional[Stdlib::Host]' => {
-          name:    ['main_inet_interfaces', 'main_mydestination', 'main_mydomain', 'main_myhostname', 'main_mynetworks', 'main_relayhost'],
+          name:    ['main_inet_interfaces', 'main_mydomain', 'main_myhostname', 'main_mynetworks', 'main_relayhost'],
           valid:   ['127.0.0.1', 'localhost', 'v.al.id', 'val.id'],
           invalid: ['in valid', 3, 2.42, ['array'], { 'ha' => 'sh' }],
           message: 'expects a Stdlib::Host',
         },
         'String[1]' => {
-          name:    ['main_alias_database', 'main_alias_maps', 'main_inet_protocols', 'main_myorigin', 'main_recipient_delimiter', 'main_setgid_group', 'main_transport_maps',
-                    'main_virtual_alias_maps', 'service_name'],
+          name:    ['main_alias_database', 'main_alias_maps', 'main_inet_protocols', 'main_mydestination', 'main_myorigin', 'main_recipient_delimiter',
+                    'main_transport_maps', 'main_virtual_alias_maps', 'service_name'],
           valid:   ['valid'],
           invalid: ['', 3, 2.42, ['array'], { 'ha' => 'sh' }],
           message: '(expects a String value|expects a String\[1\] value)',

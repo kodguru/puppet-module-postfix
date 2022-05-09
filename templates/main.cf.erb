@@ -1,15 +1,33 @@
 # This file is being maintained by Puppet.
 # DO NOT EDIT
 
+<% if @main_alias_database -%>
 alias_database = <%= @main_alias_database %>
+<% end -%>
+<% if @main_alias_maps -%>
 alias_maps = <%= @main_alias_maps %>
+<% end -%>
+<% if @main_append_dot_mydomain -%>
 append_dot_mydomain = <%= @main_append_dot_mydomain %>
+<% end -%>
+<% if @main_biff -%>
 biff = <%= @main_biff %>
+<% end -%>
+<% if @main_command_directory -%>
 command_directory = <%= @main_command_directory %>
+<% end -%>
+<% if @main_daemon_directory -%>
 daemon_directory = <%= @main_daemon_directory %>
+<% end -%>
+<% if @main_data_directory -%>
 data_directory = <%= @main_data_directory %>
+<% end -%>
+<% if @main_inet_interfaces -%>
 inet_interfaces = <%= @main_inet_interfaces %>
+<% end -%>
+<% if @main_inet_protocols -%>
 inet_protocols = <%= @main_inet_protocols %>
+<% end -%>
 <% if @main_smtp_tls_mandatory_protocols -%>
 smtp_tls_mandatory_protocols = <%= @main_smtp_tls_mandatory_protocols %>
 <% end -%>
@@ -81,9 +99,15 @@ mydestination = <%= @main_mydestination %>
 <% if @main_mydomain -%>
 mydomain = <%= @main_mydomain %>
 <% end -%>
+<% if @main_myhostname -%>
 myhostname = <%= @main_myhostname %>
+<% end -%>
+<% if @main_mynetworks -%>
 mynetworks = <%= @main_mynetworks %>
+<% end -%>
+<% if @main_myorigin -%>
 myorigin = <%= @main_myorigin %>
+<% end -%>
 <% if @main_newaliases_path -%>
 newaliases_path = <%= @main_newaliases_path %>
 <% end -%>
@@ -102,7 +126,9 @@ relayhost = <%= @main_relayhost %>:<%= @main_relayhost_port.to_s %>
 <% if @main_relay_domains -%>
 relay_domains = <%= @main_relay_domains %>
 <% end -%>
+<% if @main_setgid_group -%>
 setgid_group = <%= @main_setgid_group %>
+<% end -%>
 <% if @main_shlib_directory -%>
 shlib_directory = <%= @main_shlib_directory %>
 <% end -%>

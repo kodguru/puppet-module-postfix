@@ -1,0 +1,21 @@
+---
+postfix::main_biff: 'no'
+postfix::main_append_dot_mydomain: 'no'
+postfix::main_readme_directory: 'no'
+postfix::main_compatibility_level: '3.6'
+postfix::main_mydestination: "$myhostname, %{hostname}, localhost.localdomain, localhost"
+postfix::main_smtpd_tls_cert_file: '/etc/ssl/certs/ssl-cert-snakeoil.pem'
+postfix::main_smtpd_tls_key_file: '/etc/ssl/certs/ssl-cert-snakeoil.key'
+postfix::main_smtpd_tls_security_level: 'may'
+postfix::main_smtp_tls_capath: '/etc/ssl/certs'
+postfix::main_smtp_tls_security_level: 'may'
+postfix::main_alias_maps: 'hash:/etc/aliases'
+postfix::main_alias_database: 'hash:/etc/aliases'
+postfix::main_mailbox_size_limit: 0
+postfix::main_recipient_delimiter: '+'
+postfix::main_inet_interfaces: 'loopback-only'
+postfix::main_inet_protocols: 'all'
+
+postfix::main_custom:
+  - 'smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache'
+  - 'smtpd_relay_restrictions = permit_mynetworks permit_sasl_authenticated defer_unauth_destination'

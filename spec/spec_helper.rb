@@ -38,6 +38,7 @@ end
 
 RSpec.configure do |c|
   c.default_facts = default_facts
+  c.default_facter_version = '4.0.0'
   c.hiera_config = 'hiera'
   c.before :each do
     # set to strictest setting for testing

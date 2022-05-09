@@ -1,0 +1,40 @@
+# This file is being maintained by Puppet.
+# DO NOT EDIT
+
+alias_database = hash:/etc/aliases
+alias_maps = hash:/etc/aliases
+append_dot_mydomain = no
+biff = no
+command_directory = /usr/sbin
+daemon_directory = /usr/libexec/postfix
+data_directory = /var/lib/postfix
+inet_interfaces = localhost
+inet_protocols = all
+smtp_tls_CAfile = /etc/pki/tls/certs/ca-bundle.crt
+smtp_tls_CApath = /etc/pki/tls/certs
+smtp_tls_security_level = may
+smtpd_tls_security_level = may
+smtpd_tls_key_file = /etc/pki/tls/certs/postfix.key
+smtpd_tls_cert_file = /etc/pki/tls/certs/postfix.pem
+compatibility_level = 2
+debug_peer_level = 2
+html_directory = no
+mailbox_size_limit = 0
+mailq_path = /usr/bin/mailq.postfix
+mail_owner = postfix
+manpage_directory = /usr/share/man
+meta_directory = /etc/postfix
+mydestination = localhost
+myhostname = foo.example.com
+mynetworks = 127.0.0.0/8
+myorigin = $myhostname
+newaliases_path = /usr/bin/newaliases.postfix
+queue_directory = /var/spool/postfix
+readme_directory = /usr/share/doc/postfix/README_FILES
+recipient_delimiter = +
+sample_directory = /usr/share/doc/postfix/samples
+sendmail_path = /usr/sbin/sendmail.postfix
+relayhost = mailhost.example.com:25
+setgid_group = postdrop
+shlib_directory = /usr/lib64/postfix
+unknown_local_recipient_reject_code = 550

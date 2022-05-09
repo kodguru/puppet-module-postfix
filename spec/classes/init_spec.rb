@@ -1,6 +1,6 @@
 require 'spec_helper'
 describe 'postfix' do
-  on_supported_os.each do |os, os_facts|
+  on_supported_os.sort.each do |os, os_facts|
     describe "on #{os} with default values for parameters" do
       let(:facts) { os_facts }
 
@@ -112,6 +112,24 @@ describe 'postfix' do
   on_supported_os(redhat).sort.each do |os, os_facts|
     let(:facts) { os_facts }
 
+    context "on #{os} with main_custom set to valid [param1 = value1]" do
+      let(:params) { { main_custom: ['param1 = value1'] } }
+
+      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{param1 = value1}) }
+    end
+
+    context "on #{os} with main_custom set to valid [param1 = value1, param2 = value2]" do
+      let(:params) { { main_custom: ['param1 = value1', 'param2 = value2'] } }
+
+      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{param1 = value1\nparam2 = value2}) }
+    end
+
+    context "on #{os} with main_custom set to valid [multilineparam =, value1, value2 ]" do
+      let(:params) { { main_custom: ['multilineparam =', '    value1', '    value2'] } }
+
+      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{multilineparam =\n    value1\n    value2}) }
+    end
+
     context "on #{os} with main_alias_database set to valid hash:/test/ing" do
       let(:params) { { main_alias_database: 'hash:/test/ing' } }
 
@@ -150,16 +168,34 @@ describe 'postfix' do
       it { is_expected.to contain_file('postfix_main.cf').with_content(%r{daemon_directory = /test/ing}) }
     end
 
+    context "on #{os} with main_compatibility_level set to valid /test/ing" do
+      let(:params) { { main_compatibility_level: '/test/ing' } }
+
+      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{compatibility_level = /test/ing}) }
+    end
+
     context "on #{os} with main_data_directory set to valid /test/ing" do
       let(:params) { { main_data_directory: '/test/ing' } }
 
       it { is_expected.to contain_file('postfix_main.cf').with_content(%r{data_directory = /test/ing}) }
     end
 
+    context "on #{os} with main_debug_peer_level set to valid /test/ing" do
+      let(:params) { { main_debug_peer_level: 'testing' } }
+
+      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{debug_peer_level = testing}) }
+    end
+
     context "on #{os} with main_inet_interfaces set to valid test.ing" do
       let(:params) { { main_inet_interfaces: 'test.ing' } }
 
       it { is_expected.to contain_file('postfix_main.cf').with_content(%r{inet_interfaces = test.ing}) }
+    end
+
+    context "on #{os} with main_html_directory set to valid /test/ing" do
+      let(:params) { { main_html_directory: '/test/ing' } }
+
+      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{html_directory = /test/ing}) }
     end
 
     context "on #{os} with main_inet_protocols set to valid ipv6" do
@@ -174,10 +210,28 @@ describe 'postfix' do
       it { is_expected.to contain_file('postfix_main.cf').with_content(%r{mailbox_command = /test/ing}) }
     end
 
-    context "on #{os} with main_mailbox_size_limit set to valid 242" do
-      let(:params) { { main_mailbox_size_limit: 242 } }
+    context "on #{os} with main_mailbox_command set to valid ipv6" do
+      let(:params) { { main_mailbox_command: '/test/ing' } }
 
-      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{mailbox_size_limit = 242}) }
+      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{mailbox_command = /test/ing}) }
+    end
+
+    context "on #{os} with main_manpage_directory set to valid /test/ing" do
+      let(:params) { { main_manpage_directory: '/test/ing' } }
+
+      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{manpage_directory = /test/ing}) }
+    end
+
+    context "on #{os} with main_mail_owner set to valid testing" do
+      let(:params) { { main_mail_owner: 'testing' } }
+
+      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{mail_owner = testing}) }
+    end
+
+    context "on #{os} with main_meta_directory set to valid /test/ing" do
+      let(:params) { { main_meta_directory: '/test/ing' } }
+
+      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{meta_directory = /test/ing}) }
     end
 
     context "on #{os} with main_mydestination set to valid 242" do
@@ -210,10 +264,24 @@ describe 'postfix' do
       it { is_expected.to contain_file('postfix_main.cf').with_content(%r{myorigin = test.ing}) }
     end
 
+    context "on #{os} with main_newaliases_path set to valid /test/ing" do
+      let(:params) { { main_newaliases_path: '/test/ing' } }
+
+      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{newaliases_path = /test/ing}) }
+    end
+
     context "on #{os} with main_queue_directory set to valid /test/ing" do
       let(:params) { { main_queue_directory: '/test/ing' } }
 
       it { is_expected.to contain_file('postfix_main.cf').with_content(%r{queue_directory = /test/ing}) }
+    end
+
+    ['/test/ing', 'no'].each do |param|
+      context "on #{os} with main_readme_directory set to valid #{param}" do
+        let(:params) { { main_readme_directory: param } }
+
+        it { is_expected.to contain_file('postfix_main.cf').with_content(%r{readme_directory = #{param}}) }
+      end
     end
 
     context "on #{os} with main_recipient_delimiter set to valid -" do
@@ -226,6 +294,18 @@ describe 'postfix' do
       let(:params) { { main_relay_domains: 'test.ing' } }
 
       it { is_expected.to contain_file('postfix_main.cf').with_content(%r{relay_domains = test.ing}) }
+    end
+
+    context "on #{os} with main_sample_directory set to valid /test/ing" do
+      let(:params) { { main_sample_directory: '/test/ing' } }
+
+      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{sample_directory = /test/ing}) }
+    end
+
+    context "on #{os} with main_sendmail_path set to valid /test/ing" do
+      let(:params) { { main_sendmail_path: '/test/ing' } }
+
+      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{sendmail_path = /test/ing}) }
     end
 
     context "on #{os} with main_relayhost set to valid test.ing" do
@@ -266,6 +346,24 @@ describe 'postfix' do
       it { is_expected.to contain_file('postfix_main.cf').with_content(%r{smtpd_recipient_restrictions = test,\n    ing}) }
     end
 
+    context "on #{os} with main_smtpd_relay_restrictions set to valid testing]" do
+      let(:params) { { main_smtpd_relay_restrictions: 'testing' } }
+
+      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{smtpd_relay_restrictions = testing}) }
+    end
+
+    context "on #{os} with main_shlib_directory set to valid /test/ing" do
+      let(:params) { { main_shlib_directory: '/test/ing' } }
+
+      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{shlib_directory = /test/ing}) }
+    end
+
+    context "on #{os} with main_smtpd_banner set to valid testing]" do
+      let(:params) { { main_smtpd_banner: 'testing' } }
+
+      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{smtpd_banner = testing}) }
+    end
+
     context "on #{os} with main_smtpd_tls_cert_file set to valid /test/ing" do
       let(:params) { { main_smtpd_tls_cert_file: '/test/ing' } }
 
@@ -278,22 +376,34 @@ describe 'postfix' do
       it { is_expected.to contain_file('postfix_main.cf').with_content(%r{smtpd_tls_key_file = /test/ing}) }
     end
 
-    context "on #{os} with main_smtpd_tls_mandatory_protocols set to valid /test/ing" do
+    context "on #{os} with main_smtpd_tls_mandatory_protocols set to valid testing" do
       let(:params) { { main_smtpd_tls_mandatory_protocols: 'testing' } }
 
       it { is_expected.to contain_file('postfix_main.cf').with_content(%r{smtpd_tls_mandatory_protocols = testing}) }
     end
 
-    context "on #{os} with main_smtpd_tls_protocols set to valid /test/ing" do
+    context "on #{os} with main_smtpd_tls_protocols set to valid testing" do
       let(:params) { { main_smtpd_tls_protocols: 'testing' } }
 
       it { is_expected.to contain_file('postfix_main.cf').with_content(%r{smtpd_tls_protocols = testing}) }
     end
 
-    context "on #{os} with main_smtpd_tls_security_level set to valid /test/ing" do
+    context "on #{os} with main_smtpd_tls_security_level set to valid testing" do
       let(:params) { { main_smtpd_tls_security_level: 'testing' } }
 
       it { is_expected.to contain_file('postfix_main.cf').with_content(%r{smtpd_tls_security_level = testing}) }
+    end
+
+    context "on #{os} with main_smtp_tls_cafile set to valid /test/ing" do
+      let(:params) { { main_smtp_tls_cafile: '/test/ing' } }
+
+      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{smtp_tls_CAfile = /test/ing}) }
+    end
+
+    context "on #{os} with main_smtp_tls_capath set to valid /test/ing" do
+      let(:params) { { main_smtp_tls_capath: '/test/ing' } }
+
+      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{smtp_tls_CApath = /test/ing}) }
     end
 
     context "on #{os} with main_smtp_tls_mandatory_protocols set to valid /test/ing" do
@@ -318,6 +428,12 @@ describe 'postfix' do
       let(:params) { { main_transport_maps: 'hash:/test/ing' } }
 
       it { is_expected.to contain_file('postfix_main.cf').without_content(%r{transport_maps =}) }
+    end
+
+    context "on #{os} with main_unknown_local_recipient_reject_code set to valid 242" do
+      let(:params) { { main_unknown_local_recipient_reject_code: 242 } }
+
+      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{unknown_local_recipient_reject_code = 242}) }
     end
 
     context "on #{os} with main_transport_maps set to valid hash:/test/ing when transport_maps is set to valid value" do

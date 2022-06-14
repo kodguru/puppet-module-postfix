@@ -102,8 +102,8 @@ mydomain = <%= @main_mydomain %>
 <% if @main_myhostname -%>
 myhostname = <%= @main_myhostname %>
 <% end -%>
-<% if @main_mynetworks -%>
-mynetworks = <%= @main_mynetworks %>
+<% if @main_mynetworks_array -%>
+mynetworks = <%= @main_mynetworks_array.join(', ') %>
 <% end -%>
 <% if @main_myorigin -%>
 myorigin = <%= @main_myorigin %>

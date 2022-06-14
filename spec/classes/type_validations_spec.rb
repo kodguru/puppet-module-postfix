@@ -21,6 +21,12 @@ describe 'postfix' do
           invalid: ['', 'invalid', [1], [[1]], [{ 'ha' => 'sh' }], 3, 2.42, { 'ha' => 'sh' }, true, false],
           message: '(expects an Array value|index \d+ expects a String value)',
         },
+        'Array[String[1]] or String[1]' => {
+          name:    ['main_mynetworks'],
+          valid:   [['testing'], ['test', 'ing'], 'test'],
+          invalid: ['', [1], [[1]], [{ 'ha' => 'sh' }], 3, 2.42, { 'ha' => 'sh' }, true, false],
+          message: '(String or Array|String|Array)',
+        },
         'Boolean' => {
           name:    ['service_hasrestart', 'service_hasstatus', 'transport_maps_external', 'virtual_aliases_external'],
           valid:   [true, false],
@@ -87,7 +93,7 @@ describe 'postfix' do
           message: 'Enum\[\'running\', \'stopped\'\]',
         },
         'Stdlib::Host & Optional[Stdlib::Host]' => {
-          name:    ['main_inet_interfaces', 'main_mydomain', 'main_myhostname', 'main_mynetworks', 'main_relayhost'],
+          name:    ['main_inet_interfaces', 'main_mydomain', 'main_myhostname', 'main_relayhost'],
           valid:   ['127.0.0.1', 'localhost', 'v.al.id', 'val.id'],
           invalid: ['in valid', 3, 2.42, ['array'], { 'ha' => 'sh' }],
           message: 'expects a Stdlib::Host',

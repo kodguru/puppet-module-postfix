@@ -6,9 +6,11 @@ describe 'postfix' do
   describe 'on SLES 10 with default values for parameters' do
     let(:facts) do
       {
-        domain: 'example.com',
-        fqdn: 'foo.example.com',
         hostname: 'foo',
+        networking: {
+          domain: 'example.com',
+          fqdn: 'foo.example.com',
+        },
         os: {
           family: 'Suse',
           name: 'SLES',

@@ -6,9 +6,11 @@ describe 'postfix' do
   describe 'on Ubuntu 22.04 with default values for parameters' do
     let(:facts) do
       {
-        domain: 'example.com',
-        fqdn: 'foo.example.com',
         hostname: 'foo',
+        networking: {
+          domain: 'example.com',
+          fqdn: 'foo.example.com',
+        },
         os: {
           family: 'Debian',
           name: 'Ubuntu',

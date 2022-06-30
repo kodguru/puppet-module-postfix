@@ -349,7 +349,7 @@
 #   Before Postfix 2.6, the Postfix SMTP client would use all protocols with
 #   opportunistic TLS.
 #
-# @parm main_smtp_tls_security_level
+# @param main_smtp_tls_security_level
 #   The default SMTP TLS security level for the Postfix SMTP client. Specify
 #   one of the following security levels: none, may, encrypt, dane, dane-only,
 #   fingerprint, verify, secure.
@@ -451,7 +451,7 @@ class postfix (
   Optional[Stdlib::Absolutepath] $main_meta_directory               = undef,
   String[1] $main_mydestination                                     = 'localhost',
   Optional[Stdlib::Host] $main_mydomain                             = undef,
-  Stdlib::Host $main_myhostname                                     = $::fqdn,
+  Stdlib::Host $main_myhostname                                     = $facts['networking']['fqdn'],
   Stdlib::Host $main_mynetworks                                     = '127.0.0.0/8',
   String[1] $main_myorigin                                          = '$myhostname',
   Optional[Stdlib::Absolutepath] $main_newaliases_path              = undef,
@@ -461,7 +461,7 @@ class postfix (
   Optional[String[1]] $main_relay_domains                           = undef,
   Optional[Stdlib::Absolutepath] $main_sample_directory             = undef,
   Optional[Stdlib::Absolutepath] $main_sendmail_path                = undef,
-  Stdlib::Host $main_relayhost                                      = "mailhost.${::domain}",
+  Stdlib::Host $main_relayhost                                      = "mailhost.${facts['networking']['domain']}",
   Integer[0] $main_relayhost_port                                   = 25,
   Optional[String[1]] $main_setgid_group                            = undef,
   Optional[Enum['yes', 'no']] $main_smtpd_helo_required             = undef,
@@ -495,11 +495,10 @@ class postfix (
   Boolean $virtual_aliases_external                                 = false,
   Optional[Hash] $virtual_aliases                                   = undef,
 ) {
-
   # <Install & Config>
   package { $packages:
     ensure => installed,
-    before => [ Service['postfix_service'], Package['sendmail'], ],
+    before => [Service['postfix_service'], Package['sendmail'],],
   }
 
   service { 'postfix_service' :
@@ -508,10 +507,10 @@ class postfix (
     enable     => $service_enable,
     hasrestart => $service_hasrestart,
     hasstatus  => $service_hasstatus,
-    subscribe  => [ File['postfix_main.cf'], File['postfix_virtual'], File['postfix_transport'], ],
+    subscribe  => [File['postfix_main.cf'], File['postfix_virtual'], File['postfix_transport'],],
   }
 
-  file  { 'postfix_main.cf' :
+  file { 'postfix_main.cf' :
     ensure  => file,
     path    => '/etc/postfix/main.cf',
     owner   => 'root',
@@ -581,5 +580,4 @@ class postfix (
     ensure => absent,
   }
   # </Remove Sendmail>
-
 }

@@ -258,6 +258,18 @@ describe 'postfix' do
       it { is_expected.to contain_file('postfix_main.cf').with_content(%r{mynetworks = test.ing}) }
     end
 
+    context "on #{os} with main_mynetworks set to valid test.ing" do
+      let(:params) { { main_mynetworks: ['test.ing'] } }
+
+      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{mynetworks = test.ing}) }
+    end
+
+    context "on #{os} with main_mynetworks set to valid test.ing" do
+      let(:params) { { main_mynetworks: ['test.ing', 'testi.ng'] } }
+
+      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{mynetworks = test.ing, testi.ng}) }
+    end
+
     context "on #{os} with main_myorigin set to valid test.ing" do
       let(:params) { { main_myorigin: 'test.ing' } }
 

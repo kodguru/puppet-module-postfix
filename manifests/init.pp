@@ -452,7 +452,7 @@ class postfix (
   String[1] $main_mydestination                                     = 'localhost',
   Optional[Stdlib::Host] $main_mydomain                             = undef,
   Stdlib::Host $main_myhostname                                     = $facts['networking']['fqdn'],
-  Stdlib::Host $main_mynetworks                                     = '127.0.0.0/8',
+  Variant[Array[String[1]], String[1]] $main_mynetworks             = ['127.0.0.0/8'],
   String[1] $main_myorigin                                          = '$myhostname',
   Optional[Stdlib::Absolutepath] $main_newaliases_path              = undef,
   Stdlib::Absolutepath $main_queue_directory                        = '/var/spool/postfix',
@@ -495,6 +495,8 @@ class postfix (
   Boolean $virtual_aliases_external                                 = false,
   Optional[Hash] $virtual_aliases                                   = undef,
 ) {
+  $main_mynetworks_array = Array($main_mynetworks, true)
+
   # <Install & Config>
   package { $packages:
     ensure => installed,

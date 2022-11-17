@@ -22,8 +22,8 @@ daemon_directory = <%= @main_daemon_directory %>
 <% if @main_data_directory -%>
 data_directory = <%= @main_data_directory %>
 <% end -%>
-<% if @main_inet_interfaces -%>
-inet_interfaces = <%= @main_inet_interfaces %>
+<% if @main_inet_interfaces_array -%>
+inet_interfaces = <%= @main_inet_interfaces_array.join(', ') %>
 <% end -%>
 <% if @main_inet_protocols -%>
 inet_protocols = <%= @main_inet_protocols %>

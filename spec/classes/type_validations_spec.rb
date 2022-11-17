@@ -93,7 +93,7 @@ describe 'postfix' do
           message: 'Enum\[\'running\', \'stopped\'\]',
         },
         'Stdlib::Host & Optional[Stdlib::Host]' => {
-          name:    ['main_inet_interfaces', 'main_mydomain', 'main_myhostname', 'main_relayhost'],
+          name:    ['main_mydomain', 'main_myhostname', 'main_relayhost'],
           valid:   ['127.0.0.1', 'localhost', 'v.al.id', 'val.id'],
           invalid: ['in valid', 3, 2.42, ['array'], { 'ha' => 'sh' }],
           message: 'expects a Stdlib::Host',
@@ -110,6 +110,12 @@ describe 'postfix' do
           valid:   [true, false, 'true', 'false', 'manual'],
           invalid: ['invalid', 3, 2.42, ['array'], { 'ha' => 'sh' }],
           message: 'value of type Boolean or Enum',
+        },
+        'Postfix::Main_inet_interfaces' => {
+          name:    ['main_inet_interfaces'],
+          valid:   ['all', 'loopback-only', 'host.domain.tld', '127.0.0.1', '[::1]', 'localhost', '$myhostname', '${myhostname}', ['127.0.0.1', '[::1]', 'localhost', '$myhostname', '${myhostname}']],
+          invalid: ['in valid', 3, 2.42, ['host name'], { 'ha' => 'sh', }, ['127.0.0.1', '[::1]', 'localhost', '$myhostname', '${my_variable}', 'host name']],
+          message: 'expects a Postfix::Main_inet_interfaces',
         },
       }
 

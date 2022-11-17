@@ -441,7 +441,7 @@ class postfix (
   Stdlib::Absolutepath $main_data_directory                         = '/var/lib/postfix',
   Optional[String[1]] $main_debug_peer_level                        = undef,
   Optional[String[1]] $main_html_directory                          = undef,
-  Stdlib::Host $main_inet_interfaces                                = '127.0.0.1',
+  Postfix::Main_inet_interfaces $main_inet_interfaces               = ['127.0.0.1'],
   String[1] $main_inet_protocols                                    = 'ipv4',
   Optional[String[1]] $main_mailbox_command                         = undef,
   Optional[Stdlib::Absolutepath] $main_manpage_directory            = undef,
@@ -496,6 +496,7 @@ class postfix (
   Optional[Hash] $virtual_aliases                                   = undef,
 ) {
   $main_mynetworks_array = Array($main_mynetworks, true)
+  $main_inet_interfaces_array = Array($main_inet_interfaces, true)
 
   # <Install & Config>
   package { $packages:

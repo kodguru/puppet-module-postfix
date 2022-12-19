@@ -8,5 +8,5 @@ type Postfix::Variables = Pattern[
   # ${variable}, ${variable:var}, ${variable?var}
   /\A\$\{[a-zA-Z0-9_]+[:?]?[a-zA-Z0-9_]+}\Z/,
   # ${variable?{var1}}, ${variable?{var1}:{var2}}
-  /\A\$\{[a-zA-Z0-9_]+\?\{[a-zA-Z0-9_]+\}(:\{([a-zA-Z0-9_]+\})){0,1}\}\Z/
+  /\A\$\{[a-zA-Z0-9_]+\?\{[a-zA-Z0-9_]+\}(:\{([a-zA-Z0-9_]+\})){0,1}\}\Z/,
 ]

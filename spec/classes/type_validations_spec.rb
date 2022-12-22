@@ -105,9 +105,9 @@ describe 'postfix' do
           invalid: ['', 3, 2.42, ['array'], { 'ha' => 'sh' }],
           message: '(expects a String value|expects a String\[1\] value)',
         },
-        'Variant[Boolean, Enum[\'true\', \'false\', \'manual\']]' => {
+        'Variant[Boolean, Enum[\'true\', \'false\']]' => {
           name:    ['service_enable'],
-          valid:   [true, false, 'true', 'false', 'manual'],
+          valid:   [true, false, 'true', 'false'],
           invalid: ['invalid', 3, 2.42, ['array'], { 'ha' => 'sh' }],
           message: 'value of type Boolean or Enum',
         },

@@ -499,7 +499,7 @@ describe 'postfix' do
       it { is_expected.to contain_package('ing') }
     end
 
-    [true, false, 'true', 'false', 'manual'].each do |param|
+    [true, false, 'true', 'false'].each do |param|
       context "on #{os} with service_enable set to valid #{param}" do
         let(:params) { { service_enable: param } }
 

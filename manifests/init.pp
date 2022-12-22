@@ -380,7 +380,7 @@
 #
 # @param service_enable
 #   Whether a service should be enabled to start at boot.
-#   Valid values are 'true', 'false' and 'manual'.
+#   Valid values are true, false.
 #
 # @param service_ensure
 #   Whether a service should be running. Valid values are 'stopped' or 'running'.
@@ -484,7 +484,7 @@ class postfix (
   Optional[String[1]] $main_virtual_alias_domains                   = undef,
   String[1] $main_virtual_alias_maps                                = 'hash:/etc/postfix/virtual',
   Array[String[1]] $packages                                        = ['postfix'],
-  Variant[Boolean, Enum['true', 'false', 'manual']] $service_enable = true,
+  Variant[Boolean, Enum['true', 'false']] $service_enable           = true,
   Stdlib::Ensure::Service $service_ensure                           = 'running',
   Boolean $service_hasrestart                                       = true,
   Boolean $service_hasstatus                                        = true,

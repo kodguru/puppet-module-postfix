@@ -6,7 +6,7 @@ describe 'fixes for CentOS 8/9' do
   pp = <<-MANIFEST
     # Fix for CentOS 8/9, needs to run first
     # ss used by serverspecs is missing in container, it is available in iproute package
-    if $facts['os']['name'] in ['CentOS'] and $facts['os']['release']['major'] in ['8', '9'] {
+    if "${facts['os']['name']}-${facts['os']['release']['major']}" in ['AlmaLinux-8', 'CentOS-8', 'CentOS-9'] {
       package { 'iproute':
         ensure => installed,
       }

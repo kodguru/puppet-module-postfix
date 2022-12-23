@@ -2,6 +2,7 @@
 default:
   provisioner: docker
   images:
+    - 'litmusimage/almalinux:8'
     - 'litmusimage/centos:6'
     - 'litmusimage/centos:7'
     - 'litmusimage/centos:stream8'

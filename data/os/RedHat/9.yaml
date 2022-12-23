@@ -26,3 +26,13 @@ postfix::main_smtp_tls_cafile: '/etc/pki/tls/certs/ca-bundle.crt'
 postfix::main_smtp_tls_capath: '/etc/pki/tls/certs'
 postfix::main_smtp_tls_security_level: 'may'
 postfix::main_unknown_local_recipient_reject_code: 550
+postfix::main_append_dot_mydomain: 'no'
+postfix::main_biff: 'no'
+postfix::main_mailbox_size_limit: 0
+postfix::main_recipient_delimiter: '+'
+postfix::main_relayhost: "mailhost.%{facts.networking.domain}"
+postfix::main_mydestination: 'localhost'
+postfix::main_myorigin: '$myhostname'
+postfix::main_myhostname: "%{facts.networking.fqdn}"
+postfix::main_mynetworks:
+  - '127.0.0.0/8'

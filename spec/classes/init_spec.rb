@@ -222,6 +222,12 @@ describe 'postfix' do
       it { is_expected.to contain_file('postfix_main.cf').with_content(%r{manpage_directory = /test/ing}) }
     end
 
+    context "on #{os} with main_mailbox_size_limit set to valid 242" do
+      let(:params) { { main_mailbox_size_limit: 242 } }
+
+      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{mailbox_size_limit = 242}) }
+    end
+
     context "on #{os} with main_mail_owner set to valid testing" do
       let(:params) { { main_mail_owner: 'testing' } }
 

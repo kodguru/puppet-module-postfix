@@ -12,6 +12,7 @@ default:
     - 'litmusimage/ubuntu:18.04'
     - 'litmusimage/ubuntu:20.04'
     - 'litmusimage/ubuntu:22.04'
+#    - 'litmusimage/almalinux:9' # no image provided by Litmus yet
 #    - 'litmusimage/debian:10' # OS flavour not yet supported
 #    - 'litmusimage/debian:11' # OS flavour not yet supported
 #    - 'litmusimage/oraclelinux:6' # package repository unreliable

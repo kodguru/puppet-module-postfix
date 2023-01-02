@@ -4,9 +4,9 @@ require 'spec_helper_acceptance'
 
 describe 'fixes for CentOS 8/9' do
   pp = <<-MANIFEST
-    # Fix for CentOS 8/9, needs to run first
+    # Fix for RedHad based OS flavours, needs to run first and once
     # ss used by serverspecs is missing in container, it is available in iproute package
-    if "${facts['os']['name']}-${facts['os']['release']['major']}" in ['AlmaLinux-8', 'CentOS-8', 'CentOS-9'] {
+    if "${facts['os']['name']}-${facts['os']['release']['major']}" in ['AlmaLinux-8', 'CentOS-8', 'CentOS-9', 'Rocky-8',] {
       package { 'iproute':
         ensure => installed,
       }

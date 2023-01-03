@@ -24,6 +24,9 @@ This module provides OS default values for these OSfamilies:
 
 # Version history #
 
+* 2.3.0 2023-01-03 Add support for AlmaLinux 8/9 & Rocky 8/9
+                   Move module default data into hiera data
+                   Add acceptance tests
 * 2.2.0 2022-11-17 Allow arrays for main_mynetworks
 * 2.1.1 2022-06-30 Upgrade to PDK 2.5.0
 * 2.1.0 2022-05-10 Support CentOS 9 / RedHat 9 / Ubuntu 22.04

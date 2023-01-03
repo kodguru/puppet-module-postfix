@@ -1,3 +1,0 @@
----
-postfix::main_daemon_directory: '/usr/libexec/postfix'
-postfix::main_setgid_group: 'postdrop'

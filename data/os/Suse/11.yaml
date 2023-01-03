@@ -1,2 +1,0 @@
----
-postfix::main_daemon_directory: '/usr/lib/postfix'

@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/kodguru/puppet-module-postfix.png?branch=master)](https://travis-ci.org/kodguru/puppet-module-postfix)
-
 # puppet-module-postfix #
 ===
 
@@ -15,18 +13,24 @@ This module aims to support the current and previous major Puppet versions.
 
 This module provides OS default values for these OSfamilies:
 
- * Debian
- * RedHat
- * Suse
- * Ubuntu 14.04
- * Ubuntu 16.04
- * Ubuntu 18.04
- * Ubuntu 20.04
+ * AlmaLinux 8/9
+ * Debian 6/7
+ * RedHat 5/6/7/8/9
+ * Rocky 8/9
+ * Suse 10/11/12
+ * Ubuntu 14.04/16.04/18.04/20.04/22.04
 
-For other OSfamilies support, please specify all parameters which defaults to 'USE_DEFAULTS'.
 
 
 # Version history #
+
+* 2.2.0 2022-11-17 Allow arrays for main_mynetworks
+* 2.1.1 2022-06-30 Upgrade to PDK 2.5.0
+* 2.1.0 2022-05-10 Support CentOS 9 / RedHat 9 / Ubuntu 22.04
+                   add $custom parameter to allow free text parameters in main.cf
+* 2.0.0 2022-05-03 Upgrade to Puppet 7 & PDK 2.49
+                   Move from TravisCI to GitHub actions for testing
+                   Move documentation into manifest (Puppet Strings)
 * 1.6.5 2021-02-12 Restore support for Suse variant SLED
 * 1.6.4 2020-08-13 add support for Ubuntu 20.04
 * 1.6.3 2019-11-01 add support for SLES 15

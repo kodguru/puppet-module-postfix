@@ -82,7 +82,9 @@ html_directory = <%= @main_html_directory %>
 <% if @main_mailbox_command -%>
 mailbox_command = <%= @main_mailbox_command %>
 <% end -%>
+<% if @main_mailbox_size_limit -%>
 mailbox_size_limit = <%= @main_mailbox_size_limit.to_s %>
+<% end -%>
 <% if @main_mailq_path -%>
 mailq_path = <%= @main_mailq_path %>
 <% end -%>
@@ -95,14 +97,16 @@ manpage_directory = <%= @main_manpage_directory %>
 <% if @main_meta_directory -%>
 meta_directory = <%= @main_meta_directory %>
 <% end -%>
+<% if @main_mydestination -%>
 mydestination = <%= @main_mydestination %>
+<% end -%>
 <% if @main_mydomain -%>
 mydomain = <%= @main_mydomain %>
 <% end -%>
 <% if @main_myhostname -%>
 myhostname = <%= @main_myhostname %>
 <% end -%>
-<% if @main_mynetworks_array -%>
+<% if @main_mynetworks -%>
 mynetworks = <%= @main_mynetworks_array.join(', ') %>
 <% end -%>
 <% if @main_myorigin -%>
@@ -115,14 +119,18 @@ queue_directory = <%= @main_queue_directory %>
 <% if @main_readme_directory -%>
 readme_directory = <%= @main_readme_directory %>
 <% end -%>
+<% if @main_recipient_delimiter -%>
 recipient_delimiter = <%= @main_recipient_delimiter %>
+<% end -%>
 <% if @main_sample_directory -%>
 sample_directory = <%= @main_sample_directory %>
 <% end -%>
 <% if @main_sendmail_path -%>
 sendmail_path = <%= @main_sendmail_path %>
 <% end -%>
+<% if @main_relayhost -%>
 relayhost = <%= @main_relayhost %>:<%= @main_relayhost_port.to_s %>
+<% end -%>
 <% if @main_relay_domains -%>
 relay_domains = <%= @main_relay_domains %>
 <% end -%>

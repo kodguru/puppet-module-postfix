@@ -1,3 +1,0 @@
----
-postfix::main_daemon_directory: '/usr/lib/postfix/bin'
-postfix::main_setgid_group: 'maildrop'

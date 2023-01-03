@@ -19,9 +19,6 @@ spec/spec_helper.rb:
   coverage_report: true
   # TODO: reach from ~80% coverage to 100% and enable testing it
   # minimum_code_coverage_percentage: 100
-  hiera_config: 'hiera'
-  mock_with: ':rspec'
-  default_facter_version: '4.0.0'
 
 Rakefile:
   default_disabled_lint_checks:

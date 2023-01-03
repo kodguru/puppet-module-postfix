@@ -4,15 +4,18 @@ require 'spec_helper_acceptance'
 
 describe 'postfix with transport_maps set' do
   pp = <<-MANIFEST
-    if $facts['os']['name'] == 'CentOS' and $facts['os']['release']['major'] == '9' {
+    # RedHad based OS flavours containers have problems with ipv6, so we use ipv4 only for testing
+    if "${facts['os']['name']}-${facts['os']['release']['major']}" in ['AlmaLinux-8', 'CentOS-9', 'Rocky-8'] {
       class { 'postfix':
-        main_inet_protocols => 'ipv4', # bugfix for missing ipv6 in container
+        main_inet_protocols => 'ipv4',
+        main_transport_maps => 'hash:/etc/postfix/transport', # needed for OS flavours without given default value
         transport_maps => {
           'test@test.ing' => 'test.ing',
         },
       }
     } else {
       class { 'postfix':
+        main_transport_maps => 'hash:/etc/postfix/transport', # needed for OS flavours without given default value
         transport_maps => {
           'test@test.ing' => 'test.ing',
         },

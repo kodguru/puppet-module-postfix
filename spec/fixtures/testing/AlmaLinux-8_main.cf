@@ -1,0 +1,33 @@
+# This file is being maintained by Puppet.
+# DO NOT EDIT
+
+alias_database = hash:/etc/aliases
+alias_maps = hash:/etc/aliases
+command_directory = /usr/sbin
+daemon_directory = /usr/libexec/postfix
+data_directory = /var/lib/postfix
+inet_interfaces = localhost
+inet_protocols = all
+smtp_tls_CAfile = /etc/pki/tls/certs/ca-bundle.crt
+smtp_tls_CApath = /etc/pki/tls/certs
+smtp_tls_security_level = may
+smtpd_tls_security_level = may
+smtpd_tls_key_file = /etc/pki/tls/private/postfix.key
+smtpd_tls_cert_file = /etc/pki/tls/certs/postfix.pem
+compatibility_level = 2
+debug_peer_level = 2
+html_directory = no
+mailq_path = /usr/bin/mailq.postfix
+mail_owner = postfix
+manpage_directory = /usr/share/man
+meta_directory = /etc/postfix
+mydestination = $myhostname, localhost.$mydomain, localhost
+newaliases_path = /usr/bin/newaliases.postfix
+queue_directory = /var/spool/postfix
+readme_directory = /usr/share/doc/postfix/README_FILES
+sample_directory = /usr/share/doc/postfix/samples
+sendmail_path = /usr/sbin/sendmail.postfix
+setgid_group = postdrop
+shlib_directory = /usr/lib64/postfix
+unknown_local_recipient_reject_code = 550
+debugger_command = PATH=/bin:/usr/bin:/usr/local/bin:/usr/X11R6/bin ddd $daemon_directory/$process_name $process_id & sleep 5

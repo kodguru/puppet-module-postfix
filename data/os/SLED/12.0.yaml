@@ -1,5 +1,5 @@
 ---
-postfix::main_daemon_directory: '/usr/lib/postfix/bin'
+postfix::main_daemon_directory: '/usr/lib/postfix'
 postfix::main_setgid_group: 'maildrop'
 postfix::main_append_dot_mydomain: 'no'
 postfix::main_biff: 'no'

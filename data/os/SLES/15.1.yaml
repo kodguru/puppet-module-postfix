@@ -1,0 +1,65 @@
+---
+postfix::main_compatibility_level: '2'
+postfix::main_daemon_directory: '/usr/lib/postfix/bin/'
+postfix::main_setgid_group: 'maildrop'
+postfix::main_biff: 'no'
+postfix::main_mailbox_size_limit: 0
+postfix::main_relayhost: "mailhost.%{facts.networking.domain}"
+postfix::main_smtpd_recipient_restrictions:
+  - 'permit_mynetworks'
+  - 'reject_unauth_destination'
+postfix::main_mydestination: '$myhostname, localhost.$mydomain'
+postfix::main_myhostname: "%{facts.networking.fqdn}"
+postfix::main_alias_database: 'hash:/etc/aliases'
+postfix::main_alias_maps: 'hash:/etc/aliases'
+postfix::main_command_directory: '/usr/sbin'
+postfix::main_data_directory: '/var/lib/postfix'
+postfix::main_inet_protocols: 'all'
+postfix::main_queue_directory: '/var/spool/postfix'
+postfix::main_transport_maps: '/etc/postfix/transport'
+postfix::main_virtual_alias_maps: '/etc/postfix/virtual'
+postfix::service_name: 'postfix'
+postfix::main_inet_interfaces:
+  - 'localhost'
+postfix::main_mail_owner: 'postfix'
+postfix::main_unknown_local_recipient_reject_code: 550
+postfix::main_smtpd_banner: '$myhostname ESMTP'
+postfix::main_debug_peer_level: '2'
+postfix::main_sendmail_path: '/usr/sbin/sendmail'
+postfix::main_newaliases_path: '/usr/bin/newaliases'
+postfix::main_mailq_path: '/usr/bin/mailq'
+postfix::main_html_directory: '/usr/share/doc/packages/postfix-doc/html'
+postfix::main_manpage_directory: '/usr/share/man'
+postfix::main_sample_directory: '/usr/share/doc/packages/postfix-doc/samples'
+postfix::main_readme_directory: '/usr/share/doc/packages/postfix-doc/README_FILES'
+postfix::main_smtpd_helo_required: 'no'
+postfix::main_relay_domains: '$mydestination, hash:/etc/postfix/relay'
+postfix::main_virtual_alias_domains: 'hash:/etc/postfix/virtual'
+postfix::main_message_size_limit: 0
+postfix::main_canonical_maps: '/etc/postfix/canonical'
+postfix::main_relocated_maps: '/etc/postfix/relocated'
+postfix::main_smtpd_sender_restrictions: 'hash:/etc/postfix/access'
+postfix::main_smtpd_delay_reject: 'yes'
+postfix::main_smtpd_sasl_auth_enable: 'no'
+postfix::main_smtpd_tls_ask_ccert: 'no'
+postfix::main_smtpd_tls_received_header: 'no'
+postfix::main_smtpd_use_tls: 'no'
+postfix::main_smtp_enforce_tls: 'no'
+postfix::main_smtp_sasl_auth_enable: 'no'
+postfix::main_smtp_use_tls: 'no'
+postfix::main_strict_8bitmime: 'no'
+postfix::main_strict_rfc821_envelopes: 'no'
+postfix::main_debugger_command: |
+  PATH=/bin:/usr/bin:/usr/local/bin:/usr/X11R6/bin
+    ddd $daemon_directory/$process_name $process_id & sleep 5
+postfix::main_custom:
+  delay_warning_time: '1h'
+  disable_dns_lookups: 'no'
+  disable_mime_output_conversion: 'no'
+  disable_vrfy_command: 'yes'
+  masquerade_classes: 'envelope_sender, header_sender, header_recipient'
+  masquerade_exceptions: 'root'
+  mynetworks_style: 'subnet'
+  sender_canonical_maps: 'hash:/etc/postfix/sender_canonical'
+  mail_spool_directory: '/var/mail'
+  message_strip_characters: '\0'

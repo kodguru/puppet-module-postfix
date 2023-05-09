@@ -112,20 +112,20 @@ describe 'postfix' do
   on_supported_os(redhat).sort.each do |os, os_facts|
     let(:facts) { os_facts }
 
-    context "on #{os} with main_custom set to valid [param1 = value1]" do
-      let(:params) { { main_custom: ['param1 = value1'] } }
+    context "on #{os} with main_custom set to valid {param1 => value1}" do
+      let(:params) { { main_custom: { 'param1' => 'value1' } } }
 
       it { is_expected.to contain_file('postfix_main.cf').with_content(%r{param1 = value1}) }
     end
 
-    context "on #{os} with main_custom set to valid [param1 = value1, param2 = value2]" do
-      let(:params) { { main_custom: ['param1 = value1', 'param2 = value2'] } }
+    context "on #{os} with main_custom set to valid {param1 => value1, param2 => value2}" do
+      let(:params) { { main_custom: { 'param1' => 'value1', 'param2' => 'value2' } } }
 
       it { is_expected.to contain_file('postfix_main.cf').with_content(%r{param1 = value1\nparam2 = value2}) }
     end
 
-    context "on #{os} with main_custom set to valid [multilineparam =, value1, value2 ]" do
-      let(:params) { { main_custom: ['multilineparam =', '    value1', '    value2'] } }
+    context "on #{os} with main_custom set to valid {multilineparam => [value1, value2]}" do
+      let(:params) { { main_custom: { 'multilineparam' => ['value1', 'value2'] } } }
 
       it { is_expected.to contain_file('postfix_main.cf').with_content(%r{multilineparam =\n    value1\n    value2}) }
     end

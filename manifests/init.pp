@@ -496,8 +496,8 @@ class postfix (
   Boolean $virtual_aliases_external                                 = false,
   Optional[Hash] $virtual_aliases                                   = undef,
 ) {
-  $main_mynetworks_array = Array($main_mynetworks, true)
-  $main_inet_interfaces_array = Array($main_inet_interfaces, true)
+  $main_mynetworks_array = any2array($main_mynetworks)
+  $main_inet_interfaces_array = any2array($main_inet_interfaces)
 
   # <Install & Config>
   package { $packages:
@@ -520,7 +520,68 @@ class postfix (
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
-    content => template('postfix/main.cf.erb'),
+    content => epp('postfix/main.cf.epp',
+      {
+        main_alias_database                      => $main_alias_database,
+        main_alias_maps                          => $main_alias_maps,
+        main_append_dot_mydomain                 => $main_append_dot_mydomain,
+        main_biff                                => $main_biff,
+        main_command_directory                   => $main_command_directory,
+        main_daemon_directory                    => $main_daemon_directory,
+        main_data_directory                      => $main_data_directory,
+        main_inet_interfaces_array               => $main_inet_interfaces_array,
+        main_inet_protocols                      => $main_inet_protocols,
+        main_smtp_tls_mandatory_protocols        => $main_smtp_tls_mandatory_protocols,
+        main_smtp_tls_cafile                     => $main_smtp_tls_cafile,
+        main_smtp_tls_capath                     => $main_smtp_tls_capath,
+        main_smtp_tls_protocols                  => $main_smtp_tls_protocols,
+        main_smtp_tls_security_level             => $main_smtp_tls_security_level,
+        main_smtpd_banner                        => $main_smtpd_banner,
+        main_smtpd_helo_required                 => $main_smtpd_helo_required,
+        main_smtpd_helo_restrictions             => $main_smtpd_helo_restrictions,
+        main_smtpd_recipient_restrictions        => $main_smtpd_recipient_restrictions,
+        main_smtpd_tls_mandatory_protocols       => $main_smtpd_tls_mandatory_protocols,
+        main_smtpd_tls_protocols                 => $main_smtpd_tls_protocols,
+        main_smtpd_tls_security_level            => $main_smtpd_tls_security_level,
+        main_smtpd_tls_key_file                  => $main_smtpd_tls_key_file,
+        main_smtpd_tls_cert_file                 => $main_smtpd_tls_cert_file,
+        main_compatibility_level                 => $main_compatibility_level,
+        main_debug_peer_level                    => $main_debug_peer_level,
+        main_html_directory                      => $main_html_directory,
+        main_mailbox_command                     => $main_mailbox_command,
+        main_mailbox_size_limit                  => $main_mailbox_size_limit,
+        main_mailq_path                          => $main_mailq_path,
+        main_mail_owner                          => $main_mail_owner,
+        main_manpage_directory                   => $main_manpage_directory,
+        main_meta_directory                      => $main_meta_directory,
+        main_mydestination                       => $main_mydestination,
+        main_mydomain                            => $main_mydomain,
+        main_myhostname                          => $main_myhostname,
+        main_mynetworks_array                    => $main_mynetworks_array,
+        main_myorigin                            => $main_myorigin,
+        main_newaliases_path                     => $main_newaliases_path,
+        main_queue_directory                     => $main_queue_directory,
+        main_readme_directory                    => $main_readme_directory,
+        main_recipient_delimiter                 => $main_recipient_delimiter,
+        main_sample_directory                    => $main_sample_directory,
+        main_sendmail_path                       => $main_sendmail_path,
+        main_relayhost                           => $main_relayhost,
+        main_relayhost_port                      => $main_relayhost_port,
+        main_relay_domains                       => $main_relay_domains,
+        main_setgid_group                        => $main_setgid_group,
+        main_shlib_directory                     => $main_shlib_directory,
+        main_smtpd_relay_restrictions            => $main_smtpd_relay_restrictions,
+        main_unknown_local_recipient_reject_code => $main_unknown_local_recipient_reject_code,
+        main_virtual_alias_domains               => $main_virtual_alias_domains,
+        main_virtual_alias_maps                  => $main_virtual_alias_maps,
+        virtual_aliases                          => $virtual_aliases,
+        virtual_aliases_external                 => $virtual_aliases_external,
+        main_transport_maps                      => $main_transport_maps,
+        transport_maps                           => $transport_maps,
+        transport_maps_external                  => $transport_maps_external,
+        main_custom                              => $main_custom,
+      }
+    ),
   }
 
   if $virtual_aliases != undef {
@@ -530,7 +591,11 @@ class postfix (
       owner   => 'root',
       group   => 'root',
       mode    => '0644',
-      content => template('postfix/virtual.erb'),
+      content => epp('postfix/virtual.epp',
+        {
+          virtual_aliases => $virtual_aliases,
+        }
+      ),
     }
     exec { 'postfix_rebuild_virtual':
       command     => "${main_command_directory}/postmap ${main_virtual_alias_maps}",
@@ -555,7 +620,11 @@ class postfix (
       owner   => 'root',
       group   => 'root',
       mode    => '0644',
-      content => template('postfix/transport.erb'),
+      content => epp('postfix/transport.epp',
+        {
+          transport_maps => $transport_maps,
+        }
+      ),
     }
     exec { 'postfix_rebuild_transport':
       command     => "${main_command_directory}/postmap ${main_transport_maps}",

@@ -1,0 +1,226 @@
+<%- | Optional[String[1]]            $main_alias_database,
+      Optional[String[1]]            $main_alias_maps,
+      Optional[Enum['yes', 'no']]    $main_append_dot_mydomain,
+      Optional[Enum['yes', 'no']]    $main_biff,
+      Optional[Stdlib::Absolutepath] $main_command_directory,
+      Optional[Stdlib::Absolutepath] $main_daemon_directory,
+      Optional[Stdlib::Absolutepath] $main_data_directory,
+      Optional[Array]                $main_inet_interfaces_array,
+      Optional[String[1]]            $main_inet_protocols,
+      Optional[String[1]]            $main_smtp_tls_mandatory_protocols,
+      Optional[Stdlib::Absolutepath] $main_smtp_tls_cafile,
+      Optional[Stdlib::Absolutepath] $main_smtp_tls_capath,
+      Optional[String[1]]            $main_smtp_tls_protocols,
+      Optional[String[1]]            $main_smtp_tls_security_level,
+      Optional[String[1]]            $main_smtpd_banner,
+      Optional[Enum['yes', 'no']]    $main_smtpd_helo_required,
+      Optional[Array[String[1]]]     $main_smtpd_helo_restrictions,
+      Optional[Array[String[1]]]     $main_smtpd_recipient_restrictions,
+      Optional[String[1]]            $main_smtpd_tls_mandatory_protocols,
+      Optional[String[1]]            $main_smtpd_tls_protocols,
+      Optional[String[1]]            $main_smtpd_tls_security_level,
+      Optional[Stdlib::Absolutepath] $main_smtpd_tls_key_file,
+      Optional[Stdlib::Absolutepath] $main_smtpd_tls_cert_file,
+      Optional[String[1]]            $main_compatibility_level,
+      Optional[String[1]]            $main_debug_peer_level,
+      Optional[String[1]]            $main_html_directory,
+      Optional[String[1]]            $main_mailbox_command,
+      Optional[Integer[0]]           $main_mailbox_size_limit,
+      Optional[Stdlib::Absolutepath] $main_mailq_path,
+      Optional[String[1]]            $main_mail_owner,
+      Optional[Stdlib::Absolutepath] $main_manpage_directory,
+      Optional[Stdlib::Absolutepath] $main_meta_directory,
+      Optional[String[1]]            $main_mydestination,
+      Optional[Stdlib::Host]         $main_mydomain,
+      Optional[Stdlib::Host]         $main_myhostname,
+      Optional[Array]                $main_mynetworks_array,
+      Optional[String[1]]            $main_myorigin,
+      Optional[Stdlib::Absolutepath] $main_newaliases_path,
+      Optional[Stdlib::Absolutepath] $main_queue_directory,
+      Optional[String[1]]            $main_readme_directory,
+      Optional[String[1]]            $main_recipient_delimiter,
+      Optional[Stdlib::Absolutepath] $main_sample_directory,
+      Optional[Stdlib::Absolutepath] $main_sendmail_path,
+      Optional[Stdlib::Host]         $main_relayhost,
+      Integer[0]                     $main_relayhost_port,
+      Optional[String[1]]            $main_relay_domains,
+      Optional[String[1]]            $main_setgid_group,
+      Optional[Stdlib::Absolutepath] $main_shlib_directory,
+      Optional[String[1]]            $main_smtpd_relay_restrictions,
+      Optional[Integer[0]]           $main_unknown_local_recipient_reject_code,
+      Optional[String[1]]            $main_virtual_alias_domains,
+      Optional[String[1]]            $main_virtual_alias_maps,
+      Optional[Hash]                 $virtual_aliases,
+      Boolean                        $virtual_aliases_external,
+      Optional[String[1]]            $main_transport_maps,
+      Optional[Hash]                 $transport_maps,
+      Boolean                        $transport_maps_external,
+      Hash                           $main_custom,
+| -%>
+# This file is being maintained by Puppet.
+# DO NOT EDIT
+
+<% if $main_alias_database { -%>
+alias_database = <%= $main_alias_database %>
+<% } -%>
+<% if $main_alias_maps { -%>
+alias_maps = <%= $main_alias_maps %>
+<% } -%>
+<% if $main_append_dot_mydomain { -%>
+append_dot_mydomain = <%= $main_append_dot_mydomain %>
+<% } -%>
+<% if $main_biff { -%>
+biff = <%= $main_biff %>
+<% } -%>
+<% if $main_command_directory { -%>
+command_directory = <%= $main_command_directory %>
+<% } -%>
+<% if $main_daemon_directory { -%>
+daemon_directory = <%= $main_daemon_directory %>
+<% } -%>
+<% if $main_data_directory { -%>
+data_directory = <%= $main_data_directory %>
+<% } -%>
+<% if $main_inet_interfaces_array { -%>
+inet_interfaces = <%= $main_inet_interfaces_array.join(', ') %>
+<% } -%>
+<% if $main_inet_protocols { -%>
+inet_protocols = <%= $main_inet_protocols %>
+<% } -%>
+<% if $main_smtp_tls_mandatory_protocols { -%>
+smtp_tls_mandatory_protocols = <%= $main_smtp_tls_mandatory_protocols %>
+<% } -%>
+<% if $main_smtp_tls_cafile { -%>
+smtp_tls_CAfile = <%= $main_smtp_tls_cafile %>
+<% } -%>
+<% if $main_smtp_tls_capath { -%>
+smtp_tls_CApath = <%= $main_smtp_tls_capath %>
+<% } -%>
+<% if $main_smtp_tls_protocols { -%>
+smtp_tls_protocols = <%= $main_smtp_tls_protocols %>
+<% } -%>
+<% if $main_smtp_tls_security_level { -%>
+smtp_tls_security_level = <%= $main_smtp_tls_security_level %>
+<% } -%>
+<% if $main_smtpd_banner { -%>
+smtpd_banner = <%= $main_smtpd_banner %>
+<% } -%>
+<% if $main_smtpd_helo_required { -%>
+smtpd_helo_required = <%= $main_smtpd_helo_required %>
+<% } -%>
+<% if $main_smtpd_helo_restrictions { -%>
+smtpd_helo_restrictions = <%= $main_smtpd_helo_restrictions.join(",\n    ") %>
+<% } -%>
+<% if $main_smtpd_recipient_restrictions { -%>
+smtpd_recipient_restrictions = <%= $main_smtpd_recipient_restrictions.join(",\n    ") %>
+<% } -%>
+<% if $main_smtpd_tls_mandatory_protocols { -%>
+smtpd_tls_mandatory_protocols = <%= $main_smtpd_tls_mandatory_protocols %>
+<% } -%>
+<% if $main_smtpd_tls_protocols { -%>
+smtpd_tls_protocols = <%= $main_smtpd_tls_protocols %>
+<% } -%>
+<% if $main_smtpd_tls_security_level { -%>
+smtpd_tls_security_level = <%= $main_smtpd_tls_security_level %>
+<% } -%>
+<% if $main_smtpd_tls_key_file { -%>
+smtpd_tls_key_file = <%= $main_smtpd_tls_key_file %>
+<% } -%>
+<% if $main_smtpd_tls_cert_file { -%>
+smtpd_tls_cert_file = <%= $main_smtpd_tls_cert_file %>
+<% } -%>
+<% if $main_compatibility_level { -%>
+compatibility_level = <%= $main_compatibility_level %>
+<% } -%>
+<% if $main_debug_peer_level { -%>
+debug_peer_level = <%= $main_debug_peer_level %>
+<% } -%>
+<% if $main_html_directory { -%>
+html_directory = <%= $main_html_directory %>
+<% } -%>
+<% if $main_mailbox_command { -%>
+mailbox_command = <%= $main_mailbox_command %>
+<% } -%>
+<% if $main_mailbox_size_limit { -%>
+mailbox_size_limit = <%= $main_mailbox_size_limit %>
+<% } -%>
+<% if $main_mailq_path { -%>
+mailq_path = <%= $main_mailq_path %>
+<% } -%>
+<% if $main_mail_owner { -%>
+mail_owner = <%= $main_mail_owner %>
+<% } -%>
+<% if $main_manpage_directory { -%>
+manpage_directory = <%= $main_manpage_directory %>
+<% } -%>
+<% if $main_meta_directory { -%>
+meta_directory = <%= $main_meta_directory %>
+<% } -%>
+<% if $main_mydestination { -%>
+mydestination = <%= $main_mydestination %>
+<% } -%>
+<% if $main_mydomain { -%>
+mydomain = <%= $main_mydomain %>
+<% } -%>
+<% if $main_myhostname { -%>
+myhostname = <%= $main_myhostname %>
+<% } -%>
+<% if $main_mynetworks_array != [] { -%>
+mynetworks = <%= $main_mynetworks_array.join(', ') %>
+<% } -%>
+<% if $main_myorigin { -%>
+myorigin = <%= $main_myorigin %>
+<% } -%>
+<% if $main_newaliases_path { -%>
+newaliases_path = <%= $main_newaliases_path %>
+<% } -%>
+queue_directory = <%= $main_queue_directory %>
+<% if $main_readme_directory { -%>
+readme_directory = <%= $main_readme_directory %>
+<% } -%>
+<% if $main_recipient_delimiter { -%>
+recipient_delimiter = <%= $main_recipient_delimiter %>
+<% } -%>
+<% if $main_sample_directory { -%>
+sample_directory = <%= $main_sample_directory %>
+<% } -%>
+<% if $main_sendmail_path { -%>
+sendmail_path = <%= $main_sendmail_path %>
+<% } -%>
+<% if $main_relayhost { -%>
+relayhost = <%= $main_relayhost %>:<%= $main_relayhost_port %>
+<% } -%>
+<% if $main_relay_domains { -%>
+relay_domains = <%= $main_relay_domains %>
+<% } -%>
+<% if $main_setgid_group { -%>
+setgid_group = <%= $main_setgid_group %>
+<% } -%>
+<% if $main_shlib_directory { -%>
+shlib_directory = <%= $main_shlib_directory %>
+<% } -%>
+<% if $main_smtpd_relay_restrictions { -%>
+smtpd_relay_restrictions = <%= $main_smtpd_relay_restrictions %>
+<% } -%>
+<% if $main_unknown_local_recipient_reject_code { -%>
+unknown_local_recipient_reject_code = <%= $main_unknown_local_recipient_reject_code %>
+<% } -%>
+<% if $main_virtual_alias_domains { -%>
+virtual_alias_domains = <%= $main_virtual_alias_domains %>
+<% } -%>
+<% if $main_virtual_alias_maps and ($virtual_aliases or $virtual_aliases_external) { -%>
+virtual_alias_maps = <%= $main_virtual_alias_maps %>
+<% } -%>
+<% if $main_transport_maps and ($transport_maps or $transport_maps_external) { -%>
+transport_maps = <%= $main_transport_maps %>
+<% } -%>
+<% $main_custom.each |$parameter, $values| { -%>
+<%   if $values =~ Array { -%>
+<%= $parameter %> =
+<%     $values.each |$value| { -%>
+    <%= $value %>
+<%     } -%>
+<%   } else { -%>
+<%= $parameter %> = <%= $values %>
+<%   } -%>
+<% } -%>

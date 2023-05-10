@@ -520,7 +520,7 @@ class postfix (
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
-    content => template('postfix/main.cf.erb'),
+    content => epp('postfix/main.cf.epp'),
   }
 
   if $virtual_aliases != undef {
@@ -530,7 +530,7 @@ class postfix (
       owner   => 'root',
       group   => 'root',
       mode    => '0644',
-      content => template('postfix/virtual.erb'),
+      content => epp('postfix/virtual.epp'),
     }
     exec { 'postfix_rebuild_virtual':
       command     => "${main_command_directory}/postmap ${main_virtual_alias_maps}",
@@ -555,7 +555,7 @@ class postfix (
       owner   => 'root',
       group   => 'root',
       mode    => '0644',
-      content => template('postfix/transport.erb'),
+      content => epp('postfix/transport.epp'),
     }
     exec { 'postfix_rebuild_transport':
       command     => "${main_command_directory}/postmap ${main_transport_maps}",

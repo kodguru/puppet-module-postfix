@@ -1,0 +1,12 @@
+# This file is being maintained by Puppet.
+# DO NOT EDIT
+
+<% if $postfix::virtual_aliases { -%>
+<%   $postfix::virtual_aliases.each |$key, $value| { -%>
+<%     if $value =~ Array { -%>
+<%= $key %>		<%= $value.join(',') %>
+<%     } else { -%>
+<%= $key %>		<%= $value %>
+<%     } -%>
+<%   } -%>
+<% } -%>

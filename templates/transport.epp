@@ -1,0 +1,8 @@
+# This file is being maintained by Puppet.
+# DO NOT EDIT
+
+<% if $postfix::transport_maps { -%>
+<%   $postfix::transport_maps.each |$key, $value| { -%>
+<%= $key %>		<%= $value %>
+<%   } -%>
+<% } -%>

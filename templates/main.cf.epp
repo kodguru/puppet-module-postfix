@@ -1,0 +1,167 @@
+# This file is being maintained by Puppet.
+# DO NOT EDIT
+
+<% if $postfix::main_alias_database { -%>
+alias_database = <%= $postfix::main_alias_database %>
+<% } -%>
+<% if $postfix::main_alias_maps { -%>
+alias_maps = <%= $postfix::main_alias_maps %>
+<% } -%>
+<% if $postfix::main_append_dot_mydomain { -%>
+append_dot_mydomain = <%= $postfix::main_append_dot_mydomain %>
+<% } -%>
+<% if $postfix::main_biff { -%>
+biff = <%= $postfix::main_biff %>
+<% } -%>
+<% if $postfix::main_command_directory { -%>
+command_directory = <%= $postfix::main_command_directory %>
+<% } -%>
+<% if $postfix::main_daemon_directory { -%>
+daemon_directory = <%= $postfix::main_daemon_directory %>
+<% } -%>
+<% if $postfix::main_data_directory { -%>
+data_directory = <%= $postfix::main_data_directory %>
+<% } -%>
+<% if $postfix::main_inet_interfaces_array { -%>
+inet_interfaces = <%= $postfix::main_inet_interfaces_array.join(', ') %>
+<% } -%>
+<% if $postfix::main_inet_protocols { -%>
+inet_protocols = <%= $postfix::main_inet_protocols %>
+<% } -%>
+<% if $postfix::main_smtp_tls_mandatory_protocols { -%>
+smtp_tls_mandatory_protocols = <%= $postfix::main_smtp_tls_mandatory_protocols %>
+<% } -%>
+<% if $postfix::main_smtp_tls_cafile { -%>
+smtp_tls_CAfile = <%= $postfix::main_smtp_tls_cafile %>
+<% } -%>
+<% if $postfix::main_smtp_tls_capath { -%>
+smtp_tls_CApath = <%= $postfix::main_smtp_tls_capath %>
+<% } -%>
+<% if $postfix::main_smtp_tls_protocols { -%>
+smtp_tls_protocols = <%= $postfix::main_smtp_tls_protocols %>
+<% } -%>
+<% if $postfix::main_smtp_tls_security_level { -%>
+smtp_tls_security_level = <%= $postfix::main_smtp_tls_security_level %>
+<% } -%>
+<% if $postfix::main_smtpd_banner { -%>
+smtpd_banner = <%= $postfix::main_smtpd_banner %>
+<% } -%>
+<% if $postfix::main_smtpd_helo_required { -%>
+smtpd_helo_required = <%= $postfix::main_smtpd_helo_required %>
+<% } -%>
+<% if $postfix::main_smtpd_helo_restrictions { -%>
+smtpd_helo_restrictions = <%= $postfix::main_smtpd_helo_restrictions.join(",\n    ") %>
+<% } -%>
+<% if $postfix::main_smtpd_recipient_restrictions { -%>
+smtpd_recipient_restrictions = <%= $postfix::main_smtpd_recipient_restrictions.join(",\n    ") %>
+<% } -%>
+<% if $postfix::main_smtpd_tls_mandatory_protocols { -%>
+smtpd_tls_mandatory_protocols = <%= $postfix::main_smtpd_tls_mandatory_protocols %>
+<% } -%>
+<% if $postfix::main_smtpd_tls_protocols { -%>
+smtpd_tls_protocols = <%= $postfix::main_smtpd_tls_protocols %>
+<% } -%>
+<% if $postfix::main_smtpd_tls_security_level { -%>
+smtpd_tls_security_level = <%= $postfix::main_smtpd_tls_security_level %>
+<% } -%>
+<% if $postfix::main_smtpd_tls_key_file { -%>
+smtpd_tls_key_file = <%= $postfix::main_smtpd_tls_key_file %>
+<% } -%>
+<% if $postfix::main_smtpd_tls_cert_file { -%>
+smtpd_tls_cert_file = <%= $postfix::main_smtpd_tls_cert_file %>
+<% } -%>
+<% if $postfix::main_compatibility_level { -%>
+compatibility_level = <%= $postfix::main_compatibility_level %>
+<% } -%>
+<% if $postfix::main_debug_peer_level { -%>
+debug_peer_level = <%= $postfix::main_debug_peer_level %>
+<% } -%>
+<% if $postfix::main_html_directory { -%>
+html_directory = <%= $postfix::main_html_directory %>
+<% } -%>
+<% if $postfix::main_mailbox_command { -%>
+mailbox_command = <%= $postfix::main_mailbox_command %>
+<% } -%>
+<% if $postfix::main_mailbox_size_limit { -%>
+mailbox_size_limit = <%= $postfix::main_mailbox_size_limit %>
+<% } -%>
+<% if $postfix::main_mailq_path { -%>
+mailq_path = <%= $postfix::main_mailq_path %>
+<% } -%>
+<% if $postfix::main_mail_owner { -%>
+mail_owner = <%= $postfix::main_mail_owner %>
+<% } -%>
+<% if $postfix::main_manpage_directory { -%>
+manpage_directory = <%= $postfix::main_manpage_directory %>
+<% } -%>
+<% if $postfix::main_meta_directory { -%>
+meta_directory = <%= $postfix::main_meta_directory %>
+<% } -%>
+<% if $postfix::main_mydestination { -%>
+mydestination = <%= $postfix::main_mydestination %>
+<% } -%>
+<% if $postfix::main_mydomain { -%>
+mydomain = <%= $postfix::main_mydomain %>
+<% } -%>
+<% if $postfix::main_myhostname { -%>
+myhostname = <%= $postfix::main_myhostname %>
+<% } -%>
+<% if $postfix::main_mynetworks { -%>
+mynetworks = <%= $postfix::main_mynetworks_array.join(', ') %>
+<% } -%>
+<% if $postfix::main_myorigin { -%>
+myorigin = <%= $postfix::main_myorigin %>
+<% } -%>
+<% if $postfix::main_newaliases_path { -%>
+newaliases_path = <%= $postfix::main_newaliases_path %>
+<% } -%>
+queue_directory = <%= $postfix::main_queue_directory %>
+<% if $postfix::main_readme_directory { -%>
+readme_directory = <%= $postfix::main_readme_directory %>
+<% } -%>
+<% if $postfix::main_recipient_delimiter { -%>
+recipient_delimiter = <%= $postfix::main_recipient_delimiter %>
+<% } -%>
+<% if $postfix::main_sample_directory { -%>
+sample_directory = <%= $postfix::main_sample_directory %>
+<% } -%>
+<% if $postfix::main_sendmail_path { -%>
+sendmail_path = <%= $postfix::main_sendmail_path %>
+<% } -%>
+<% if $postfix::main_relayhost { -%>
+relayhost = <%= $postfix::main_relayhost %>:<%= $postfix::main_relayhost_port %>
+<% } -%>
+<% if $postfix::main_relay_domains { -%>
+relay_domains = <%= $postfix::main_relay_domains %>
+<% } -%>
+<% if $postfix::main_setgid_group { -%>
+setgid_group = <%= $postfix::main_setgid_group %>
+<% } -%>
+<% if $postfix::main_shlib_directory { -%>
+shlib_directory = <%= $postfix::main_shlib_directory %>
+<% } -%>
+<% if $postfix::main_smtpd_relay_restrictions { -%>
+smtpd_relay_restrictions = <%= $postfix::main_smtpd_relay_restrictions %>
+<% } -%>
+<% if $postfix::main_unknown_local_recipient_reject_code { -%>
+unknown_local_recipient_reject_code = <%= $postfix::main_unknown_local_recipient_reject_code %>
+<% } -%>
+<% if $postfix::main_virtual_alias_domains { -%>
+virtual_alias_domains = <%= $postfix::main_virtual_alias_domains %>
+<% } -%>
+<% if $postfix::main_virtual_alias_maps and ($postfix::virtual_aliases or $postfix::virtual_aliases_external) { -%>
+virtual_alias_maps = <%= $postfix::main_virtual_alias_maps %>
+<% } -%>
+<% if $postfix::main_transport_maps and ($postfix::transport_maps or $postfix::transport_maps_external) { -%>
+transport_maps = <%= $postfix::main_transport_maps %>
+<% } -%>
+<% $postfix::main_custom.each |$parameter, $values| { -%>
+<%   if $values =~ Array { -%>
+<%= $parameter %> =
+<%     $values.each |$value| { -%>
+    <%= $value %>
+<%     } -%>
+<%   } else { -%>
+<%= $parameter %> = <%= $values %>
+<%   } -%>
+<% } -%>

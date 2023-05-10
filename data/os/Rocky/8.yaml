@@ -30,4 +30,4 @@ postfix::main_meta_directory: '/etc/postfix'
 postfix::main_shlib_directory: '/usr/lib64/postfix'
 postfix::service_name: 'postfix'
 postfix::main_custom:
-  - 'debugger_command = PATH=/bin:/usr/bin:/usr/local/bin:/usr/X11R6/bin ddd $daemon_directory/$process_name $process_id & sleep 5'
+  'debugger_command': 'PATH=/bin:/usr/bin:/usr/local/bin:/usr/X11R6/bin ddd $daemon_directory/$process_name $process_id & sleep 5'

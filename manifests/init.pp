@@ -38,15 +38,16 @@
 #   backwards-compatible default setting is required. 
 #
 # @param main_custom
-#   Array of custom lines to be added to Postfix configuration file main.cf.
-#   Each array item will add one line in the given order. Examples:
-#   ```['param = value']``` will add this line to main.cf:
+#   Hash of custom parameters and values to be added to Postfix configuration
+#   file main.cf.
+#   Each key-value pair will add one line in the given order. Example:
+#   ```{'param' => 'value'}``` will add this line to main.cf:
 #   ```param = value```
-#   Multiline parameters can be added by setting the Postfix parameter in the
-#   first line like above. Additional values are placed as next array items
-#   with space(s) before the value(s).
-#   ```['param = value1', '  value2']``` will add these line to main.cf:
-#   ```param = value1\n value2```
+#   Multiline parameters can be added by using an array for the values.
+#   ```{'param' => ['value1', 'value2']}``` will add these lines to main.cf:
+#   ```param =
+#       value1
+#       value2```
 #
 # @param main_daemon_directory
 #   The directory with Postfix support programs and daemon programs. These should
@@ -436,7 +437,7 @@ class postfix (
   Optional[Enum['yes', 'no']] $main_biff                            = undef,
   Optional[Stdlib::Absolutepath] $main_command_directory            = undef,
   Optional[String[1]] $main_compatibility_level                     = undef,
-  Optional[Array[String[1]]] $main_custom                           = undef,
+  Hash $main_custom                                                 = {},
   Optional[Stdlib::Absolutepath] $main_daemon_directory             = undef,
   Optional[Stdlib::Absolutepath] $main_data_directory               = undef,
   Optional[String[1]] $main_debug_peer_level                        = undef,

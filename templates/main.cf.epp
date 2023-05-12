@@ -5,7 +5,7 @@
       Optional[Stdlib::Absolutepath] $main_command_directory,
       Optional[Stdlib::Absolutepath] $main_daemon_directory,
       Optional[Stdlib::Absolutepath] $main_data_directory,
-      Optional[Array]                $main_inet_interfaces_array,
+      Array                          $main_inet_interfaces,
       Optional[String[1]]            $main_inet_protocols,
       Optional[String[1]]            $main_smtp_tls_mandatory_protocols,
       Optional[Stdlib::Absolutepath] $main_smtp_tls_cafile,
@@ -33,7 +33,7 @@
       Optional[String[1]]            $main_mydestination,
       Optional[Stdlib::Host]         $main_mydomain,
       Optional[Stdlib::Host]         $main_myhostname,
-      Optional[Array]                $main_mynetworks_array,
+      Array                          $main_mynetworks,
       Optional[String[1]]            $main_myorigin,
       Optional[Stdlib::Absolutepath] $main_newaliases_path,
       Optional[Stdlib::Absolutepath] $main_queue_directory,
@@ -81,8 +81,8 @@ daemon_directory = <%= $main_daemon_directory %>
 <% if $main_data_directory { -%>
 data_directory = <%= $main_data_directory %>
 <% } -%>
-<% if $main_inet_interfaces_array { -%>
-inet_interfaces = <%= $main_inet_interfaces_array.join(', ') %>
+<% if $main_inet_interfaces != [] { -%>
+inet_interfaces = <%= $main_inet_interfaces.join(', ') %>
 <% } -%>
 <% if $main_inet_protocols { -%>
 inet_protocols = <%= $main_inet_protocols %>
@@ -165,8 +165,8 @@ mydomain = <%= $main_mydomain %>
 <% if $main_myhostname { -%>
 myhostname = <%= $main_myhostname %>
 <% } -%>
-<% if $main_mynetworks_array != [] { -%>
-mynetworks = <%= $main_mynetworks_array.join(', ') %>
+<% if $main_mynetworks != [] { -%>
+mynetworks = <%= $main_mynetworks.join(', ') %>
 <% } -%>
 <% if $main_myorigin { -%>
 myorigin = <%= $main_myorigin %>

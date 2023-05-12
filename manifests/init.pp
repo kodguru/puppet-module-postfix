@@ -70,7 +70,7 @@
 #   or operate a specific Postfix subsystem or feature.
 #
 # @param main_inet_interfaces
-#   The network interface addresses that this mail system receives mail on.
+#   Array of network interface addresses that this mail system receives mail on.
 #   Specify "all" to receive mail on all network interfaces (default), and
 #   "loopback-only" to receive mail on loopback network interfaces only
 #   (Postfix version 2.2 and later). The parameter also controls delivery
@@ -159,8 +159,8 @@
 #   is used as a default value for many other configuration parameters.
 #
 # @param main_mynetworks
-#   The list of "trusted" remote SMTP clients that have more privileges than
-#   "strangers". In particular, "trusted" SMTP clients are allowed to relay
+#   Array of the list of "trusted" remote SMTP clients that have more privileges
+#   than "strangers". In particular, "trusted" SMTP clients are allowed to relay
 #   mail through Postfix. Specify a list of network addresses or
 #   network/netmask patterns, separated by commas and/or whitespace.
 #
@@ -442,7 +442,7 @@ class postfix (
   Optional[Stdlib::Absolutepath] $main_data_directory               = undef,
   Optional[String[1]] $main_debug_peer_level                        = undef,
   Optional[String[1]] $main_html_directory                          = undef,
-  Optional[Postfix::Main_inet_interfaces] $main_inet_interfaces     = undef,
+  Array[Postfix::Main_inet_interfaces] $main_inet_interfaces        = [],
   Optional[String[1]] $main_inet_protocols                          = undef,
   Optional[String[1]] $main_mailbox_command                         = undef,
   Optional[Stdlib::Absolutepath] $main_manpage_directory            = undef,
@@ -453,7 +453,7 @@ class postfix (
   Optional[String[1]] $main_mydestination                           = undef,
   Optional[Stdlib::Host] $main_mydomain                             = undef,
   Optional[Stdlib::Host] $main_myhostname                           = undef,
-  Optional[Variant[Array[String[1]], String[1]]] $main_mynetworks   = undef,
+  Array $main_mynetworks                                            = [],
   Optional[String[1]] $main_myorigin                                = undef,
   Optional[Stdlib::Absolutepath] $main_newaliases_path              = undef,
   Optional[Stdlib::Absolutepath] $main_queue_directory              = undef,
@@ -496,9 +496,6 @@ class postfix (
   Boolean $virtual_aliases_external                                 = false,
   Optional[Hash] $virtual_aliases                                   = undef,
 ) {
-  $main_mynetworks_array = any2array($main_mynetworks)
-  $main_inet_interfaces_array = any2array($main_inet_interfaces)
-
   # <Install & Config>
   package { $packages:
     ensure => installed,
@@ -529,7 +526,7 @@ class postfix (
         main_command_directory                   => $main_command_directory,
         main_daemon_directory                    => $main_daemon_directory,
         main_data_directory                      => $main_data_directory,
-        main_inet_interfaces_array               => $main_inet_interfaces_array,
+        main_inet_interfaces                     => $main_inet_interfaces,
         main_inet_protocols                      => $main_inet_protocols,
         main_smtp_tls_mandatory_protocols        => $main_smtp_tls_mandatory_protocols,
         main_smtp_tls_cafile                     => $main_smtp_tls_cafile,
@@ -557,7 +554,7 @@ class postfix (
         main_mydestination                       => $main_mydestination,
         main_mydomain                            => $main_mydomain,
         main_myhostname                          => $main_myhostname,
-        main_mynetworks_array                    => $main_mynetworks_array,
+        main_mynetworks                          => $main_mynetworks,
         main_myorigin                            => $main_myorigin,
         main_newaliases_path                     => $main_newaliases_path,
         main_queue_directory                     => $main_queue_directory,

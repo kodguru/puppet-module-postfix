@@ -186,10 +186,16 @@ describe 'postfix' do
       it { is_expected.to contain_file('postfix_main.cf').with_content(%r{debug_peer_level = testing}) }
     end
 
-    context "on #{os} with main_inet_interfaces set to valid test.ing" do
-      let(:params) { { main_inet_interfaces: 'test.ing' } }
+    context "on #{os} with main_inet_interfaces set to valid [test.ing]" do
+      let(:params) { { main_inet_interfaces: ['test.ing'] } }
 
       it { is_expected.to contain_file('postfix_main.cf').with_content(%r{inet_interfaces = test.ing}) }
+    end
+
+    context "on #{os} with main_inet_interfaces set to valid [test.ing, testi.ng]" do
+      let(:params) { { main_inet_interfaces: ['test.ing', 'testi.ng'] } }
+
+      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{inet_interfaces = test.ing, testi.ng}) }
     end
 
     context "on #{os} with main_html_directory set to valid /test/ing" do
@@ -258,19 +264,13 @@ describe 'postfix' do
       it { is_expected.to contain_file('postfix_main.cf').with_content(%r{myhostname = test.ing}) }
     end
 
-    context "on #{os} with main_mynetworks set to valid test.ing" do
-      let(:params) { { main_mynetworks: 'test.ing' } }
-
-      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{mynetworks = test.ing}) }
-    end
-
-    context "on #{os} with main_mynetworks set to valid test.ing" do
+    context "on #{os} with main_mynetworks set to valid [test.ing]" do
       let(:params) { { main_mynetworks: ['test.ing'] } }
 
       it { is_expected.to contain_file('postfix_main.cf').with_content(%r{mynetworks = test.ing}) }
     end
 
-    context "on #{os} with main_mynetworks set to valid test.ing" do
+    context "on #{os} with main_mynetworks set to valid [test.ing, testi.ng]" do
       let(:params) { { main_mynetworks: ['test.ing', 'testi.ng'] } }
 
       it { is_expected.to contain_file('postfix_main.cf').with_content(%r{mynetworks = test.ing, testi.ng}) }

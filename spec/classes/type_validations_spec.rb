@@ -15,6 +15,18 @@ describe 'postfix' do
       let(:facts) { os_facts }
 
       validations = {
+        'Array' => {
+          name:    ['main_mynetworks'],
+          valid:   [['testing'], ['test', 'ing']],
+          invalid: ['invalid', 3, 2.42, { 'ha' => 'sh' }, true, false],
+          message: 'expects an Array value',
+        },
+        'Array[Postfix::Main_inet_interfaces]' => {
+          name:    ['main_inet_interfaces'],
+          valid:   [['all'], ['loopback-only'], ['host.domain.tld'], ['127.0.0.1'], ['::1'], ['localhost'], ['$myhostname'], ['${myhostname}'], ['all', 'localhost']],
+          invalid: ['localhost', 'in valid', 3, 2.42, ['host name'], { 'ha' => 'sh', }, true],
+          message: '(expects an Array value|expects a Postfix::Main_inet_interfaces)',
+        },
         'Array[String[1]]' => {
           name:    ['packages'],
           valid:   [['testing'], ['test', 'ing']],
@@ -44,12 +56,6 @@ describe 'postfix' do
           valid:   [['array'], ['array', 'array']],
           invalid: ['invalid', [1], [[1]], [{ 'ha' => 'sh' }], 3, 2.42, { 'ha' => 'sh' }, true, false],
           message: '(expects a value of type Undef or Array|index \d+ expects a String value)',
-        },
-        'Optional[Array[String[1]] or String[1]]' => {
-          name:    ['main_mynetworks'],
-          valid:   [['testing'], ['test', 'ing'], 'test'],
-          invalid: ['', [1], [[1]], [{ 'ha' => 'sh' }], 3, 2.42, { 'ha' => 'sh' }, true, false],
-          message: '(String or Array|String|Array)',
         },
         'Optional[Enum[yes, no]]' => {
           name:    ['main_biff', 'main_append_dot_mydomain', 'main_smtpd_helo_required'],
@@ -105,12 +111,6 @@ describe 'postfix' do
           valid:   [true, false, 'true', 'false'],
           invalid: ['invalid', 3, 2.42, ['array'], { 'ha' => 'sh' }],
           message: 'value of type Boolean or Enum',
-        },
-        'Postfix::Main_inet_interfaces' => {
-          name:    ['main_inet_interfaces'],
-          valid:   ['all', 'loopback-only', 'host.domain.tld', '127.0.0.1', '[::1]', 'localhost', '$myhostname', '${myhostname}', ['127.0.0.1', '[::1]', 'localhost', '$myhostname', '${myhostname}']],
-          invalid: ['in valid', 3, 2.42, ['host name'], { 'ha' => 'sh', }, ['127.0.0.1', '[::1]', 'localhost', '$myhostname', '${my_variable}', 'host name']],
-          message: 'expects a Postfix::Main_inet_interfaces',
         },
       }
 

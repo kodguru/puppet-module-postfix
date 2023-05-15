@@ -8,14 +8,14 @@ describe 'postfix with transport_maps set' do
     if "${facts['os']['name']}-${facts['os']['release']['major']}" in ['AlmaLinux-8', 'CentOS-9', 'Rocky-8'] {
       class { 'postfix':
         main_inet_protocols => 'ipv4',
-        main_transport_maps => 'hash:/etc/postfix/transport', # needed for OS flavours without given default value
+        main_transport_maps => '/etc/postfix/transport', # needed for OS flavours without given default value
         transport_maps => {
           'test@test.ing' => 'test.ing',
         },
       }
     } else {
       class { 'postfix':
-        main_transport_maps => 'hash:/etc/postfix/transport', # needed for OS flavours without given default value
+        main_transport_maps => '/etc/postfix/transport', # needed for OS flavours without given default value
         transport_maps => {
           'test@test.ing' => 'test.ing',
         },

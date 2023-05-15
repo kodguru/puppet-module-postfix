@@ -41,7 +41,7 @@ describe 'postfix' do
           'enable'     => true,
           'hasrestart' => true,
           'hasstatus'  => true,
-          'subscribe'  => [ 'File[postfix_main.cf]', 'File[postfix_virtual]', 'File[postfix_transport]' ],
+          'subscribe'  => 'File[postfix_main.cf]',
         },
       )
     end
@@ -75,6 +75,7 @@ describe 'postfix' do
         {
           'ensure' => 'absent',
           'path'   => '/etc/postfix/virtual.db',
+          'notify' => 'Service[postfix_service]',
         },
       )
     end
@@ -93,6 +94,7 @@ describe 'postfix' do
         {
           'ensure' => 'absent',
           'path'   => '/etc/postfix/transport.db',
+          'notify' => 'Service[postfix_service]',
         },
       )
     end

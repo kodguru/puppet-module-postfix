@@ -29,19 +29,23 @@ describe 'postfix' do
         )
       end
 
-      content_fixture = File.read(fixtures("testing/#{os_facts[:os]['name']}-#{os_facts[:os]['release']['major']}_main.cf"))
+      # Each minor release of Suse is different. Do minor releases for SLES in
+      # dedicated file for it - sles_spec.rb.
+      if os_facts[:os]['family'] != 'Suse'
+        content_fixture = File.read(fixtures("testing/#{os_facts[:os]['name']}-#{os_facts[:os]['release']['major']}_main.cf"))
 
-      it do
-        is_expected.to contain_file('postfix_main.cf').only_with(
-          {
-            'ensure'  => 'file',
-            'path'    => '/etc/postfix/main.cf',
-            'owner'   => 'root',
-            'group'   => 'root',
-            'mode'    => '0644',
-            'content' => content_fixture,
-          },
-        )
+        it do
+          is_expected.to contain_file('postfix_main.cf').only_with(
+            {
+              'ensure'  => 'file',
+              'path'    => '/etc/postfix/main.cf',
+              'owner'   => 'root',
+              'group'   => 'root',
+              'mode'    => '0644',
+              'content' => content_fixture,
+            },
+          )
+        end
       end
 
       it do

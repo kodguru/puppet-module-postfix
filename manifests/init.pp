@@ -600,6 +600,10 @@
 #  Array of custom line that should be added to the transport map.
 #  These lines will be printed before the content of $transport_maps.
 #
+# @param no_postmap_db_types
+#   Array of DB types that do not require postmap to create the Postfix lookup
+#   tables.
+#
 class postfix (
   Optional[String[1]] $main_alias_database                          = undef,
   Optional[String[1]] $main_alias_maps                              = undef,
@@ -690,6 +694,7 @@ class postfix (
   String[1] $transport_db_type                                      = 'hash',
   Array $transport_custom                                           = [],
   Hash $transport_maps                                              = {},
+  Array $no_postmap_db_types                                        = ['regexp'],
 ) {
   # <Install & Config>
   package { $packages:
@@ -815,11 +820,14 @@ class postfix (
         }
       ),
     }
-    exec { 'postfix_rebuild_canonical_maps':
-      command     => "${main_command_directory}/postmap ${canonical_db_type}:${main_canonical_maps}",
-      refreshonly => true,
-      subscribe   => File['postfix_canonical_maps'],
-      notify      => Service['postfix_service'],
+
+    unless $canonical_db_type in $no_postmap_db_types {
+      exec { 'postfix_rebuild_canonical_maps':
+        command     => "${main_command_directory}/postmap ${canonical_db_type}:${main_canonical_maps}",
+        refreshonly => true,
+        subscribe   => File['postfix_canonical_maps'],
+        notify      => Service['postfix_service'],
+      }
     }
   } else {
     file { 'postfix_canonical_maps':
@@ -847,11 +855,13 @@ class postfix (
         }
       ),
     }
-    exec { 'postfix_rebuild_relocated_maps':
-      command     => "${main_command_directory}/postmap ${relocated_db_type}:${main_relocated_maps}",
-      refreshonly => true,
-      subscribe   => File['postfix_relocated_maps'],
-      notify      => Service['postfix_service'],
+    unless $relocated_db_type in $no_postmap_db_types {
+      exec { 'postfix_rebuild_relocated_maps':
+        command     => "${main_command_directory}/postmap ${relocated_db_type}:${main_relocated_maps}",
+        refreshonly => true,
+        subscribe   => File['postfix_relocated_maps'],
+        notify      => Service['postfix_service'],
+      }
     }
   } else {
     file { 'postfix_relocated_maps':
@@ -879,11 +889,13 @@ class postfix (
         }
       ),
     }
-    exec { 'postfix_rebuild_virtual':
-      command     => "${main_command_directory}/postmap ${virtual_db_type}:${main_virtual_alias_maps}",
-      refreshonly => true,
-      subscribe   => File['postfix_virtual'],
-      notify      => Service['postfix_service'],
+    unless $virtual_db_type in $no_postmap_db_types {
+      exec { 'postfix_rebuild_virtual':
+        command     => "${main_command_directory}/postmap ${virtual_db_type}:${main_virtual_alias_maps}",
+        refreshonly => true,
+        subscribe   => File['postfix_virtual'],
+        notify      => Service['postfix_service'],
+      }
     }
   }
   else {
@@ -912,11 +924,13 @@ class postfix (
         }
       ),
     }
-    exec { 'postfix_rebuild_transport':
-      command     => "${main_command_directory}/postmap ${transport_db_type}:${main_transport_maps}",
-      refreshonly => true,
-      subscribe   => File['postfix_transport'],
-      notify      => Service['postfix_service'],
+    unless $transport_db_type in $no_postmap_db_types {
+      exec { 'postfix_rebuild_transport':
+        command     => "${main_command_directory}/postmap ${transport_db_type}:${main_transport_maps}",
+        refreshonly => true,
+        subscribe   => File['postfix_transport'],
+        notify      => Service['postfix_service'],
+      }
     }
   }
   else {

@@ -633,6 +633,23 @@ describe 'postfix' do
       it { is_expected.to contain_service('postfix_service').with_name('testing') }
     end
 
+    context "on #{os} with no_postmap_db_types set array to containing hash when maps will be created" do
+      let(:params) do
+        {
+          no_postmap_db_types: ['hash'],
+          canonical_maps:      { 'test@test.ing' => 'test.ing' },
+          relocated_maps:      { 'test@test.ing' => 'test.ing' },
+          transport_maps:      { 'test@test.ing' => 'test.ing' },
+          virtual_aliases:     { 'test@test.ing' => 'test.ing' },
+        }
+      end
+
+      it { is_expected.not_to contain_exec('postfix_rebuild_canonical_maps') }
+      it { is_expected.not_to contain_exec('postfix_rebuild_relocated_maps') }
+      it { is_expected.not_to contain_exec('postfix_rebuild_transport') }
+      it { is_expected.not_to contain_exec('postfix_rebuild_virtual') }
+    end
+
     context "on #{os} with transport_maps_external set to valid true" do
       let(:params) { { transport_maps_external: true } }
 
@@ -690,13 +707,25 @@ describe 'postfix' do
     context "on #{os} with transport_db_type set to valid lmdb when database has content" do
       let(:params) do
         {
-          transport_db_type:   'lmdb',
-          transport_maps:      { 'test@test.ing' => 'test.ing' },
+          transport_db_type: 'lmdb',
+          transport_maps:    { 'test@test.ing' => 'test.ing' },
         }
       end
 
       it { is_expected.to contain_exec('postfix_rebuild_transport').with_command('/usr/sbin/postmap lmdb:/etc/postfix/transport') }
       it { is_expected.to contain_file('postfix_main.cf').with_content(%r{transport_maps = lmdb:/etc/postfix/transport}) }
+    end
+
+    context "on #{os} with transport_db_type set to valid regexp when database has content" do
+      let(:params) do
+        {
+          transport_db_type: 'regexp',
+          transport_maps:    { 'test@test.ing' => 'test.ing' },
+        }
+      end
+
+      it { is_expected.not_to contain_exec('postfix_rebuild_transport') }
+      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{transport_maps = regexp:/etc/postfix/transport}) }
     end
 
     context "on #{os} with transport_custom set to valid array" do
@@ -782,6 +811,18 @@ describe 'postfix' do
 
       it { is_expected.to contain_exec('postfix_rebuild_virtual').with_command('/usr/sbin/postmap lmdb:/etc/postfix/virtual') }
       it { is_expected.to contain_file('postfix_main.cf').with_content(%r{virtual_alias_maps = lmdb:/etc/postfix/virtual}) }
+    end
+
+    context "on #{os} with virtual_db_type set to valid regexp when database has content" do
+      let(:params) do
+        {
+          virtual_db_type: 'regexp',
+          virtual_aliases: { 'test@test.ing' => 'test.ing' },
+        }
+      end
+
+      it { is_expected.not_to contain_exec('postfix_rebuild_virtual') }
+      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{virtual_alias_maps = regexp:/etc/postfix/virtual}) }
     end
 
     context "on #{os} with virtual_custom set to valid array" do
@@ -879,6 +920,18 @@ describe 'postfix' do
       it { is_expected.to contain_file('postfix_main.cf').with_content(%r{canonical_maps = lmdb:/etc/postfix/canonical}) }
     end
 
+    context "on #{os} with canonical_db_type set to valid regexp when database has content" do
+      let(:params) do
+        {
+          canonical_db_type: 'regexp',
+          canonical_maps:    { 'user1' => 'user1@test.ing' },
+        }
+      end
+
+      it { is_expected.not_to contain_exec('postfix_rebuild_canonical_maps') }
+      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{canonical_maps = regexp:/etc/postfix/canonical}) }
+    end
+
     context "on #{os} with canonical_custom set to valid array" do
       let(:params) do
         {
@@ -950,8 +1003,8 @@ describe 'postfix' do
     context "on #{os} with relocated_db_type set to valid lmdb when database has content" do
       let(:params) do
         {
-          relocated_db_type:   'lmdb',
-          relocated_maps:      { 'user1@here.tld' => 'user1@there.tld' },
+          relocated_db_type: 'lmdb',
+          relocated_maps:    { 'user1@here.tld' => 'user1@there.tld' },
         }
       end
 
@@ -959,10 +1012,22 @@ describe 'postfix' do
       it { is_expected.to contain_file('postfix_main.cf').with_content(%r{relocated_maps = lmdb:/etc/postfix/relocated}) }
     end
 
+    context "on #{os} with relocated_db_type set to valid regexp when database has content" do
+      let(:params) do
+        {
+          relocated_db_type: 'regexp',
+          relocated_maps:    { 'user1@here.tld' => 'user1@there.tld' },
+        }
+      end
+
+      it { is_expected.not_to contain_exec('postfix_rebuild_relocated_maps') }
+      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{relocated_maps = regexp:/etc/postfix/relocated}) }
+    end
+
     context "on #{os} with relocated_custom set to valid array" do
       let(:params) do
         {
-          relocated_custom:    ['line1', 'line2'],
+          relocated_custom: ['line1', 'line2'],
         }
       end
 
@@ -981,8 +1046,8 @@ describe 'postfix' do
     context "on #{os} with virtual_db_type set to valid lmdb when database has content" do
       let(:params) do
         {
-          virtual_db_type:         'lmdb',
-          virtual_aliases:         { 'user1' => 'user1@here.tld' },
+          virtual_db_type: 'lmdb',
+          virtual_aliases: { 'user1' => 'user1@here.tld' },
         }
       end
 
@@ -993,7 +1058,7 @@ describe 'postfix' do
     context "on #{os} with virtual_custom set to valid array" do
       let(:params) do
         {
-          virtual_custom:  ['line1', 'line2'],
+          virtual_custom: ['line1', 'line2'],
         }
       end
 
@@ -1007,37 +1072,6 @@ describe 'postfix' do
 
       it { is_expected.to contain_file('postfix_virtual').with_content(content) }
       it { is_expected.to contain_file('postfix_main.cf').with_content(%r{virtual_alias_maps = hash:/etc/postfix/virtual}) }
-    end
-
-    context "on #{os} with transport_db_type set to valid lmdb when database has content" do
-      let(:params) do
-        {
-          transport_db_type:   'lmdb',
-          transport_maps:      { 'here.tld' => 'relay:[gw.there.com]' },
-        }
-      end
-
-      it { is_expected.to contain_exec('postfix_rebuild_transport').with_command('/usr/sbin/postmap lmdb:/etc/postfix/transport') }
-      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{transport_maps = lmdb:/etc/postfix/transport}) }
-    end
-
-    context "on #{os} with transport_custom set to valid array" do
-      let(:params) do
-        {
-          transport_custom: ['line1', 'line2'],
-        }
-      end
-
-      content = <<-END.gsub(%r{^\s+\|}, '')
-        |# This file is being maintained by Puppet.
-        |# DO NOT EDIT
-        |
-        |line1
-        |line2
-      END
-
-      it { is_expected.to contain_file('postfix_transport').with_content(content) }
-      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{transport_maps = hash:/etc/postfix/transport}) }
     end
   end
 end

@@ -24,6 +24,11 @@ This module provides OS default values for these OSfamilies:
 
 # Version history #
 
+* 3.0.0 2023-05-16 Convert $main_custom to use a hash to allow easier hiera merging
+                   Convert templates to ERP format, use one template for all maps
+                   Drop support for strings for array type parameters
+                   Add support for more Postfix parameters
+* 2.3.1 2023-01-27 Fix Suse default values
 * 2.3.0 2023-01-03 Add support for AlmaLinux 8/9 & Rocky 8/9
                    Move module default data into hiera data
                    Add acceptance tests

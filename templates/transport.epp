@@ -1,8 +1,0 @@
-<%- | Hash $transport_maps,
-| -%>
-# This file is being maintained by Puppet.
-# DO NOT EDIT
-
-<% $transport_maps.each |$key, $value| { -%>
-<%= $key %>		<%= $value %>
-<% } -%>

@@ -1,0 +1,16 @@
+<%- | Array $custom_data,
+      Hash $maps_data,
+| -%>
+# This file is being maintained by Puppet.
+# DO NOT EDIT
+
+<% $custom_data.each |$line| { -%>
+<%= $line %>
+<% } -%>
+<% $maps_data.each |$parameter, $value| { -%>
+<%   if $value =~ Array { -%>
+<%= $parameter %>		<%= $value.join(',') %>
+<%   } else { -%>
+<%= $parameter %>		<%= $value %>
+<%   } -%>
+<% } -%>

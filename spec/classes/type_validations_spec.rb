@@ -16,7 +16,7 @@ describe 'postfix' do
 
       validations = {
         'Array' => {
-          name:    ['main_mynetworks'],
+          name:    ['canonical_custom', 'relocated_custom', 'transport_custom', 'virtual_custom', 'main_mynetworks'],
           valid:   [['testing'], ['test', 'ing']],
           invalid: ['invalid', 3, 2.42, { 'ha' => 'sh' }, true, false],
           message: 'expects an Array value',
@@ -40,7 +40,7 @@ describe 'postfix' do
           message: 'expects a Boolean',
         },
         'Hash' => {
-          name:    ['main_custom'],
+          name:    ['main_custom', 'canonical_maps', 'relocated_maps', 'transport_maps', 'virtual_aliases'],
           valid:   [{ 'ha' => 'sh' }],
           invalid: [true, false, 'invalid', 3, 2.42, ['array']],
           message: 'expects a Hash',
@@ -58,22 +58,18 @@ describe 'postfix' do
           message: '(expects a value of type Undef or Array|index \d+ expects a String value)',
         },
         'Optional[Enum[yes, no]]' => {
-          name:    ['main_biff', 'main_append_dot_mydomain', 'main_smtpd_helo_required'],
+          name:    ['main_biff', 'main_append_dot_mydomain', 'main_smtpd_helo_required', 'main_smtpd_delay_reject', 'main_smtpd_sasl_auth_enable',
+                    'main_smtpd_tls_ask_ccert', 'main_smtpd_tls_received_header', 'main_smtpd_use_tls', 'main_smtp_enforce_tls',
+                    'main_smtp_sasl_auth_enable', 'main_smtp_use_tls', 'main_strict_8bitmime', 'main_strict_rfc821_envelopes'],
           valid:   ['yes', 'no'],
           invalid: [true, false, 'invalid', 3, 2.42, ['array'], { 'ha' => 'sh' }],
           message: 'expects an undef value or a match for Enum',
         },
         'Optional[Integer[0]]' => {
-          name:    ['main_mailbox_size_limit', 'main_unknown_local_recipient_reject_code'],
+          name:    ['main_mailbox_size_limit', 'main_unknown_local_recipient_reject_code', 'main_message_size_limit'],
           valid:   [0, 242, 51_200_000 ],
           invalid: [-1, 2.42, 'string', ['array'], { 'ha' => 'sh' }],
           message: '(value of type Undef or Integer)',
-        },
-        'Optional[Hash]' => {
-          name:    ['transport_maps', 'virtual_aliases'],
-          valid:   [{ 'ha' => 'sh' }, { 'test1@test.void' => 'destination1', 'test2@test.void' => ['destination2', 'destination3'] }],
-          invalid: [true, false, 'invalid', 3, 2.42, ['array']],
-          message: 'expects a value of type Undef or Hash',
         },
         'Optional[String[1]]' => {
           name:    ['main_compatibility_level', 'main_html_directory', 'main_debug_peer_level', 'main_mailbox_command', 'main_mail_owner',
@@ -81,7 +77,8 @@ describe 'postfix' do
                     'main_smtpd_tls_mandatory_protocols', 'main_smtpd_tls_protocols', 'main_smtpd_tls_security_level',
                     'main_smtp_tls_mandatory_protocols', 'main_smtp_tls_protocols', 'main_smtp_tls_security_level', 'main_virtual_alias_domains',
                     'main_recipient_delimiter', 'main_mydestination', 'main_myorigin', 'main_alias_database', 'main_alias_maps',
-                    'main_inet_protocols', 'main_transport_maps', 'main_virtual_alias_maps', 'service_name'],
+                    'main_inet_protocols', 'service_name', 'main_smtpd_sender_restrictions',
+                    'main_debugger_command'],
           valid:   ['valid'],
           invalid: [['array'], { 'ha' => 'sh' }],
           message: 'expects a value of type Undef or String',
@@ -89,7 +86,8 @@ describe 'postfix' do
         'Stdlib::Absolutepath & Optional[Stdlib::Absolutepath]' => {
           name:    ['main_command_directory', 'main_daemon_directory', 'main_data_directory', 'main_manpage_directory', 'main_mailq_path',
                     'main_meta_directory', 'main_newaliases_path', 'main_sample_directory', 'main_sendmail_path', 'main_shlib_directory',
-                    'main_smtp_tls_cafile', 'main_queue_directory', 'main_smtpd_tls_cert_file', 'main_smtpd_tls_key_file', 'main_smtp_tls_capath'],
+                    'main_smtp_tls_cafile', 'main_queue_directory', 'main_smtpd_tls_cert_file', 'main_smtpd_tls_key_file', 'main_smtp_tls_capath',
+                    'main_canonical_maps', 'main_relocated_maps', 'main_transport_maps', 'main_virtual_alias_maps'],
           valid:   ['/absolute/filepath', '/absolute/directory/'], # cant test undef :(
           invalid: ['relative/path', 3, 2.42, ['array'], { 'ha' => 'sh' }],
           message: 'expects a Stdlib::Absolutepath',
@@ -105,6 +103,12 @@ describe 'postfix' do
           valid:   ['127.0.0.1', 'localhost', 'v.al.id', 'val.id'],
           invalid: ['in valid', 3, 2.42, ['array'], { 'ha' => 'sh' }],
           message: 'expects a Stdlib::Host',
+        },
+        'String[1]' => {
+          name:    ['canonical_db_type', 'relocated_db_type', 'transport_db_type', 'virtual_db_type'],
+          valid:   ['string'],
+          invalid: [false, 3, 2.42, ['array'], { 'ha' => 'sh' }],
+          message: 'expects a String value',
         },
         'Variant[Boolean, Enum[\'true\', \'false\']]' => {
           name:    ['service_enable'],

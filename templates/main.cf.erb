@@ -119,6 +119,10 @@ virtual_alias_domains = <%= @main_virtual_alias_domains_real %>
 
 virtual_alias_maps = <%= @main_virtual_alias_maps_real %>
 <% end -%>
+<% if @main_canonical_maps_real and (@canonical_maps_real or @canonical_maps_external_real) -%>
+
+canonical_maps = <%= @main_canonical_maps_real -%>
+<% end -%>
 <% if @main_transport_maps_real and (@transport_maps_real or @transport_maps_external_real) -%>
 
 transport_maps = <%= @main_transport_maps_real %>

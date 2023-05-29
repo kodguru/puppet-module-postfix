@@ -1,0 +1,8 @@
+# This file is being maintained by Puppet.
+# DO NOT EDIT
+
+<% if @canonical_maps_real -%>
+<%   @canonical_maps_real.sort.each do |key, value| -%>
+<%= key %>		<%= value %>
+<%   end -%>
+<% end -%>

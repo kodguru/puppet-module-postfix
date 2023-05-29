@@ -28,6 +28,7 @@ class postfix (
   $main_transport_maps                = 'hash:/etc/postfix/transport',
   $main_virtual_alias_domains         = undef,
   $main_virtual_alias_maps            = 'hash:/etc/postfix/virtual',
+  $main_canonical_maps                = 'hash:/etc/postfix/canonical',
   $main_smtp_tls_mandatory_protocols  = undef,
   $main_smtp_tls_protocols            = undef,
   $main_smtp_tls_security_level       = undef,
@@ -50,6 +51,8 @@ class postfix (
   $transport_maps_external            = false,
   $virtual_aliases                    = undef,
   $virtual_aliases_external           = false,
+  $canonical_maps                     = undef,
+  $canonical_maps_external            = false,
 ) {
 
   # <provide os default values>
@@ -171,12 +174,14 @@ class postfix (
   $main_transport_maps_real        = $main_transport_maps
   $main_virtual_alias_domains_real = $main_virtual_alias_domains
   $main_virtual_alias_maps_real    = $main_virtual_alias_maps
+  $main_canonical_maps_real        = $main_canonical_maps
   $service_enable_real             = $service_enable
   $service_ensure_real             = $service_ensure
   $service_name_real               = $service_name
   $template_main_cf_real           = $template_main_cf
   $transport_maps_real             = $transport_maps
   $virtual_aliases_real            = $virtual_aliases
+  $canonical_maps_real             = $canonical_maps
 
   if is_bool($service_hasrestart) == true {
     $service_hasrestart_real = $service_hasrestart
@@ -200,6 +205,12 @@ class postfix (
     $virtual_aliases_external_real = $virtual_aliases_external
   } else {
     $virtual_aliases_external_real = str2bool($virtual_aliases_external)
+  }
+
+  if is_bool($canonical_maps_external) == true {
+    $canonical_maps_external_real = $canonical_maps_external
+  } else {
+    $canonical_maps_external_real = str2bool($canonical_maps_external)
   }
   # </USE_DEFAULTS ?>
 
@@ -239,6 +250,7 @@ class postfix (
   if empty($main_virtual_alias_maps_real) == true { fail("main_virtual_alias_maps must contain a valid value and is set to <${main_virtual_alias_maps_real}>") }
   validate_string($main_virtual_alias_maps_real)
   if $main_virtual_alias_domains_real { validate_string($main_virtual_alias_domains_real) }
+  if empty($main_canonical_maps_real) == true { fail("main_canonical_maps must contain a valid value and is set to <${main_canonical_maps_real}>") }
   case type3x($packages_real) {
     'string','array': {
       if empty($packages_real) == true { fail("packages must contain a valid value and is set to <${packages_real}>") }
@@ -259,6 +271,8 @@ class postfix (
   validate_bool($transport_maps_external_real)
   if $virtual_aliases_real != undef { validate_hash($virtual_aliases_real) }
   validate_bool($virtual_aliases_external_real)
+  if $canonical_maps_real != undef { validate_hash($canonical_maps_real) }
+  validate_bool($canonical_maps_external_real)
   validate_string($main_smtp_tls_mandatory_protocols)
   validate_string($main_smtp_tls_protocols)
   validate_string($main_smtp_tls_security_level)
@@ -348,6 +362,32 @@ class postfix (
     file { 'postfix_transport_db':
       ensure => absent,
       path   => '/etc/postfix/transport.db',
+    }
+  }
+  if $canonical_maps != undef {
+    file { 'postfix_canonical':
+      ensure  => file,
+      path    => '/etc/postfix/canonical',
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0644',
+      content => template('postfix/canonical.erb'),
+      require => Package[$packages_real],
+    }
+    exec { 'postfix_rebuild_canonical':
+      command     => "${main_command_directory_real}/postmap hash:/etc/postfix/canonical",
+      refreshonly => true,
+      subscribe   => File['postfix_canonical'],
+    }
+  }
+  elsif $canonical_maps_external == false {
+    file { 'postfix_canonical':
+      ensure => absent,
+      path   => '/etc/postfix/canonical',
+    }
+    file { 'postfix_canonical_db':
+      ensure => absent,
+      path   => '/etc/postfix/canonical.db',
     }
   }
   # </Install & Config>

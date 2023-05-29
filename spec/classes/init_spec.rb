@@ -413,6 +413,7 @@ describe 'postfix' do
             # needed for functionality tests
             :transport_maps_external  => true,
             :virtual_aliases_external => true,
+            :canonical_maps_external  => true,
           } }
           # remove 'main_' from the variable name to get the parameter name
           it { should contain_file('postfix_main.cf').with_content(/^#{variable.sub('main_','')} = #{value}$/) }
@@ -719,6 +720,24 @@ describe 'postfix' do
       it { should contain_file('postfix_main.cf').with_content(/^transport_maps = hash:\/etc\/postfix\/transport$/) }
     end
 
+    context "where canonical_maps is set to valid <[ 'user@example.com  realuser@example.com', 'user2@example.com  realuser2@.example.com' ]> (as Hash))" do
+      let(:params) { { 'canonical_maps' => { 'user@example.com' => 'realuser@example.com', 'user2@example.com' => 'realuser2@example.com' } } }
+
+      it { should contain_file('postfix_canonical').with_content(/^user@example.com\t\trealuser@example.com$/) }
+      it { should contain_file('postfix_canonical').with_content(/^user2@example.com\t\trealuser2@example.com$/) }
+
+      # exec { 'postfix_rebuild_virtual': }
+      it {
+        should contain_exec('postfix_rebuild_canonical').with({
+          'command'     => '/usr/sbin/postmap hash:/etc/postfix/canonical',
+          'refreshonly' => 'true',
+          'subscribe'   => 'File[postfix_canonical]',
+        })
+      }
+
+      it { should contain_file('postfix_main.cf').with_content(/^canonical_maps = hash:\/etc\/postfix\/canonical$/) }
+    end
+
     [true,false,'true','false',].each do |value|
       context "where virtual_aliases_external is set to valid #{value} (as #{value.class})" do
         let(:params) { {
@@ -733,6 +752,21 @@ describe 'postfix' do
           it { should contain_file('postfix_main.cf').without_content(/virtual_alias_maps/) }
         end
       end
+
+      context "where canonical_maps_external is set to valid #{value} (as #{value.class})" do
+        let(:params) { {
+          'canonical_maps_external' => value,
+          # needed for the functionality test:
+          'main_canonical_maps'     => 'hash:/etc/postfix/spec_testing',
+        } }
+
+        if value.to_s == 'true'
+          it { should contain_file('postfix_main.cf').with_content(/^canonical_maps = hash:\/etc\/postfix\/spec_testing$/) }
+        else
+          it { should contain_file('postfix_main.cf').without_content(/canonical_maps/) }
+        end
+      end
+
     end
   end
 
@@ -760,7 +794,7 @@ describe 'postfix' do
         :message => 'is not an Array',
       },
       'bool_stringified' => {
-        :name    => ['service_hasrestart','service_hasstatus','transport_maps_external','virtual_aliases_external'],
+        :name    => ['service_hasrestart','service_hasstatus','transport_maps_external','virtual_aliases_external', 'canonical_maps_external'],
         :valid   => [true,'true',false,'false'],
         :invalid => [nil,'invalid',3,2.42,['array'],a={'ha'=>'sh'}],
         :message => 'str2bool',
@@ -772,7 +806,7 @@ describe 'postfix' do
         :message => 'must be a domain name and is set to',
       },
       'hash' => {
-        :name    => ['transport_maps','virtual_aliases'],
+        :name    => ['transport_maps','virtual_aliases', 'canonical_maps'],
         :valid   => [a={'ha'=>'sh'},a={'test1@test.void'=>'destination1','test2@test.void'=>['destination2','destination3']}],
         :invalid => [true,false,'invalid',3,2.42,['array']],
         :message => 'is not a Hash',
@@ -785,7 +819,7 @@ describe 'postfix' do
       },
       'not_empty_string' => {
         :name    => ['main_alias_database','main_alias_maps','main_inet_interfaces','main_inet_protocols','main_mynetworks',
-                     'main_myorigin','main_setgid_group','main_transport_maps','main_virtual_alias_maps','service_name'],
+                     'main_myorigin','main_setgid_group','main_transport_maps','main_virtual_alias_maps', 'main_canonical_maps', 'service_name'],
         :valid   => ['valid'],
         :invalid => ['',[],{}],
         :message => 'must contain a valid value',

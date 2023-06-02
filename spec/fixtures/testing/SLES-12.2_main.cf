@@ -4,7 +4,7 @@
 alias_maps = hash:/etc/aliases
 biff = no
 command_directory = /usr/sbin
-daemon_directory = /usr/lib/postfix/bin
+daemon_directory = /usr/lib/postfix
 data_directory = /var/lib/postfix
 inet_interfaces = localhost
 inet_protocols = all
@@ -12,7 +12,6 @@ smtpd_banner = $myhostname ESMTP
 smtpd_helo_required = no
 smtpd_recipient_restrictions = permit_mynetworks,
     reject_unauth_destination
-compatibility_level = 2
 debug_peer_level = 2
 html_directory = /usr/share/doc/packages/postfix-doc/html
 mailbox_size_limit = 0

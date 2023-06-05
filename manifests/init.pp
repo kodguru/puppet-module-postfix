@@ -1,5 +1,17 @@
 # @summary Manage Postfix to relay mail
 #
+# @param canonical_custom
+#  Array of custom line that should be added to the canonical map.
+#  These lines will be printed before the content of $canonical_maps.
+#
+# @param canonical_db_type
+#  String of the database type that should be used for the canonical database.
+#  See https://www.postfix.org/DATABASE_README.html for more information about
+#  the possible database types.
+#
+# @param canonical_maps
+#   Hash of entries to add to canonical maps file defined by $main_canonical_maps.
+#
 # @param main_alias_database
 #   The alias databases for local(8) delivery that are updated with "newaliases"
 #   or with "sendmail -bi".
@@ -25,6 +37,18 @@
 #   UNIX command "biff y". For compatibility reasons this feature is on by
 #   default. On systems with lots of interactive users, the biff service can
 #   be a performance drain. Specify "biff = no" in main.cf to disable.
+#
+# @param main_canonical_maps
+#   Optional address mapping lookup tables for message headers and envelopes.
+#   The mapping is applied to both sender and recipient addresses, in both
+#   envelopes and in headers, as controlled with the canonical_classes parameter.
+#   This is typically used to clean up dirty addresses from legacy mail systems,
+#   or to replace login names by Firstname.Lastname. The table format and lookups
+#   are documented in canonical(5). For an overview of Postfix address
+#   manipulations see the ADDRESS_REWRITING_README document.
+#   Specify zero or more "type:name" lookup tables, separated by whitespace or
+#   comma. Tables will be searched in the specified order until a match is found.
+#   Note: these lookups are recursive.
 #
 # @param main_command_directory
 #   The location of all postfix administrative commands.
@@ -58,6 +82,15 @@
 #   pseudo-random numbers). This directory must be owned by the mail_owner
 #   account, and must not be shared with non-Postfix software. This feature
 #   is available in Postfix 2.5 and later.
+#
+# @param main_debugger_command
+#   The external command to execute when a Postfix daemon program is invoked with
+#   the -D option.
+#   Use "command .. & sleep 5" so that the debugger can attach before the process
+#   marches on. If you use an X-based debugger, be sure to set up your XAUTHORITY
+#   environment variable before starting Postfix.
+#   Note: the command is subject to $name expansion, before it is passed to the
+#   default command interpreter. Specify "$$" to produce a single "$" character.
 #
 # @param main_debug_peer_level
 #  The increment in verbose logging level when a nexthop destination, remote
@@ -102,20 +135,12 @@
 #   1) mail for root should always be aliased to a real user and 2) do not log
 #   in as root, use "su" instead.
 #
-# @param main_manpage_directory
-#   Where the Postfix manual pages are installed.
-#
 # @param main_mailbox_size_limit
 #   The maximal size of any local(8) individual mailbox or maildir file, or
 #   zero (no limit). In fact, this limits the size of any file that is written
 #   to upon local delivery, including files written by external commands that
 #   are executed by the local(8) delivery agent.
 #   Note: This limit must not be smaller than the message size limit.
-#
-# @param main_mailq_path
-#   Sendmail compatibility feature that specifies where the Postfix mailq(1)
-#   command is installed. This command can be used to list the Postfix mail
-#   queue.
 #
 # @param main_mail_owner
 #   The UNIX system account that owns the Postfix queue and most Postfix daemon
@@ -127,6 +152,18 @@
 #   When this parameter value is changed you need to re-run
 #   "postfix set-permissions" (with Postfix version 2.0 and earlier:
 #   "/etc/postfix/post-install set-permissions".
+#
+# @param main_mailq_path
+#   Sendmail compatibility feature that specifies where the Postfix mailq(1)
+#   command is installed. This command can be used to list the Postfix mail
+#   queue.
+#
+# @param main_manpage_directory
+#   Where the Postfix manual pages are installed.
+#
+# @param main_message_size_limit
+#   The maximal size in bytes of a message, including envelope information. The
+#   value cannot exceed LONG_MAX (typically, a 32-bit or 64-bit signed integer).
 #
 # @param main_meta_directory
 #  The location of non-executable files that are shared among multiple Postfix
@@ -215,6 +252,12 @@
 #   [hostname]:port, [hostaddress] or [hostaddress]:port. The form [hostname]
 #   turns off MX lookups.
 #
+# @param main_relocated_maps
+#   Optional lookup tables with new contact information for users or domains that
+#   no longer exist. The table format and lookups are documented in relocated(5).
+#   Specify zero or more "type:name" lookup tables, separated by whitespace or
+#   comma. Tables will be searched in the specified order until a match is found.
+#
 # @param main_sample_directory
 #  The name of the directory with example Postfix configuration files. Starting
 #  with Postfix 2.1, these files have been replaced with the postconf(5) manual
@@ -230,6 +273,28 @@
 #   Postfix directories. When this parameter value is changed you need to re-run
 #   "postfix set-permissions" (with Postfix version 2.0 and earlier:
 #   "/etc/postfix/post-install set-permissions".
+#
+# @param main_shlib_directory
+#  The location of Postfix dynamically-linked libraries (libpostfix-*.so), and
+#  the default location of Postfix database plugins (postfix-*.so) that have a
+#  relative pathname in the dynamicmaps.cf file. The shlib_directory parameter
+#  defaults to "no" when Postfix dynamically-linked libraries and database
+#  plugins are disabled at compile time, otherwise it typically defaults to
+#  /usr/lib/postfix or /usr/local/lib/postfix.
+#
+# @param main_smtpd_banner
+#   The text that follows the 220 status code in the  SMTP  greeting banner.
+#
+# @param main_smtpd_delay_reject
+#   Wait until the RCPT TO command before evaluating $smtpd_client_restrictions,
+#   $smtpd_helo_restrictions and $smtpd_sender_restrictions, or wait until the
+#   ETRN command before evaluating $smtpd_client_restrictions and
+#   $smtpd_helo_restrictions.
+#   This feature is turned on by default because some clients apparently
+#   mis-behave when the Postfix SMTP server rejects commands before RCPT TO.
+#   The default setting has one major benefit: it allows Postfix to log recipient
+#   address information when rejecting a client name/address or sender address,
+#   so that it is possible to find out whose mail is being rejected.
 #
 # @param main_smtpd_helo_required
 #   Require that a remote SMTP client introduces itself with the HELO or EHLO
@@ -265,13 +330,31 @@
 #   smtpd_recipient_restrictions.
 #   Read more in man pages.
 #
-# @param main_shlib_directory
-#  The location of Postfix dynamically-linked libraries (libpostfix-*.so), and
-#  the default location of Postfix database plugins (postfix-*.so) that have a
-#  relative pathname in the dynamicmaps.cf file. The shlib_directory parameter
-#  defaults to "no" when Postfix dynamically-linked libraries and database
-#  plugins are disabled at compile time, otherwise it typically defaults to
-#  /usr/lib/postfix or /usr/local/lib/postfix.
+# @param main_smtpd_sasl_auth_enable
+#   Enable SASL authentication in the Postfix SMTP server. By default, the Postfix
+#   SMTP server does not use authentication.
+#
+# @param main_smtpd_sender_restrictions
+#   Optional restrictions that the Postfix SMTP server applies in the context of
+#   a client MAIL FROM command. See SMTPD_ACCESS_README, section "Delayed
+#   evaluation of SMTP access restriction lists" for a discussion of evaluation
+#   context and time.
+#   The default is to permit everything.
+#   Specify a list of restrictions, separated by commas and/or whitespace.
+#   Continue long lines by starting the next line with whitespace. Restrictions
+#   are applied in the order as specified; the first restriction that matches wins.
+#   The following restrictions are specific to the sender address received with
+#   the MAIL FROM command.
+#
+# @param main_smtpd_tls_ask_ccert
+#   Ask a remote SMTP client for a client certificate. This information is needed
+#   for certificate based mail relaying with, for example, the
+#   permit_tls_clientcerts feature.
+#   Some clients such as Netscape will either complain if no certificate is
+#   available (for the list of CAs in $smtpd_tls_CAfile) or will offer multiple
+#   client certificates to choose from. This may be annoying, so this option is
+#   "off" by default.
+#   This feature is available in Postfix 2.2 and later.
 #
 # @param main_smtpd_tls_cert_file
 #   File with the Postfix SMTP server RSA certificate in PEM format. This file
@@ -306,12 +389,45 @@
 #   the ">=" or "<=" symbols and the protocol name or number. 
 #   Read more in man pages.
 #
+# @param main_smtpd_tls_received_header
+#   Request that the Postfix SMTP server produces Received: message headers that
+#   include information about the protocol and cipher used, as well as the remote
+#   SMTP client CommonName and client certificate issuer CommonName. This is
+#   disabled by default, as the information may be modified in transit through
+#   other mail servers. Only information that was recorded by the final
+#   destination can be trusted.
+#   This feature is available in Postfix 2.2 and later.
+#
 # @param main_smtpd_tls_security_level
 #   The SMTP TLS security level for the Postfix SMTP server. Specify one of the
 #   following security levels: none, may, encrypt.
 #
-# @param main_smtpd_banner
-#   The text that follows the 220 status code in the  SMTP  greeting banner.
+# @param main_smtpd_use_tls
+#   Opportunistic TLS: announce STARTTLS support to remote SMTP clients, but do
+#   not require that clients use TLS encryption.
+#   This feature is available in Postfix 2.2 and later. With Postfix 2.3 and later
+#   use smtpd_tls_security_level instead.
+#
+# @param main_smtp_enforce_tls
+#   Enforcement mode: require that remote SMTP servers use TLS encryption, and
+#   never send mail in the clear. This also requires that the remote SMTP server
+#   hostname matches the information in the remote server certificate, and that
+#   the remote SMTP server certificate was issued by a CA that is trusted by the
+#   Postfix SMTP client. If the certificate doesn't verify or the hostname
+#   doesn't match, delivery is deferred and mail stays in the queue.
+#   The server hostname is matched against all names provided as dNSNames in the
+#   SubjectAlternativeName. If no dNSNames are specified, the CommonName is
+#   checked. The behavior may be changed with the smtp_tls_enforce_peername option.
+#   This option is useful only if you are definitely sure that you will only
+#   connect to servers that support RFC 2487 _and_ that provide valid server
+#   certificates. Typical use is for clients that send all their email to a
+#   dedicated mailhub.
+#   This feature is available in Postfix 2.2 and later. With Postfix 2.3 and later
+#   use smtp_tls_security_level instead.
+#
+# @param main_smtp_sasl_auth_enable
+#   Enable SASL authentication in the Postfix SMTP client. By default, the
+#   Postfix SMTP client uses no authentication.
 #
 # @param main_smtp_tls_cafile
 #   A file containing CA certificates of root CAs trusted to sign either remote
@@ -355,132 +471,6 @@
 #   one of the following security levels: none, may, encrypt, dane, dane-only,
 #   fingerprint, verify, secure.
 #
-# @param main_transport_maps
-#   Optional lookup tables with mappings from recipient address to (message
-#   delivery transport, next-hop destination). See transport(5) for details.
-#   This parameter can be used to specify a file not managed by this puppet module
-#   to provide alternative lookup sources. For example ldap, nis, mysql, pcre, etc.
-#   For more information see the man pages for postmap(1), transport(5)
-#
-# @param main_virtual_alias_domains
-#   Postfix is final destination for the specified list of virtual alias domains,
-#   that is, domains for which all addresses are aliased to addresses in other
-#   local or remote domains. The SMTP server validates recipient addresses with
-#   $virtual_alias_maps and rejects non-existent recipients. See also the virtual
-#   alias domain class in the ADDRESS_CLASS_README file.
-#
-# @param main_virtual_alias_maps
-#   Optional lookup tables that alias specific mail addresses or domains to other
-#   local or remote address. The table format and lookups are documented in
-#   virtual(5). For an overview of Postfix address manipulations see the
-#   ADDRESS_REWRITING_README document.
-#   This feature is available in Postfix 2.0 and later.
-#
-#
-# @param main_message_size_limit
-#   The maximal size in bytes of a message, including envelope information. The
-#   value cannot exceed LONG_MAX (typically, a 32-bit or 64-bit signed integer).
-#
-# @param main_canonical_maps
-#   Optional address mapping lookup tables for message headers and envelopes.
-#   The mapping is applied to both sender and recipient addresses, in both
-#   envelopes and in headers, as controlled with the canonical_classes parameter.
-#   This is typically used to clean up dirty addresses from legacy mail systems,
-#   or to replace login names by Firstname.Lastname. The table format and lookups
-#   are documented in canonical(5). For an overview of Postfix address
-#   manipulations see the ADDRESS_REWRITING_README document.
-#   Specify zero or more "type:name" lookup tables, separated by whitespace or
-#   comma. Tables will be searched in the specified order until a match is found.
-#   Note: these lookups are recursive.
-#
-# @param main_relocated_maps
-#   Optional lookup tables with new contact information for users or domains that
-#   no longer exist. The table format and lookups are documented in relocated(5).
-#   Specify zero or more "type:name" lookup tables, separated by whitespace or
-#   comma. Tables will be searched in the specified order until a match is found.
-#
-# @param main_smtpd_sender_restrictions
-#   Optional restrictions that the Postfix SMTP server applies in the context of
-#   a client MAIL FROM command. See SMTPD_ACCESS_README, section "Delayed
-#   evaluation of SMTP access restriction lists" for a discussion of evaluation
-#   context and time.
-#   The default is to permit everything.
-#   Specify a list of restrictions, separated by commas and/or whitespace.
-#   Continue long lines by starting the next line with whitespace. Restrictions
-#   are applied in the order as specified; the first restriction that matches wins.
-#   The following restrictions are specific to the sender address received with
-#   the MAIL FROM command.
-#
-# @param main_debugger_command
-#   The external command to execute when a Postfix daemon program is invoked with
-#   the -D option.
-#   Use "command .. & sleep 5" so that the debugger can attach before the process
-#   marches on. If you use an X-based debugger, be sure to set up your XAUTHORITY
-#   environment variable before starting Postfix.
-#   Note: the command is subject to $name expansion, before it is passed to the
-#   default command interpreter. Specify "$$" to produce a single "$" character.
-#
-# @param main_smtpd_delay_reject
-#   Wait until the RCPT TO command before evaluating $smtpd_client_restrictions,
-#   $smtpd_helo_restrictions and $smtpd_sender_restrictions, or wait until the
-#   ETRN command before evaluating $smtpd_client_restrictions and
-#   $smtpd_helo_restrictions.
-#   This feature is turned on by default because some clients apparently
-#   mis-behave when the Postfix SMTP server rejects commands before RCPT TO.
-#   The default setting has one major benefit: it allows Postfix to log recipient
-#   address information when rejecting a client name/address or sender address,
-#   so that it is possible to find out whose mail is being rejected.
-#
-# @param main_smtpd_sasl_auth_enable
-#   Enable SASL authentication in the Postfix SMTP server. By default, the Postfix
-#   SMTP server does not use authentication.
-#
-# @param main_smtpd_tls_ask_ccert
-#   Ask a remote SMTP client for a client certificate. This information is needed
-#   for certificate based mail relaying with, for example, the
-#   permit_tls_clientcerts feature.
-#   Some clients such as Netscape will either complain if no certificate is
-#   available (for the list of CAs in $smtpd_tls_CAfile) or will offer multiple
-#   client certificates to choose from. This may be annoying, so this option is
-#   "off" by default.
-#   This feature is available in Postfix 2.2 and later.
-#
-# @param main_smtpd_tls_received_header
-#   Request that the Postfix SMTP server produces Received: message headers that
-#   include information about the protocol and cipher used, as well as the remote
-#   SMTP client CommonName and client certificate issuer CommonName. This is
-#   disabled by default, as the information may be modified in transit through
-#   other mail servers. Only information that was recorded by the final
-#   destination can be trusted.
-#   This feature is available in Postfix 2.2 and later.
-#
-# @param main_smtpd_use_tls
-#   Opportunistic TLS: announce STARTTLS support to remote SMTP clients, but do
-#   not require that clients use TLS encryption.
-#   This feature is available in Postfix 2.2 and later. With Postfix 2.3 and later
-#   use smtpd_tls_security_level instead.
-#
-# @param main_smtp_enforce_tls
-#   Enforcement mode: require that remote SMTP servers use TLS encryption, and
-#   never send mail in the clear. This also requires that the remote SMTP server
-#   hostname matches the information in the remote server certificate, and that
-#   the remote SMTP server certificate was issued by a CA that is trusted by the
-#   Postfix SMTP client. If the certificate doesn't verify or the hostname
-#   doesn't match, delivery is deferred and mail stays in the queue.
-#   The server hostname is matched against all names provided as dNSNames in the
-#   SubjectAlternativeName. If no dNSNames are specified, the CommonName is
-#   checked. The behavior may be changed with the smtp_tls_enforce_peername option.
-#   This option is useful only if you are definitely sure that you will only
-#   connect to servers that support RFC 2487 _and_ that provide valid server
-#   certificates. Typical use is for clients that send all their email to a
-#   dedicated mailhub.
-#   This feature is available in Postfix 2.2 and later. With Postfix 2.3 and later
-#   use smtp_tls_security_level instead.
-#
-# @param main_smtp_sasl_auth_enable
-#   Enable SASL authentication in the Postfix SMTP client. By default, the
-#   Postfix SMTP client uses no authentication.
-#
 # @param main_smtp_use_tls
 #   Opportunistic mode: use TLS when a remote SMTP server announces STARTTLS
 #   support, otherwise send the mail in the clear. Beware: some SMTP servers
@@ -504,8 +494,54 @@
 #   By default, the Postfix SMTP server accepts RFC 822 syntax in MAIL FROM and
 #   RCPT TO addresses.
 #
+# @param main_transport_maps
+#   Optional lookup tables with mappings from recipient address to (message
+#   delivery transport, next-hop destination). See transport(5) for details.
+#   This parameter can be used to specify a file not managed by this puppet module
+#   to provide alternative lookup sources. For example ldap, nis, mysql, pcre, etc.
+#   For more information see the man pages for postmap(1), transport(5)
+#
+# @param main_unknown_local_recipient_reject_code
+#   The numerical Postfix SMTP server response code when a recipient address is
+#   local, and $local_recipient_maps specifies a list of lookup tables that does
+#   not match the recipient. A recipient address is local when its domain matches
+#   $mydestination, $proxy_interfaces or $inet_interfaces.
+#   The default setting is 550 (reject mail) but it is safer to initially use 450
+#   (try again later) so you have time to find out if your local_recipient_maps 
+#   settings are OK.
+#
+# @param main_virtual_alias_domains
+#   Postfix is final destination for the specified list of virtual alias domains,
+#   that is, domains for which all addresses are aliased to addresses in other
+#   local or remote domains. The SMTP server validates recipient addresses with
+#   $virtual_alias_maps and rejects non-existent recipients. See also the virtual
+#   alias domain class in the ADDRESS_CLASS_README file.
+#
+# @param main_virtual_alias_maps
+#   Optional lookup tables that alias specific mail addresses or domains to other
+#   local or remote address. The table format and lookups are documented in
+#   virtual(5). For an overview of Postfix address manipulations see the
+#   ADDRESS_REWRITING_README document.
+#   This feature is available in Postfix 2.0 and later.
+#
+# @param no_postmap_db_types
+#   Array of DB types that do not require postmap to create the Postfix lookup
+#   tables.
+#
 # @param packages
 #   Array of package names used for installation.
+#
+# @param relocated_custom
+#  Array of custom line that should be added to the relocation map.
+#  These lines will be printed before the content of $relocated_maps.
+#
+# @param relocated_db_type
+#  String of the database type that should be used for the relocated database.
+#  See https://www.postfix.org/DATABASE_README.html for more information about
+#  the possible database types.
+#
+# @param relocated_maps
+#   Hash of entries to add to relocated maps file defined by $main_relocated_maps.
 #
 # @param service_enable
 #   Whether a service should be enabled to start at boot.
@@ -530,29 +566,27 @@
 #   platforms where services have short system names and long display names,
 #   this should be the short name.
 #
-# @param transport_maps_external
-#   Use a non-puppet managed source for the transport_maps, for example nis: or
-#   ldap:. This parameter will cause the value of main_transport_maps to be
-#   added despite the transport_map parameter beeing undefined.
+# @param transport_custom
+#  Array of custom line that should be added to the transport map.
+#  These lines will be printed before the content of $transport_maps.
+#
+# @param transport_db_type
+#  String of the database type that should be used for the transport database.
+#  See https://www.postfix.org/DATABASE_README.html for more information about
+#  the possible database types.
 #
 # @param transport_maps
 #   Hash of entries to add to transport_maps file defined by
 #   $main_transport_maps. The value must be a string.
 #
-# @param canonical_maps
-#   Hash of entries to add to canonical maps file defined by $main_canonical_maps.
+# @param transport_maps_external
+#   Use a non-puppet managed source for the transport_maps, for example nis: or
+#   ldap:. This parameter will cause the value of main_transport_maps to be
+#   added despite the transport_map parameter beeing undefined.
 #
-# @param relocated_maps
-#   Hash of entries to add to relocated maps file defined by $main_relocated_maps.
-#
-# @param main_unknown_local_recipient_reject_code
-#   The numerical Postfix SMTP server response code when a recipient address is
-#   local, and $local_recipient_maps specifies a list of lookup tables that does
-#   not match the recipient. A recipient address is local when its domain matches
-#   $mydestination, $proxy_interfaces or $inet_interfaces.
-#   The default setting is 550 (reject mail) but it is safer to initially use 450
-#   (try again later) so you have time to find out if your local_recipient_maps 
-#   settings are OK.
+# @param virtual_aliases
+#   Hash of entries to add to virtual_alias_maps file defined by
+#   $main_virtual_alias_maps.
 #
 # @param virtual_aliases_external
 #   Use a non-puppet managed source for the virtual_aliases parameter, for
@@ -560,69 +594,40 @@
 #   main_virtual_alias_maps to be added despite the virtual_aliases parameter
 #   beeing undefined.
 #
-# @param virtual_aliases
-#   Hash of entries to add to virtual_alias_maps file defined by
-#   $main_virtual_alias_maps.
-#
-# @param canonical_db_type
-#  String of the database type that should be used for the canonical database.
-#  See https://www.postfix.org/DATABASE_README.html for more information about
-#  the possible database types.
-#
-# @param canonical_custom
-#  Array of custom line that should be added to the canonical map.
-#  These lines will be printed before the content of $canonical_maps.
-#
-# @param relocated_db_type
-#  String of the database type that should be used for the relocated database.
-#  See https://www.postfix.org/DATABASE_README.html for more information about
-#  the possible database types.
-#
-# @param relocated_custom
-#  Array of custom line that should be added to the relocation map.
-#  These lines will be printed before the content of $relocated_maps.
+# @param virtual_custom
+#  Array of custom line that should be added to the virtual map.
+#  These lines will be printed before the content of $virtual_aliases.
 #
 # @param virtual_db_type
 #  String of the database type that should be used for the virtual database.
 #  See https://www.postfix.org/DATABASE_README.html for more information about
 #  the possible database types.
 #
-# @param virtual_custom
-#  Array of custom line that should be added to the virtual map.
-#  These lines will be printed before the content of $virtual_aliases.
-#
-# @param transport_db_type
-#  String of the database type that should be used for the transport database.
-#  See https://www.postfix.org/DATABASE_README.html for more information about
-#  the possible database types.
-#
-# @param transport_custom
-#  Array of custom line that should be added to the transport map.
-#  These lines will be printed before the content of $transport_maps.
-#
-# @param no_postmap_db_types
-#   Array of DB types that do not require postmap to create the Postfix lookup
-#   tables.
-#
 class postfix (
+  Array $canonical_custom                                           = [],
+  String[1] $canonical_db_type                                      = 'hash',
+  Hash $canonical_maps                                              = {},
   Optional[String[1]] $main_alias_database                          = undef,
   Optional[String[1]] $main_alias_maps                              = undef,
   Optional[Enum['yes', 'no']] $main_append_dot_mydomain             = undef,
   Optional[Enum['yes', 'no']] $main_biff                            = undef,
+  Stdlib::Absolutepath $main_canonical_maps                         = '/etc/postfix/canonical',
   Optional[Stdlib::Absolutepath] $main_command_directory            = undef,
   Optional[String[1]] $main_compatibility_level                     = undef,
   Hash $main_custom                                                 = {},
   Optional[Stdlib::Absolutepath] $main_daemon_directory             = undef,
   Optional[Stdlib::Absolutepath] $main_data_directory               = undef,
+  Optional[String[1]] $main_debugger_command                        = undef,
   Optional[String[1]] $main_debug_peer_level                        = undef,
   Optional[String[1]] $main_html_directory                          = undef,
   Array[Postfix::Main_inet_interfaces] $main_inet_interfaces        = [],
   Optional[String[1]] $main_inet_protocols                          = undef,
   Optional[String[1]] $main_mailbox_command                         = undef,
-  Optional[Stdlib::Absolutepath] $main_manpage_directory            = undef,
   Optional[Integer[0]] $main_mailbox_size_limit                     = undef,
-  Optional[Stdlib::Absolutepath] $main_mailq_path                   = undef,
   Optional[String[1]] $main_mail_owner                              = undef,
+  Optional[Stdlib::Absolutepath] $main_mailq_path                   = undef,
+  Optional[Stdlib::Absolutepath] $main_manpage_directory            = undef,
+  Optional[Integer[0]] $main_message_size_limit                     = undef,
   Optional[Stdlib::Absolutepath] $main_meta_directory               = undef,
   Optional[String[1]] $main_mydestination                           = undef,
   Optional[Stdlib::Host] $main_mydomain                             = undef,
@@ -634,67 +639,61 @@ class postfix (
   Optional[String[1]] $main_readme_directory                        = undef,
   Optional[String[1]] $main_recipient_delimiter                     = undef,
   Optional[String[1]] $main_relay_domains                           = undef,
-  Optional[Stdlib::Absolutepath] $main_sample_directory             = undef,
-  Optional[Stdlib::Absolutepath] $main_sendmail_path                = undef,
   Optional[Stdlib::Host] $main_relayhost                            = undef,
   Integer[0] $main_relayhost_port                                   = 25,
+  Stdlib::Absolutepath $main_relocated_maps                         = '/etc/postfix/relocated',
+  Optional[Stdlib::Absolutepath] $main_sample_directory             = undef,
+  Optional[Stdlib::Absolutepath] $main_sendmail_path                = undef,
   Optional[String[1]] $main_setgid_group                            = undef,
+  Optional[Stdlib::Absolutepath] $main_shlib_directory              = undef,
+  Optional[String[1]] $main_smtpd_banner                            = undef,
+  Optional[Enum['yes', 'no']] $main_smtpd_delay_reject              = undef,
   Optional[Enum['yes', 'no']] $main_smtpd_helo_required             = undef,
   Optional[Array[String[1]]] $main_smtpd_helo_restrictions          = undef,
   Optional[Array[String[1]]] $main_smtpd_recipient_restrictions     = undef,
   Optional[String[1]] $main_smtpd_relay_restrictions                = undef,
-  Optional[Stdlib::Absolutepath] $main_shlib_directory              = undef,
-  Optional[String[1]] $main_smtpd_banner                            = undef,
+  Optional[Enum['yes', 'no']] $main_smtpd_sasl_auth_enable          = undef,
+  Optional[String[1]] $main_smtpd_sender_restrictions               = undef,
+  Optional[Enum['yes', 'no']] $main_smtpd_tls_ask_ccert             = undef,
   Optional[Stdlib::Absolutepath] $main_smtpd_tls_cert_file          = undef,
   Optional[Stdlib::Absolutepath] $main_smtpd_tls_key_file           = undef,
   Optional[String[1]] $main_smtpd_tls_mandatory_protocols           = undef,
   Optional[String[1]] $main_smtpd_tls_protocols                     = undef,
+  Optional[Enum['yes', 'no']] $main_smtpd_tls_received_header       = undef,
   Optional[String[1]] $main_smtpd_tls_security_level                = undef,
+  Optional[Enum['yes', 'no']] $main_smtpd_use_tls                   = undef,
+  Optional[Enum['yes', 'no']] $main_smtp_enforce_tls                = undef,
+  Optional[Enum['yes', 'no']] $main_smtp_sasl_auth_enable           = undef,
   Optional[Stdlib::Absolutepath] $main_smtp_tls_cafile              = undef,
   Optional[Stdlib::Absolutepath] $main_smtp_tls_capath              = undef,
   Optional[String[1]] $main_smtp_tls_mandatory_protocols            = undef,
   Optional[String[1]] $main_smtp_tls_protocols                      = undef,
   Optional[String[1]] $main_smtp_tls_security_level                 = undef,
-  Optional[String[1]] $main_virtual_alias_domains                   = undef,
-  Optional[Integer[0]] $main_message_size_limit                     = undef,
-  Stdlib::Absolutepath $main_transport_maps                         = '/etc/postfix/transport',
-  Stdlib::Absolutepath $main_virtual_alias_maps                     = '/etc/postfix/virtual',
-  Stdlib::Absolutepath $main_canonical_maps                         = '/etc/postfix/canonical',
-  Stdlib::Absolutepath $main_relocated_maps                         = '/etc/postfix/relocated',
-  Optional[String[1]] $main_smtpd_sender_restrictions               = undef,
-  Optional[String[1]] $main_debugger_command                        = undef,
-  Optional[Enum['yes', 'no']] $main_smtpd_delay_reject              = undef,
-  Optional[Enum['yes', 'no']] $main_smtpd_sasl_auth_enable          = undef,
-  Optional[Enum['yes', 'no']] $main_smtpd_tls_ask_ccert             = undef,
-  Optional[Enum['yes', 'no']] $main_smtpd_tls_received_header       = undef,
-  Optional[Enum['yes', 'no']] $main_smtpd_use_tls                   = undef,
-  Optional[Enum['yes', 'no']] $main_smtp_enforce_tls                = undef,
-  Optional[Enum['yes', 'no']] $main_smtp_sasl_auth_enable           = undef,
   Optional[Enum['yes', 'no']] $main_smtp_use_tls                    = undef,
   Optional[Enum['yes', 'no']] $main_strict_8bitmime                 = undef,
   Optional[Enum['yes', 'no']] $main_strict_rfc821_envelopes         = undef,
+  Stdlib::Absolutepath $main_transport_maps                         = '/etc/postfix/transport',
+  Optional[Integer[0]] $main_unknown_local_recipient_reject_code    = undef,
+  Optional[String[1]] $main_virtual_alias_domains                   = undef,
+  Stdlib::Absolutepath $main_virtual_alias_maps                     = '/etc/postfix/virtual',
+  Array $no_postmap_db_types                                        = ['regexp'],
   Array[String[1]] $packages                                        = ['postfix'],
+  Array $relocated_custom                                           = [],
+  Hash $relocated_maps                                              = {},
   Variant[Boolean, Enum['true', 'false']] $service_enable           = true,
   Stdlib::Ensure::Service $service_ensure                           = 'running',
   Boolean $service_hasrestart                                       = true,
   Boolean $service_hasstatus                                        = true,
   Optional[String[1]] $service_name                                 = undef,
-  Boolean $transport_maps_external                                  = false,
-  Optional[Integer[0]] $main_unknown_local_recipient_reject_code    = undef,
-  Boolean $virtual_aliases_external                                 = false,
-  String[1] $canonical_db_type                                      = 'hash',
-  Array $canonical_custom                                           = [],
-  Hash $canonical_maps                                              = {},
-  String[1] $relocated_db_type                                      = 'hash',
-  Array $relocated_custom                                           = [],
-  Hash $relocated_maps                                              = {},
-  String[1] $virtual_db_type                                        = 'hash',
-  Array $virtual_custom                                             = [],
-  Hash $virtual_aliases                                             = {},
-  String[1] $transport_db_type                                      = 'hash',
   Array $transport_custom                                           = [],
+  String[1] $transport_db_type                                      = 'hash',
   Hash $transport_maps                                              = {},
-  Array $no_postmap_db_types                                        = ['regexp'],
+  Boolean $transport_maps_external                                  = false,
+  Hash $virtual_aliases                                             = {},
+  Boolean $virtual_aliases_external                                 = false,
+  String[1] $relocated_db_type                                      = 'hash',
+  Array $virtual_custom                                             = [],
+  String[1] $virtual_db_type                                        = 'hash',
 ) {
   # <Install & Config>
   package { $packages:
@@ -875,41 +874,6 @@ class postfix (
     }
   }
 
-  if $virtual_aliases != {} or $virtual_custom != [] {
-    file { 'postfix_virtual':
-      ensure  => file,
-      path    => $main_virtual_alias_maps,
-      owner   => 'root',
-      group   => 'root',
-      mode    => '0644',
-      content => epp('postfix/maps.epp',
-        {
-          custom_data => $virtual_custom,
-          maps_data   => $virtual_aliases,
-        }
-      ),
-    }
-    unless $virtual_db_type in $no_postmap_db_types {
-      exec { 'postfix_rebuild_virtual':
-        command     => "${main_command_directory}/postmap ${virtual_db_type}:${main_virtual_alias_maps}",
-        refreshonly => true,
-        subscribe   => File['postfix_virtual'],
-        notify      => Service['postfix_service'],
-      }
-    }
-  }
-  else {
-    file { 'postfix_virtual':
-      ensure => absent,
-      path   => $main_virtual_alias_maps,
-    }
-    file { 'postfix_virtual_db':
-      ensure => absent,
-      path   => "${main_virtual_alias_maps}.db",
-      notify => Service['postfix_service'],
-    }
-  }
-
   if $transport_maps != {} or $transport_custom != [] {
     file { 'postfix_transport':
       ensure  => file,
@@ -941,6 +905,41 @@ class postfix (
     file { 'postfix_transport_db':
       ensure => absent,
       path   => "${main_transport_maps}.db",
+      notify => Service['postfix_service'],
+    }
+  }
+
+  if $virtual_aliases != {} or $virtual_custom != [] {
+    file { 'postfix_virtual':
+      ensure  => file,
+      path    => $main_virtual_alias_maps,
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0644',
+      content => epp('postfix/maps.epp',
+        {
+          custom_data => $virtual_custom,
+          maps_data   => $virtual_aliases,
+        }
+      ),
+    }
+    unless $virtual_db_type in $no_postmap_db_types {
+      exec { 'postfix_rebuild_virtual':
+        command     => "${main_command_directory}/postmap ${virtual_db_type}:${main_virtual_alias_maps}",
+        refreshonly => true,
+        subscribe   => File['postfix_virtual'],
+        notify      => Service['postfix_service'],
+      }
+    }
+  }
+  else {
+    file { 'postfix_virtual':
+      ensure => absent,
+      path   => $main_virtual_alias_maps,
+    }
+    file { 'postfix_virtual_db':
+      ensure => absent,
+      path   => "${main_virtual_alias_maps}.db",
       notify => Service['postfix_service'],
     }
   }

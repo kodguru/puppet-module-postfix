@@ -1,13 +1,13 @@
 # @summary Manage Postfix to relay mail
 #
 # @param canonical_custom
-#  Array of custom line that should be added to the canonical map.
-#  These lines will be printed before the content of $canonical_maps.
+#   Array of custom line that should be added to the canonical map.
+#   These lines will be printed before the content of $canonical_maps.
 #
 # @param canonical_db_type
-#  String of the database type that should be used for the canonical database.
-#  See https://www.postfix.org/DATABASE_README.html for more information about
-#  the possible database types.
+#   String of the database type that should be used for the canonical database.
+#   See https://www.postfix.org/DATABASE_README.html for more information about
+#   the possible database types.
 #
 # @param canonical_maps
 #   Hash of entries to add to canonical maps file defined by $main_canonical_maps.
@@ -93,10 +93,10 @@
 #   default command interpreter. Specify "$$" to produce a single "$" character.
 #
 # @param main_debug_peer_level
-#  The increment in verbose logging level when a nexthop destination, remote
-#  client or server name or network address matches a pattern given with the
-#  debug_peer_list parameter.
-#  Per-nexthop debug logging is available in Postfix 3.6 and later.
+#   The increment in verbose logging level when a nexthop destination, remote
+#   client or server name or network address matches a pattern given with the
+#   debug_peer_list parameter.
+#   Per-nexthop debug logging is available in Postfix 3.6 and later.
 #
 # @param main_html_directory
 #   The location of Postfix HTML files that describe how to build, configure
@@ -166,12 +166,12 @@
 #   value cannot exceed LONG_MAX (typically, a 32-bit or 64-bit signed integer).
 #
 # @param main_meta_directory
-#  The location of non-executable files that are shared among multiple Postfix
-#  instances, such as postfix-files, dynamicmaps.cf, and the multi-instance
-#  template files main.cf.proto and master.cf.proto. This directory should
-#  contain only Postfix-related files. Typically, the meta_directory parameter
-#  has the same default as the config_directory parameter (/etc/postfix or
-#  /usr/local/etc/postfix). 
+#   The location of non-executable files that are shared among multiple Postfix
+#   instances, such as postfix-files, dynamicmaps.cf, and the multi-instance
+#   template files main.cf.proto and master.cf.proto. This directory should
+#   contain only Postfix-related files. Typically, the meta_directory parameter
+#   has the same default as the config_directory parameter (/etc/postfix or
+#   /usr/local/etc/postfix). 
 #
 # @param main_mydestination
 #   The list of domains that are delivered via the $local_transport mail
@@ -209,9 +209,9 @@
 #   aliases each user to user@that.users.mailhost.
 #
 # @param main_newaliases_path
-#  Sendmail compatibility feature that specifies the location of the
-#  newaliases(1) command. This command can be used to rebuild the local(8)
-#  aliases(5) database.
+#   Sendmail compatibility feature that specifies the location of the
+#   newaliases(1) command. This command can be used to rebuild the local(8)
+#   aliases(5) database.
 #
 # @param main_queue_directory
 #   The location of the Postfix top-level queue directory. This is the root
@@ -259,9 +259,9 @@
 #   comma. Tables will be searched in the specified order until a match is found.
 #
 # @param main_sample_directory
-#  The name of the directory with example Postfix configuration files. Starting
-#  with Postfix 2.1, these files have been replaced with the postconf(5) manual
-#  page.
+#   The name of the directory with example Postfix configuration files. Starting
+#   with Postfix 2.1, these files have been replaced with the postconf(5) manual
+#   page.
 #
 # @param main_sendmail_path
 #   A Sendmail compatibility feature that specifies the location of the Postfix
@@ -275,12 +275,12 @@
 #   "/etc/postfix/post-install set-permissions".
 #
 # @param main_shlib_directory
-#  The location of Postfix dynamically-linked libraries (libpostfix-*.so), and
-#  the default location of Postfix database plugins (postfix-*.so) that have a
-#  relative pathname in the dynamicmaps.cf file. The shlib_directory parameter
-#  defaults to "no" when Postfix dynamically-linked libraries and database
-#  plugins are disabled at compile time, otherwise it typically defaults to
-#  /usr/lib/postfix or /usr/local/lib/postfix.
+#   The location of Postfix dynamically-linked libraries (libpostfix-*.so), and
+#   the default location of Postfix database plugins (postfix-*.so) that have a
+#   relative pathname in the dynamicmaps.cf file. The shlib_directory parameter
+#   defaults to "no" when Postfix dynamically-linked libraries and database
+#   plugins are disabled at compile time, otherwise it typically defaults to
+#   /usr/lib/postfix or /usr/local/lib/postfix.
 #
 # @param main_smtpd_banner
 #   The text that follows the 220 status code in the  SMTP  greeting banner.
@@ -532,13 +532,13 @@
 #   Array of package names used for installation.
 #
 # @param relocated_custom
-#  Array of custom line that should be added to the relocation map.
-#  These lines will be printed before the content of $relocated_maps.
+#   Array of custom line that should be added to the relocation map.
+#   These lines will be printed before the content of $relocated_maps.
 #
 # @param relocated_db_type
-#  String of the database type that should be used for the relocated database.
-#  See https://www.postfix.org/DATABASE_README.html for more information about
-#  the possible database types.
+#   String of the database type that should be used for the relocated database.
+#   See https://www.postfix.org/DATABASE_README.html for more information about
+#   the possible database types.
 #
 # @param relocated_maps
 #   Hash of entries to add to relocated maps file defined by $main_relocated_maps.
@@ -567,13 +567,13 @@
 #   this should be the short name.
 #
 # @param transport_custom
-#  Array of custom line that should be added to the transport map.
-#  These lines will be printed before the content of $transport_maps.
+#   Array of custom line that should be added to the transport map.
+#   These lines will be printed before the content of $transport_maps.
 #
 # @param transport_db_type
-#  String of the database type that should be used for the transport database.
-#  See https://www.postfix.org/DATABASE_README.html for more information about
-#  the possible database types.
+#   String of the database type that should be used for the transport database.
+#   See https://www.postfix.org/DATABASE_README.html for more information about
+#   the possible database types.
 #
 # @param transport_maps
 #   Hash of entries to add to transport_maps file defined by
@@ -595,13 +595,13 @@
 #   beeing undefined.
 #
 # @param virtual_custom
-#  Array of custom line that should be added to the virtual map.
-#  These lines will be printed before the content of $virtual_aliases.
+#   Array of custom line that should be added to the virtual map.
+#   These lines will be printed before the content of $virtual_aliases.
 #
 # @param virtual_db_type
-#  String of the database type that should be used for the virtual database.
-#  See https://www.postfix.org/DATABASE_README.html for more information about
-#  the possible database types.
+#   String of the database type that should be used for the virtual database.
+#   See https://www.postfix.org/DATABASE_README.html for more information about
+#   the possible database types.
 #
 class postfix (
   Array $canonical_custom                                           = [],
@@ -718,37 +718,30 @@ class postfix (
     mode    => '0644',
     content => epp('postfix/main.cf.epp',
       {
+        canonical_custom                         => $canonical_custom,
+        canonical_db_type                        => $canonical_db_type,
+        canonical_maps                           => $canonical_maps,
         main_alias_database                      => $main_alias_database,
         main_alias_maps                          => $main_alias_maps,
         main_append_dot_mydomain                 => $main_append_dot_mydomain,
         main_biff                                => $main_biff,
+        main_canonical_maps                      => $main_canonical_maps,
         main_command_directory                   => $main_command_directory,
+        main_compatibility_level                 => $main_compatibility_level,
+        main_custom                              => $main_custom,
         main_daemon_directory                    => $main_daemon_directory,
         main_data_directory                      => $main_data_directory,
-        main_inet_interfaces                     => $main_inet_interfaces,
-        main_inet_protocols                      => $main_inet_protocols,
-        main_smtp_tls_mandatory_protocols        => $main_smtp_tls_mandatory_protocols,
-        main_smtp_tls_cafile                     => $main_smtp_tls_cafile,
-        main_smtp_tls_capath                     => $main_smtp_tls_capath,
-        main_smtp_tls_protocols                  => $main_smtp_tls_protocols,
-        main_smtp_tls_security_level             => $main_smtp_tls_security_level,
-        main_smtpd_banner                        => $main_smtpd_banner,
-        main_smtpd_helo_required                 => $main_smtpd_helo_required,
-        main_smtpd_helo_restrictions             => $main_smtpd_helo_restrictions,
-        main_smtpd_recipient_restrictions        => $main_smtpd_recipient_restrictions,
-        main_smtpd_tls_mandatory_protocols       => $main_smtpd_tls_mandatory_protocols,
-        main_smtpd_tls_protocols                 => $main_smtpd_tls_protocols,
-        main_smtpd_tls_security_level            => $main_smtpd_tls_security_level,
-        main_smtpd_tls_key_file                  => $main_smtpd_tls_key_file,
-        main_smtpd_tls_cert_file                 => $main_smtpd_tls_cert_file,
-        main_compatibility_level                 => $main_compatibility_level,
+        main_debugger_command                    => $main_debugger_command,
         main_debug_peer_level                    => $main_debug_peer_level,
         main_html_directory                      => $main_html_directory,
+        main_inet_interfaces                     => $main_inet_interfaces,
+        main_inet_protocols                      => $main_inet_protocols,
         main_mailbox_command                     => $main_mailbox_command,
         main_mailbox_size_limit                  => $main_mailbox_size_limit,
-        main_mailq_path                          => $main_mailq_path,
         main_mail_owner                          => $main_mail_owner,
+        main_mailq_path                          => $main_mailq_path,
         main_manpage_directory                   => $main_manpage_directory,
+        main_message_size_limit                  => $main_message_size_limit,
         main_meta_directory                      => $main_meta_directory,
         main_mydestination                       => $main_mydestination,
         main_mydomain                            => $main_mydomain,
@@ -759,48 +752,55 @@ class postfix (
         main_queue_directory                     => $main_queue_directory,
         main_readme_directory                    => $main_readme_directory,
         main_recipient_delimiter                 => $main_recipient_delimiter,
-        main_sample_directory                    => $main_sample_directory,
-        main_sendmail_path                       => $main_sendmail_path,
+        main_relay_domains                       => $main_relay_domains,
         main_relayhost                           => $main_relayhost,
         main_relayhost_port                      => $main_relayhost_port,
-        main_relay_domains                       => $main_relay_domains,
+        main_relocated_maps                      => $main_relocated_maps,
+        main_sample_directory                    => $main_sample_directory,
+        main_sendmail_path                       => $main_sendmail_path,
         main_setgid_group                        => $main_setgid_group,
         main_shlib_directory                     => $main_shlib_directory,
-        main_smtpd_relay_restrictions            => $main_smtpd_relay_restrictions,
-        main_unknown_local_recipient_reject_code => $main_unknown_local_recipient_reject_code,
-        main_virtual_alias_domains               => $main_virtual_alias_domains,
-        main_virtual_alias_maps                  => $main_virtual_alias_maps,
-        virtual_aliases                          => $virtual_aliases,
-        virtual_custom                           => $virtual_custom,
-        virtual_aliases_external                 => $virtual_aliases_external,
-        main_transport_maps                      => $main_transport_maps,
-        transport_maps                           => $transport_maps,
-        transport_custom                         => $transport_custom,
-        transport_maps_external                  => $transport_maps_external,
-        main_custom                              => $main_custom,
-        main_message_size_limit                  => $main_message_size_limit,
-        main_canonical_maps                      => $main_canonical_maps,
-        canonical_maps                           => $canonical_maps,
-        canonical_custom                         => $canonical_custom,
-        main_relocated_maps                      => $main_relocated_maps,
-        relocated_maps                           => $relocated_maps,
-        relocated_custom                         => $relocated_custom,
-        main_smtpd_sender_restrictions           => $main_smtpd_sender_restrictions,
-        main_debugger_command                    => $main_debugger_command,
+        main_smtpd_banner                        => $main_smtpd_banner,
         main_smtpd_delay_reject                  => $main_smtpd_delay_reject,
+        main_smtpd_helo_required                 => $main_smtpd_helo_required,
+        main_smtpd_helo_restrictions             => $main_smtpd_helo_restrictions,
+        main_smtpd_recipient_restrictions        => $main_smtpd_recipient_restrictions,
+        main_smtpd_relay_restrictions            => $main_smtpd_relay_restrictions,
         main_smtpd_sasl_auth_enable              => $main_smtpd_sasl_auth_enable,
+        main_smtpd_sender_restrictions           => $main_smtpd_sender_restrictions,
         main_smtpd_tls_ask_ccert                 => $main_smtpd_tls_ask_ccert,
+        main_smtpd_tls_cert_file                 => $main_smtpd_tls_cert_file,
+        main_smtpd_tls_key_file                  => $main_smtpd_tls_key_file,
+        main_smtpd_tls_mandatory_protocols       => $main_smtpd_tls_mandatory_protocols,
+        main_smtpd_tls_protocols                 => $main_smtpd_tls_protocols,
         main_smtpd_tls_received_header           => $main_smtpd_tls_received_header,
+        main_smtpd_tls_security_level            => $main_smtpd_tls_security_level,
         main_smtpd_use_tls                       => $main_smtpd_use_tls,
         main_smtp_enforce_tls                    => $main_smtp_enforce_tls,
         main_smtp_sasl_auth_enable               => $main_smtp_sasl_auth_enable,
+        main_smtp_tls_cafile                     => $main_smtp_tls_cafile,
+        main_smtp_tls_capath                     => $main_smtp_tls_capath,
+        main_smtp_tls_mandatory_protocols        => $main_smtp_tls_mandatory_protocols,
+        main_smtp_tls_protocols                  => $main_smtp_tls_protocols,
+        main_smtp_tls_security_level             => $main_smtp_tls_security_level,
         main_smtp_use_tls                        => $main_smtp_use_tls,
         main_strict_8bitmime                     => $main_strict_8bitmime,
         main_strict_rfc821_envelopes             => $main_strict_rfc821_envelopes,
-        canonical_db_type                        => $canonical_db_type,
+        main_transport_maps                      => $main_transport_maps,
+        main_unknown_local_recipient_reject_code => $main_unknown_local_recipient_reject_code,
+        main_virtual_alias_domains               => $main_virtual_alias_domains,
+        main_virtual_alias_maps                  => $main_virtual_alias_maps,
+        relocated_custom                         => $relocated_custom,
         relocated_db_type                        => $relocated_db_type,
-        virtual_db_type                          => $virtual_db_type,
+        relocated_maps                           => $relocated_maps,
+        transport_custom                         => $transport_custom,
         transport_db_type                        => $transport_db_type,
+        transport_maps_external                  => $transport_maps_external,
+        transport_maps                           => $transport_maps,
+        virtual_aliases_external                 => $virtual_aliases_external,
+        virtual_aliases                          => $virtual_aliases,
+        virtual_custom                           => $virtual_custom,
+        virtual_db_type                          => $virtual_db_type,
       }
     ),
   }

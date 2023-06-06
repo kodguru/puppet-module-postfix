@@ -9,6 +9,12 @@
 #   See https://www.postfix.org/DATABASE_README.html for more information about
 #   the possible database types.
 #
+# @param canonical_maps_external
+#   Use a non-puppet managed source for the $canonical_maps parameter, for
+#   example nis: or ldap:. This parameter will cause the value of
+#   $main_canonical_maps to be added despite the canonical_maps
+#   parameter beeing undefined.
+#
 # @param canonical_maps
 #   Hash of entries to add to canonical maps file defined by $main_canonical_maps.
 #
@@ -540,6 +546,12 @@
 #   See https://www.postfix.org/DATABASE_README.html for more information about
 #   the possible database types.
 #
+# @param relocated_maps_external
+#   Use a non-puppet managed source for the $relocated_maps parameter, for
+#   example nis: or ldap:. This parameter will cause the value of
+#   $main_relocated_maps to be added despite the relocated_maps
+#   parameter beeing undefined.
+#
 # @param relocated_maps
 #   Hash of entries to add to relocated maps file defined by $main_relocated_maps.
 #
@@ -580,25 +592,25 @@
 #   $main_transport_maps. The value must be a string.
 #
 # @param transport_maps_external
-#   Use a non-puppet managed source for the transport_maps, for example nis: or
+#   Use a non-puppet managed source for the $transport_maps, for example nis: or
 #   ldap:. This parameter will cause the value of main_transport_maps to be
 #   added despite the transport_map parameter beeing undefined.
 #
-# @param virtual_aliases
+# @param virtual_alias_maps
 #   Hash of entries to add to virtual_alias_maps file defined by
 #   $main_virtual_alias_maps.
 #
-# @param virtual_aliases_external
-#   Use a non-puppet managed source for the virtual_aliases parameter, for
+# @param virtual_alias_maps_external
+#   Use a non-puppet managed source for the $virtual_alias_maps parameter, for
 #   example nis: or ldap:. This parameter will cause the value of
-#   main_virtual_alias_maps to be added despite the virtual_aliases parameter
-#   beeing undefined.
+#   $main_virtual_alias_maps to be added despite the virtual_alias_maps
+#   parameter beeing undefined.
 #
-# @param virtual_custom
-#   Array of custom line that should be added to the virtual map.
-#   These lines will be printed before the content of $virtual_aliases.
+# @param virtual_alias_custom
+#   Array of custom line that should be added to the virtual alias map.
+#   These lines will be printed before the content of $virtual_alias_maps.
 #
-# @param virtual_db_type
+# @param virtual_alias_db_type
 #   String of the database type that should be used for the virtual database.
 #   See https://www.postfix.org/DATABASE_README.html for more information about
 #   the possible database types.
@@ -606,6 +618,7 @@
 class postfix (
   Array                                   $canonical_custom                         = [],
   String[1]                               $canonical_db_type                        = 'hash',
+  Boolean                                 $canonical_maps_external                  = false,
   Hash                                    $canonical_maps                           = {},
   Optional[String[1]]                     $main_alias_database                      = undef,
   Optional[String[1]]                     $main_alias_maps                          = undef,
@@ -679,6 +692,7 @@ class postfix (
   Array                                   $no_postmap_db_types                      = ['regexp'],
   Array[String[1]]                        $packages                                 = ['postfix'],
   Array                                   $relocated_custom                         = [],
+  Boolean                                 $relocated_maps_external                  = false,
   Hash                                    $relocated_maps                           = {},
   String[1]                               $relocated_db_type                        = 'hash',
   Variant[Boolean, Enum['true', 'false']] $service_enable                           = true,
@@ -690,10 +704,10 @@ class postfix (
   String[1]                               $transport_db_type                        = 'hash',
   Hash                                    $transport_maps                           = {},
   Boolean                                 $transport_maps_external                  = false,
-  Hash                                    $virtual_aliases                          = {},
-  Boolean                                 $virtual_aliases_external                 = false,
-  Array                                   $virtual_custom                           = [],
-  String[1]                               $virtual_db_type                          = 'hash',
+  Array                                   $virtual_alias_custom                     = [],
+  String[1]                               $virtual_alias_db_type                    = 'hash',
+  Hash                                    $virtual_alias_maps                       = {},
+  Boolean                                 $virtual_alias_maps_external              = false,
 ) {
   # <Install & Config>
   package { $packages:
@@ -720,6 +734,7 @@ class postfix (
       {
         canonical_custom                         => $canonical_custom,
         canonical_db_type                        => $canonical_db_type,
+        canonical_maps_external                  => $canonical_maps_external,
         canonical_maps                           => $canonical_maps,
         main_alias_database                      => $main_alias_database,
         main_alias_maps                          => $main_alias_maps,
@@ -792,155 +807,59 @@ class postfix (
         main_virtual_alias_maps                  => $main_virtual_alias_maps,
         relocated_custom                         => $relocated_custom,
         relocated_db_type                        => $relocated_db_type,
+        relocated_maps_external                  => $relocated_maps_external,
         relocated_maps                           => $relocated_maps,
         transport_custom                         => $transport_custom,
         transport_db_type                        => $transport_db_type,
         transport_maps_external                  => $transport_maps_external,
         transport_maps                           => $transport_maps,
-        virtual_aliases_external                 => $virtual_aliases_external,
-        virtual_aliases                          => $virtual_aliases,
-        virtual_custom                           => $virtual_custom,
-        virtual_db_type                          => $virtual_db_type,
+        virtual_alias_custom                     => $virtual_alias_custom,
+        virtual_alias_db_type                    => $virtual_alias_db_type,
+        virtual_alias_maps_external              => $virtual_alias_maps_external,
+        virtual_alias_maps                       => $virtual_alias_maps,
       }
     ),
   }
 
-  if $canonical_maps != {} or $canonical_custom != [] {
-    file { 'postfix_canonical_maps':
-      ensure  => file,
-      path    => $main_canonical_maps,
-      owner   => 'root',
-      group   => 'root',
-      mode    => '0644',
-      content => epp('postfix/maps.epp',
-        {
-          custom_data => $canonical_custom,
-          maps_data   => $canonical_maps,
-        }
-      ),
-    }
+  ['canonical', 'relocated', 'transport', 'virtual_alias'].each |$map| {
+    $maps    = getvar("${map}_maps")
+    $custom  = getvar("${map}_custom")
+    $path    = getvar("main_${map}_maps")
+    $db_type = getvar("${map}_db_type")
 
-    unless $canonical_db_type in $no_postmap_db_types {
-      exec { 'postfix_rebuild_canonical_maps':
-        command     => "${main_command_directory}/postmap ${canonical_db_type}:${main_canonical_maps}",
-        refreshonly => true,
-        subscribe   => File['postfix_canonical_maps'],
-        notify      => Service['postfix_service'],
+    if $maps != {} or $custom != [] {
+      file { "postfix_${map}_maps":
+        ensure  => file,
+        path    => $path,
+        owner   => 'root',
+        group   => 'root',
+        mode    => '0644',
+        content => epp('postfix/maps.epp',
+          {
+            custom_data => $custom,
+            maps_data   => $maps,
+          }
+        ),
       }
-    }
-  } else {
-    file { 'postfix_canonical_maps':
-      ensure => absent,
-      path   => $main_canonical_maps,
-    }
-    file { 'postfix_canonical_maps_db':
-      ensure => absent,
-      path   => "${main_canonical_maps}.db",
-      notify => Service['postfix_service'],
-    }
-  }
 
-  if $relocated_maps != {} or $relocated_custom != [] {
-    file { 'postfix_relocated_maps':
-      ensure  => file,
-      path    => $main_relocated_maps,
-      owner   => 'root',
-      group   => 'root',
-      mode    => '0644',
-      content => epp('postfix/maps.epp',
-        {
-          custom_data => $relocated_custom,
-          maps_data   => $relocated_maps,
+      unless $db_type in $no_postmap_db_types {
+        exec { "postfix_rebuild_${map}_maps":
+          command     => "${main_command_directory}/postmap ${db_type}:${path}",
+          refreshonly => true,
+          subscribe   => File["postfix_${map}_maps"],
+          notify      => Service['postfix_service'],
         }
-      ),
-    }
-    unless $relocated_db_type in $no_postmap_db_types {
-      exec { 'postfix_rebuild_relocated_maps':
-        command     => "${main_command_directory}/postmap ${relocated_db_type}:${main_relocated_maps}",
-        refreshonly => true,
-        subscribe   => File['postfix_relocated_maps'],
-        notify      => Service['postfix_service'],
       }
-    }
-  } else {
-    file { 'postfix_relocated_maps':
-      ensure => absent,
-      path   => $main_relocated_maps,
-    }
-    file { 'postfix_relocated_maps_db':
-      ensure => absent,
-      path   => "${main_relocated_maps}.db",
-      notify => Service['postfix_service'],
-    }
-  }
-
-  if $transport_maps != {} or $transport_custom != [] {
-    file { 'postfix_transport':
-      ensure  => file,
-      path    => $main_transport_maps,
-      owner   => 'root',
-      group   => 'root',
-      mode    => '0644',
-      content => epp('postfix/maps.epp',
-        {
-          custom_data => $transport_custom,
-          maps_data   => $transport_maps,
-        }
-      ),
-    }
-    unless $transport_db_type in $no_postmap_db_types {
-      exec { 'postfix_rebuild_transport':
-        command     => "${main_command_directory}/postmap ${transport_db_type}:${main_transport_maps}",
-        refreshonly => true,
-        subscribe   => File['postfix_transport'],
-        notify      => Service['postfix_service'],
+    } else {
+      file { "postfix_${map}_maps":
+        ensure => absent,
+        path   => $path,
       }
-    }
-  }
-  else {
-    file { 'postfix_transport':
-      ensure => absent,
-      path   => $main_transport_maps,
-    }
-    file { 'postfix_transport_db':
-      ensure => absent,
-      path   => "${main_transport_maps}.db",
-      notify => Service['postfix_service'],
-    }
-  }
-
-  if $virtual_aliases != {} or $virtual_custom != [] {
-    file { 'postfix_virtual':
-      ensure  => file,
-      path    => $main_virtual_alias_maps,
-      owner   => 'root',
-      group   => 'root',
-      mode    => '0644',
-      content => epp('postfix/maps.epp',
-        {
-          custom_data => $virtual_custom,
-          maps_data   => $virtual_aliases,
-        }
-      ),
-    }
-    unless $virtual_db_type in $no_postmap_db_types {
-      exec { 'postfix_rebuild_virtual':
-        command     => "${main_command_directory}/postmap ${virtual_db_type}:${main_virtual_alias_maps}",
-        refreshonly => true,
-        subscribe   => File['postfix_virtual'],
-        notify      => Service['postfix_service'],
+      file { "postfix_${map}_maps_db":
+        ensure => absent,
+        path   => "${path}.db",
+        notify => Service['postfix_service'],
       }
-    }
-  }
-  else {
-    file { 'postfix_virtual':
-      ensure => absent,
-      path   => $main_virtual_alias_maps,
-    }
-    file { 'postfix_virtual_db':
-      ensure => absent,
-      path   => "${main_virtual_alias_maps}.db",
-      notify => Service['postfix_service'],
     }
   }
   # </Install & Config>

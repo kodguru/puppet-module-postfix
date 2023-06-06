@@ -364,7 +364,11 @@ describe 'postfix' do
       it { is_expected.to contain_file('postfix_main.cf').with_content(%r{mail_owner = testing}) }
     end
 
-    ### FIXME test for $main_mailq_path missing
+    context "on #{os} with main_mail_owner set to valid testing" do
+      let(:params) { { main_mailq_path: '/test/ing' } }
+
+      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{mailq_path = /test/ing}) }
+    end
 
     context "on #{os} with main_manpage_directory set to valid /test/ing" do
       let(:params) { { main_manpage_directory: '/test/ing' } }

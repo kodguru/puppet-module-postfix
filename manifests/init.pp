@@ -822,10 +822,11 @@ class postfix (
   }
 
   ['canonical', 'relocated', 'transport', 'virtual_alias'].each |$map| {
-    $maps    = getvar("${map}_maps")
-    $custom  = getvar("${map}_custom")
-    $path    = getvar("main_${map}_maps")
-    $db_type = getvar("${map}_db_type")
+    $maps     = getvar("${map}_maps")
+    $custom   = getvar("${map}_custom")
+    $external = getvar("${map}_maps_external")
+    $path     = getvar("main_${map}_maps")
+    $db_type  = getvar("${map}_db_type")
 
     if $maps != {} or $custom != [] {
       file { "postfix_${map}_maps":
@@ -850,7 +851,7 @@ class postfix (
           notify      => Service['postfix_service'],
         }
       }
-    } else {
+    } elsif $external == false {
       file { "postfix_${map}_maps":
         ensure => absent,
         path   => $path,

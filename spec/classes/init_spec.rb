@@ -722,19 +722,18 @@ describe 'postfix' do
         it { is_expected.to contain_file('postfix_main.cf').with_content(%r{#{map}_maps = hash:/test/ing/#{map_file}}) }
       end
 
-      context "on #{os} with main_#{map}_maps set to valid hash:/test/ing when #{map}_maps_external is set to valid value" do
-        # FIXME: is "main_#{map}_maps" needed ?
-        let(:params) { { "main_#{map}_maps": '/test/ing', "#{map}_maps_external": true } }
-
-        it { is_expected.to contain_file('postfix_main.cf').with_content(%r{#{map}_maps = hash:/test/ing}) }
-      end
-
       context "on #{os} with #{map}_maps_external set to valid value" do
         let(:params) { { "#{map}_maps_external": true } }
 
         it { is_expected.to contain_file('postfix_main.cf').with_content(%r{#{map}_maps = hash:/etc/postfix/#{map_file}}) }
-        # FIXME: external map should not be managed by puppet
-        # it { is_expected.not_to contain_file("postfix_#{map}_maps") }
+        it { is_expected.not_to contain_file("postfix_#{map}_maps") }
+      end
+
+      context "on #{os} with #{map}_maps_external set to valid value when with main_#{map}_maps set to valid value" do
+        let(:params) { { "#{map}_maps_external": true, "main_#{map}_maps": '/test/ing' } }
+
+        it { is_expected.to contain_file('postfix_main.cf').with_content(%r{#{map}_maps = hash:/test/ing}) }
+        it { is_expected.not_to contain_file("postfix_#{map}_maps") }
       end
     end
   end

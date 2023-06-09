@@ -24,7 +24,7 @@ This module provides OS default values for these OSfamilies:
 
 # Version history #
 
-* 3.0.0 2023-05-16 Rename/align virtual aliases related parameter names:
+* 3.0.0 2023-06-09 Rename/align virtual aliases related parameter names:
                      - $virtual_aliases          becomes $virtual_alias_maps
                      - $virtual_aliases_external becomes $virtual_alias_maps_external
                      - $virtual_custom           becomes $virtual_alias_custom
@@ -33,13 +33,16 @@ This module provides OS default values for these OSfamilies:
                    Convert templates to ERP format, use one template for all maps
                    Drop support for strings for array type parameters
                    Add support for more Postfix parameters
+                   Add support for new SLED/SLES 12 and 15
+                   Add support for 22.10
+                   Use iteration for map file creation
 * 2.3.1 2023-01-27 Fix Suse default values
 * 2.3.0 2023-01-03 Add support for AlmaLinux 8/9 & Rocky 8/9
                    Move module default data into hiera data
                    Add acceptance tests
 * 2.2.0 2022-11-17 Allow arrays for main_mynetworks
 * 2.1.1 2022-06-30 Upgrade to PDK 2.5.0
-* 2.1.0 2022-05-10 Support CentOS 9 / RedHat 9 / Ubuntu 22.04
+* 2.1.0 2022-05-10 Support CentOS 9 / RedHat 9 / buntu 22.04
                    add $custom parameter to allow free text parameters in main.cf
 * 2.0.0 2022-05-03 Upgrade to Puppet 7 & PDK 2.49
                    Move from TravisCI to GitHub actions for testing

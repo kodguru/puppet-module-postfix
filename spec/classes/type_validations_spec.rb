@@ -16,7 +16,7 @@ describe 'postfix' do
 
       validations = {
         'Array' => {
-          name:    ['canonical_custom', 'main_mynetworks', 'no_postmap_db_types', 'relocated_custom', 'transport_custom', 'virtual_custom'],
+          name:    ['canonical_custom', 'main_mynetworks', 'no_postmap_db_types', 'relocated_custom', 'transport_custom', 'virtual_alias_custom'],
           valid:   [['testing'], ['test', 'ing']],
           invalid: ['invalid', 3, 2.42, { 'ha' => 'sh' }, true, false],
           message: 'expects an Array value',
@@ -34,13 +34,13 @@ describe 'postfix' do
           message: '(expects an Array value|index \d+ expects a String value)',
         },
         'Boolean' => {
-          name:    ['service_hasrestart', 'service_hasstatus', 'transport_maps_external', 'virtual_aliases_external'],
+          name:    ['service_hasrestart', 'service_hasstatus', 'transport_maps_external', 'virtual_alias_maps_external'],
           valid:   [true, false],
           invalid: ['true', 'false', nil, 'invalid', 3, 2.42, ['array'], { 'ha' => 'sh' }],
           message: 'expects a Boolean',
         },
         'Hash' => {
-          name:    ['canonical_maps', 'main_custom', 'relocated_maps', 'transport_maps', 'virtual_aliases'],
+          name:    ['canonical_maps', 'main_custom', 'relocated_maps', 'transport_maps', 'virtual_alias_maps'],
           valid:   [{ 'ha' => 'sh' }],
           invalid: [true, false, 'invalid', 3, 2.42, ['array']],
           message: 'expects a Hash',
@@ -104,7 +104,7 @@ describe 'postfix' do
           message: 'expects a Stdlib::Host',
         },
         'String[1]' => {
-          name:    ['canonical_db_type', 'relocated_db_type', 'transport_db_type', 'virtual_db_type'],
+          name:    ['canonical_db_type', 'relocated_db_type', 'transport_db_type', 'virtual_alias_db_type'],
           valid:   ['string'],
           invalid: [false, 3, 2.42, ['array'], { 'ha' => 'sh' }],
           message: 'expects a String value',

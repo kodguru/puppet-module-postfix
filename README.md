@@ -24,7 +24,12 @@ This module provides OS default values for these OSfamilies:
 
 # Version history #
 
-* 3.0.0 2023-05-16 Convert $main_custom to use a hash to allow easier hiera merging
+* 3.0.0 2023-05-16 Rename/align virtual aliases related parameter names:
+                     - $virtual_aliases          becomes $virtual_alias_maps
+                     - $virtual_aliases_external becomes $virtual_alias_maps_external
+                     - $virtual_custom           becomes $virtual_alias_custom
+                     - $virtual_db_type          becomes $virtual_alias_db_type
+                   Convert $main_custom to use a hash to allow easier hiera merging
                    Convert templates to ERP format, use one template for all maps
                    Drop support for strings for array type parameters
                    Add support for more Postfix parameters

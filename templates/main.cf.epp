@@ -1,6 +1,7 @@
 <%- |
       Array                          $canonical_custom,
       String[1]                      $canonical_db_type,
+      Boolean                        $canonical_maps_external,
       Hash                           $canonical_maps,
       Optional[String[1]]            $main_alias_database,
       Optional[String[1]]            $main_alias_maps,
@@ -73,15 +74,16 @@
       Optional[String[1]]            $main_virtual_alias_maps,
       Array                          $relocated_custom,
       String[1]                      $relocated_db_type,
+      Boolean                        $relocated_maps_external,
       Hash                           $relocated_maps,
       Array                          $transport_custom,
       String[1]                      $transport_db_type,
       Boolean                        $transport_maps_external,
       Hash                           $transport_maps,
-      Boolean                        $virtual_aliases_external,
-      Hash                           $virtual_aliases,
-      Array                          $virtual_custom,
-      String[1]                      $virtual_db_type,
+      Array                          $virtual_alias_custom,
+      String[1]                      $virtual_alias_db_type,
+      Boolean                        $virtual_alias_maps_external,
+      Hash                           $virtual_alias_maps,
 | -%>
 # This file is being maintained by Puppet.
 # DO NOT EDIT
@@ -234,8 +236,8 @@ unknown_local_recipient_reject_code = <%= $main_unknown_local_recipient_reject_c
 <% if $main_virtual_alias_domains { -%>
 virtual_alias_domains = <%= $main_virtual_alias_domains %>
 <% } -%>
-<% if $virtual_aliases != {} or $virtual_custom != [] or $virtual_aliases_external { -%>
-virtual_alias_maps = <%= $virtual_db_type %>:<%= $main_virtual_alias_maps %>
+<% if $virtual_alias_maps != {} or $virtual_alias_custom != [] or $virtual_alias_maps_external { -%>
+virtual_alias_maps = <%= $virtual_alias_db_type %>:<%= $main_virtual_alias_maps %>
 <% } -%>
 <% if $transport_maps != {} or $transport_custom != [] or $transport_maps_external { -%>
 transport_maps = <%= $transport_db_type %>:<%= $main_transport_maps %>
@@ -243,10 +245,10 @@ transport_maps = <%= $transport_db_type %>:<%= $main_transport_maps %>
 <% if $main_message_size_limit { -%>
 message_size_limit = <%= $main_message_size_limit %>
 <% } -%>
-<% if $canonical_maps != {} or $canonical_custom != [] { -%>
+<% if $canonical_maps != {} or $canonical_custom != [] or $canonical_maps_external { -%>
 canonical_maps = <%= $canonical_db_type %>:<%= $main_canonical_maps %>
 <% } -%>
-<% if $relocated_maps != {} or $relocated_custom != [] { -%>
+<% if $relocated_maps != {} or $relocated_custom != [] or $relocated_maps_external { -%>
 relocated_maps = <%= $relocated_db_type %>:<%= $main_relocated_maps %>
 <% } -%>
 <% if $main_smtpd_sender_restrictions { -%>

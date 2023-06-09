@@ -63,7 +63,7 @@ describe 'postfix' do
     end
 
     it do
-      is_expected.to contain_file('postfix_virtual').only_with(
+      is_expected.to contain_file('postfix_virtual_alias_maps').only_with(
         {
           'ensure' => 'absent',
           'path'   => '/etc/postfix/virtual',
@@ -72,7 +72,7 @@ describe 'postfix' do
     end
 
     it do
-      is_expected.to contain_file('postfix_virtual_db').only_with(
+      is_expected.to contain_file('postfix_virtual_alias_maps_db').only_with(
         {
           'ensure' => 'absent',
           'path'   => '/etc/postfix/virtual.db',
@@ -82,7 +82,7 @@ describe 'postfix' do
     end
 
     it do
-      is_expected.to contain_file('postfix_transport').only_with(
+      is_expected.to contain_file('postfix_transport_maps').only_with(
         {
           'ensure' => 'absent',
           'path'   => '/etc/postfix/transport',
@@ -91,7 +91,7 @@ describe 'postfix' do
     end
 
     it do
-      is_expected.to contain_file('postfix_transport_db').only_with(
+      is_expected.to contain_file('postfix_transport_maps_db').only_with(
         {
           'ensure' => 'absent',
           'path'   => '/etc/postfix/transport.db',

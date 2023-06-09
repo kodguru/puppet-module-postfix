@@ -83,7 +83,7 @@ describe 'postfix' do
       end
 
       it do
-        is_expected.to contain_file('postfix_virtual').only_with(
+        is_expected.to contain_file('postfix_virtual_alias_maps').only_with(
           {
             'ensure' => 'absent',
             'path'   => '/etc/postfix/virtual',
@@ -92,7 +92,7 @@ describe 'postfix' do
       end
 
       it do
-        is_expected.to contain_file('postfix_virtual_db').only_with(
+        is_expected.to contain_file('postfix_virtual_alias_maps_db').only_with(
           {
             'ensure' => 'absent',
             'path'   => '/etc/postfix/virtual.db',
@@ -102,7 +102,7 @@ describe 'postfix' do
       end
 
       it do
-        is_expected.to contain_file('postfix_transport').only_with(
+        is_expected.to contain_file('postfix_transport_maps').only_with(
           {
             'ensure' => 'absent',
             'path'   => '/etc/postfix/transport',
@@ -111,7 +111,7 @@ describe 'postfix' do
       end
 
       it do
-        is_expected.to contain_file('postfix_transport_db').only_with(
+        is_expected.to contain_file('postfix_transport_maps_db').only_with(
           {
             'ensure' => 'absent',
             'path'   => '/etc/postfix/transport.db',
@@ -152,74 +152,6 @@ describe 'postfix' do
   on_supported_os(redhat).sort.each do |os, os_facts|
     let(:facts) { os_facts }
 
-    context "on #{os} with canonical_custom set to valid array" do
-      let(:params) do
-        {
-          canonical_custom:    ['line1', 'line2'],
-        }
-      end
-
-      content = <<-END.gsub(%r{^\s+\|}, '')
-        |# This file is being maintained by Puppet.
-        |# DO NOT EDIT
-        |
-        |line1
-        |line2
-      END
-
-      it { is_expected.to contain_file('postfix_canonical_maps').with_content(content) }
-      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{canonical_maps = hash:/etc/postfix/canonical}) }
-    end
-
-    context "on #{os} with canonical_db_type set to valid lmdb when database has content" do
-      let(:params) do
-        {
-          canonical_db_type:   'lmdb',
-          canonical_maps:      { 'user1' => 'user1@test.ing' },
-        }
-      end
-
-      it { is_expected.to contain_exec('postfix_rebuild_canonical_maps').with_command('/usr/sbin/postmap lmdb:/etc/postfix/canonical') }
-      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{canonical_maps = lmdb:/etc/postfix/canonical}) }
-    end
-
-    context "on #{os} with canonical_maps set to valid hash value" do
-      let(:params) { { canonical_maps: { 'user1' => 'user1@test.ing', 'user2' => ['user2@test1.ing', 'user2@test2.ing'] } } }
-
-      content = <<-END.gsub(%r{^\s+\|}, '')
-        |# This file is being maintained by Puppet.
-        |# DO NOT EDIT
-        |
-        |user1		user1@test.ing
-        |user2		user2@test1.ing,user2@test2.ing
-      END
-
-      it do
-        is_expected.to contain_file('postfix_canonical_maps').only_with(
-          {
-            'ensure'  => 'file',
-            'path'    => '/etc/postfix/canonical',
-            'owner'   => 'root',
-            'group'   => 'root',
-            'mode'    => '0644',
-            'content' => content,
-          },
-        )
-      end
-
-      it do
-        is_expected.to contain_exec('postfix_rebuild_canonical_maps').only_with(
-          {
-            'command'     => '/usr/sbin/postmap hash:/etc/postfix/canonical',
-            'refreshonly' => true,
-            'subscribe'   => 'File[postfix_canonical_maps]',
-            'notify'      => 'Service[postfix_service]',
-          },
-        )
-      end
-      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{canonical_maps = hash:/etc/postfix/canonical}) }
-    end
-
     context "on #{os} with main_alias_database set to valid hash:/test/ing" do
       let(:params) { { main_alias_database: 'hash:/test/ing' } }
 
@@ -244,23 +176,11 @@ describe 'postfix' do
       it { is_expected.to contain_file('postfix_main.cf').with_content(%r{biff = yes}) }
     end
 
-    context "on #{os} with main_canonical_maps set to valid value when database has content" do
-      let(:params) do
-        {
-          main_canonical_maps: '/test/ing/canonical',
-          canonical_maps:      { 'user1' => 'user1@test.ing' },
-        }
-      end
-
-      it { is_expected.to contain_exec('postfix_rebuild_canonical_maps').with_command('/usr/sbin/postmap hash:/test/ing/canonical') }
-      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{canonical_maps = hash:/test/ing/canonical}) }
-    end
-
-    context "on #{os} with main_command_directory set to valid value when virtual_aliases, transport_maps, canonical_maps and relocated_maps are set to valid values" do
+    context "on #{os} with main_command_directory set to valid value when virtual_alias_maps, transport_maps, canonical_maps and relocated_maps are set to valid values" do
       let(:params) do
         {
           main_command_directory: '/test/ing',
-          virtual_aliases:        { 'test@test.ing' => 'test1' },
+          virtual_alias_maps:     { 'test@test.ing' => 'test1' },
           transport_maps:         { 'test@test.ing' => 'test' },
           canonical_maps:         { 'test@test.ing' => 'test' },
           relocated_maps:         { 'test@test.ing' => 'test' },
@@ -268,8 +188,8 @@ describe 'postfix' do
       end
 
       it { is_expected.to contain_file('postfix_main.cf').with_content(%r{command_directory = /test/ing}) }
-      it { is_expected.to contain_exec('postfix_rebuild_virtual').with_command('/test/ing/postmap hash:/etc/postfix/virtual') }
-      it { is_expected.to contain_exec('postfix_rebuild_transport').with_command('/test/ing/postmap hash:/etc/postfix/transport') }
+      it { is_expected.to contain_exec('postfix_rebuild_virtual_alias_maps').with_command('/test/ing/postmap hash:/etc/postfix/virtual') }
+      it { is_expected.to contain_exec('postfix_rebuild_transport_maps').with_command('/test/ing/postmap hash:/etc/postfix/transport') }
       it { is_expected.to contain_exec('postfix_rebuild_canonical_maps').with_command('/test/ing/postmap hash:/etc/postfix/canonical') }
       it { is_expected.to contain_exec('postfix_rebuild_relocated_maps').with_command('/test/ing/postmap hash:/etc/postfix/relocated') }
     end
@@ -468,18 +388,6 @@ describe 'postfix' do
       it { is_expected.to contain_file('postfix_main.cf').with_content(%r{relayhost = mailhost.example.com:242}) }
     end
 
-    context "on #{os} with main_relocated_maps set to valid value when database has content" do
-      let(:params) do
-        {
-          main_relocated_maps: '/test/ing/relocated',
-          relocated_maps:      { 'user1@here.tld' => 'user1@there.tld' },
-        }
-      end
-
-      it { is_expected.to contain_exec('postfix_rebuild_relocated_maps').with_command('/usr/sbin/postmap hash:/test/ing/relocated') }
-      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{relocated_maps = hash:/test/ing/relocated}) }
-    end
-
     context "on #{os} with main_sample_directory set to valid /test/ing" do
       let(:params) { { main_sample_directory: '/test/ing' } }
 
@@ -662,18 +570,6 @@ describe 'postfix' do
       it { is_expected.to contain_file('postfix_main.cf').with_content(%r{strict_rfc821_envelopes = yes}) }
     end
 
-    context "on #{os} with main_transport_maps set to valid value when database has content" do
-      let(:params) do
-        {
-          main_transport_maps: '/test/ing/transport',
-          transport_maps:      { 'test@test.ing' => 'test.ing' },
-        }
-      end
-
-      it { is_expected.to contain_exec('postfix_rebuild_transport').with_command('/usr/sbin/postmap hash:/test/ing/transport') }
-      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{transport_maps = hash:/test/ing/transport}) }
-    end
-
     context "on #{os} with main_unknown_local_recipient_reject_code set to valid 242" do
       let(:params) { { main_unknown_local_recipient_reject_code: 242 } }
 
@@ -686,39 +582,21 @@ describe 'postfix' do
       it { is_expected.to contain_file('postfix_main.cf').with_content(%r{virtual_alias_domains = test.ing}) }
     end
 
-    context "on #{os} with main_virtual_alias_maps set to valid value when database has content" do
-      let(:params) do
-        {
-          main_virtual_alias_maps: '/test/ing/virtual',
-          virtual_aliases:         { 'test@test.ing' => 'test.ing' },
-        }
-      end
-
-      it { is_expected.to contain_exec('postfix_rebuild_virtual').with_command('/usr/sbin/postmap hash:/test/ing/virtual') }
-      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{virtual_alias_maps = hash:/test/ing/virtual}) }
-    end
-
-    context "on #{os} with main_virtual_alias_maps set to valid hash:/test/ing when virtual_aliases_external is set to valid value" do
-      let(:params) { { main_virtual_alias_maps: '/test/ing', virtual_aliases_external: true } }
-
-      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{virtual_alias_maps = hash:/test/ing}) }
-    end
-
     context "on #{os} with no_postmap_db_types set array to containing hash when maps will be created" do
       let(:params) do
         {
-          no_postmap_db_types: ['hash'],
-          canonical_maps:      { 'test@test.ing' => 'test.ing' },
-          relocated_maps:      { 'test@test.ing' => 'test.ing' },
-          transport_maps:      { 'test@test.ing' => 'test.ing' },
-          virtual_aliases:     { 'test@test.ing' => 'test.ing' },
+          no_postmap_db_types:  ['hash'],
+          canonical_maps:       { 'test@test.ing' => 'test.ing' },
+          relocated_maps:       { 'test@test.ing' => 'test.ing' },
+          transport_maps:       { 'test@test.ing' => 'test.ing' },
+          virtual_alias_maps:   { 'test@test.ing' => 'test.ing' },
         }
       end
 
       it { is_expected.not_to contain_exec('postfix_rebuild_canonical_maps') }
       it { is_expected.not_to contain_exec('postfix_rebuild_relocated_maps') }
-      it { is_expected.not_to contain_exec('postfix_rebuild_transport') }
-      it { is_expected.not_to contain_exec('postfix_rebuild_virtual') }
+      it { is_expected.not_to contain_exec('postfix_rebuild_transport_maps') }
+      it { is_expected.not_to contain_exec('postfix_rebuild_virtual_alias_maps') }
     end
 
     context "on #{os} with packages set to valid [testing]" do
@@ -732,86 +610,6 @@ describe 'postfix' do
 
       it { is_expected.to contain_package('test') }
       it { is_expected.to contain_package('ing') }
-    end
-
-    context "on #{os} with relocated_custom set to valid array" do
-      let(:params) do
-        {
-          relocated_custom: ['line1', 'line2'],
-        }
-      end
-
-      content = <<-END.gsub(%r{^\s+\|}, '')
-        |# This file is being maintained by Puppet.
-        |# DO NOT EDIT
-        |
-        |line1
-        |line2
-      END
-
-      it { is_expected.to contain_file('postfix_relocated_maps').with_content(content) }
-      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{relocated_maps = hash:/etc/postfix/relocated}) }
-    end
-
-    context "on #{os} with relocated_maps set to valid hash value" do
-      let(:params) { { relocated_maps: { 'user1@here.tld' => 'user1@there.tld', 'user2@here.tld' => 'user2@there.tld' } } }
-
-      content = <<-END.gsub(%r{^\s+\|}, '')
-        |# This file is being maintained by Puppet.
-        |# DO NOT EDIT
-        |
-        |user1@here.tld		user1@there.tld
-        |user2@here.tld		user2@there.tld
-      END
-
-      it do
-        is_expected.to contain_file('postfix_relocated_maps').only_with(
-          {
-            'ensure'  => 'file',
-            'path'    => '/etc/postfix/relocated',
-            'owner'   => 'root',
-            'group'   => 'root',
-            'mode'    => '0644',
-            'content' => content,
-          },
-        )
-      end
-
-      it do
-        is_expected.to contain_exec('postfix_rebuild_relocated_maps').only_with(
-          {
-            'command'     => '/usr/sbin/postmap hash:/etc/postfix/relocated',
-            'refreshonly' => true,
-            'subscribe'   => 'File[postfix_relocated_maps]',
-            'notify'      => 'Service[postfix_service]',
-          },
-        )
-      end
-      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{relocated_maps = hash:/etc/postfix/relocated}) }
-    end
-
-    context "on #{os} with relocated_db_type set to valid lmdb when database has content" do
-      let(:params) do
-        {
-          relocated_db_type: 'lmdb',
-          relocated_maps:    { 'user1@here.tld' => 'user1@there.tld' },
-        }
-      end
-
-      it { is_expected.to contain_exec('postfix_rebuild_relocated_maps').with_command('/usr/sbin/postmap lmdb:/etc/postfix/relocated') }
-      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{relocated_maps = lmdb:/etc/postfix/relocated}) }
-    end
-
-    context "on #{os} with relocated_db_type set to valid regexp when database has content" do
-      let(:params) do
-        {
-          relocated_db_type: 'regexp',
-          relocated_maps:    { 'user1@here.tld' => 'user1@there.tld' },
-        }
-      end
-
-      it { is_expected.not_to contain_exec('postfix_rebuild_relocated_maps') }
-      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{relocated_maps = regexp:/etc/postfix/relocated}) }
     end
 
     [true, false, 'true', 'false'].each do |param|
@@ -846,232 +644,97 @@ describe 'postfix' do
       it { is_expected.to contain_service('postfix_service').with_name('testing') }
     end
 
-    context "on #{os} with transport_custom set to valid array" do
-      let(:params) do
-        {
-          transport_custom: ['line1', 'line2'],
-        }
+    ['canonical', 'relocated', 'transport', 'virtual_alias'].each do |map|
+      map_file = if map == 'virtual_alias'
+                   'virtual'
+                 else
+                   map
+                 end
+
+      context "on #{os} with #{map}_custom set to valid array" do
+        let(:params) { { "#{map}_custom": ['line1', 'line2'] } }
+
+        content = <<-END.gsub(%r{^\s+\|}, '')
+          |# This file is being maintained by Puppet.
+          |# DO NOT EDIT
+          |
+          |line1
+          |line2
+        END
+
+        it { is_expected.to contain_file("postfix_#{map}_maps").with_content(content) }
+        it { is_expected.to contain_file('postfix_main.cf').with_content(%r{#{map}_maps = hash:/etc/postfix/#{map_file}}) }
       end
 
-      content = <<-END.gsub(%r{^\s+\|}, '')
-        |# This file is being maintained by Puppet.
-        |# DO NOT EDIT
-        |
-        |line1
-        |line2
-      END
+      context "on #{os} with #{map}_db_type set to valid lmdb when database has content" do
+        let(:params) { { "#{map}_db_type": 'lmdb', "#{map}_maps": { 'user1' => 'user1@test.ing' } } }
 
-      it { is_expected.to contain_file('postfix_transport').with_content(content) }
-      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{transport_maps = hash:/etc/postfix/transport}) }
-    end
-
-    context "on #{os} with transport_db_type set to valid lmdb when database has content" do
-      let(:params) do
-        {
-          transport_db_type: 'lmdb',
-          transport_maps:    { 'test@test.ing' => 'test.ing' },
-        }
+        it { is_expected.to contain_exec("postfix_rebuild_#{map}_maps").with_command("/usr/sbin/postmap lmdb:/etc/postfix/#{map_file}") }
+        it { is_expected.to contain_file('postfix_main.cf').with_content(%r{#{map}_maps = lmdb:/etc/postfix/#{map_file}}) }
       end
 
-      it { is_expected.to contain_exec('postfix_rebuild_transport').with_command('/usr/sbin/postmap lmdb:/etc/postfix/transport') }
-      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{transport_maps = lmdb:/etc/postfix/transport}) }
-    end
+      context "on #{os} with #{map}_maps set to valid hash value" do
+        let(:params) { { "#{map}_maps": { 'user1' => 'user1@test.ing', 'user2' => ['user2@test1.ing', 'user2@test2.ing'] } } }
 
-    context "on #{os} with transport_db_type set to valid regexp when database has content" do
-      let(:params) do
-        {
-          transport_db_type: 'regexp',
-          transport_maps:    { 'test@test.ing' => 'test.ing' },
-        }
+        content = <<-END.gsub(%r{^\s+\|}, '')
+          |# This file is being maintained by Puppet.
+          |# DO NOT EDIT
+          |
+          |user1		user1@test.ing
+          |user2		user2@test1.ing,user2@test2.ing
+        END
+
+        it do
+          is_expected.to contain_file("postfix_#{map}_maps").only_with(
+            {
+              'ensure'  => 'file',
+              'path'    => "/etc/postfix/#{map_file}",
+              'owner'   => 'root',
+              'group'   => 'root',
+              'mode'    => '0644',
+              'content' => content,
+            },
+          )
+        end
+
+        it do
+          is_expected.to contain_exec("postfix_rebuild_#{map}_maps").only_with(
+            {
+              'command'     => "/usr/sbin/postmap hash:/etc/postfix/#{map_file}",
+              'refreshonly' => true,
+              'subscribe'   => "File[postfix_#{map}_maps]",
+              'notify'      => 'Service[postfix_service]',
+            },
+          )
+        end
+        it { is_expected.to contain_file('postfix_main.cf').with_content(%r{#{map}_maps = hash:/etc/postfix/#{map_file}}) }
       end
 
-      it { is_expected.not_to contain_exec('postfix_rebuild_transport') }
-      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{transport_maps = regexp:/etc/postfix/transport}) }
-    end
-
-    context "on #{os} with transport_maps set to valid hash value" do
-      let(:params) { { transport_maps: { 'test@test.ing' => 'test.ing' } } }
-
-      content = <<-END.gsub(%r{^\s+\|}, '')
-        |# This file is being maintained by Puppet.
-        |# DO NOT EDIT
-        |
-       |test@test.ing		test.ing
-      END
-
-      it do
-        is_expected.to contain_file('postfix_transport').only_with(
+      context "on #{os} with main_#{map}_maps set to valid value when database has content" do
+        let(:params) do
           {
-            'ensure'  => 'file',
-            'path'    => '/etc/postfix/transport',
-            'owner'   => 'root',
-            'group'   => 'root',
-            'mode'    => '0644',
-            'content' => content,
-          },
-        )
+            "main_#{map}_maps": "/test/ing/#{map}",
+            "#{map}_maps":      { 'test@test.ing' => 'test.ing' },
+          }
+        end
+
+        it { is_expected.to contain_exec("postfix_rebuild_#{map}_maps").with_command("/usr/sbin/postmap hash:/test/ing/#{map}") }
+        it { is_expected.to contain_file('postfix_main.cf').with_content(%r{#{map}_maps = hash:/test/ing/#{map_file}}) }
       end
 
-      it do
-        is_expected.to contain_exec('postfix_rebuild_transport').only_with(
-          {
-            'command'     => '/usr/sbin/postmap hash:/etc/postfix/transport',
-            'refreshonly' => true,
-            'subscribe'   => 'File[postfix_transport]',
-            'notify'      => 'Service[postfix_service]'
-          },
-        )
-      end
-      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{transport_maps = hash:/etc/postfix/transport}) }
-    end
+      context "on #{os} with #{map}_maps_external set to valid value" do
+        let(:params) { { "#{map}_maps_external": true } }
 
-    context "on #{os} with transport_maps_external set to valid true" do
-      let(:params) { { transport_maps_external: true } }
-
-      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{transport_maps = hash:/etc/postfix/transport}) }
-    end
-
-    context "on #{os} with virtual_aliases set to valid hash value" do
-      let(:params) { { virtual_aliases: { 'test@test.ing' => 'test.ing' } } }
-
-      content = <<-END.gsub(%r{^\s+\|}, '')
-        |# This file is being maintained by Puppet.
-        |# DO NOT EDIT
-        |
-        |test@test.ing		test.ing
-      END
-
-      it do
-        is_expected.to contain_file('postfix_virtual').only_with(
-          {
-            'ensure'  => 'file',
-            'path'    => '/etc/postfix/virtual',
-            'owner'   => 'root',
-            'group'   => 'root',
-            'mode'    => '0644',
-            'content' => content,
-          },
-        )
+        it { is_expected.to contain_file('postfix_main.cf').with_content(%r{#{map}_maps = hash:/etc/postfix/#{map_file}}) }
+        it { is_expected.not_to contain_file("postfix_#{map}_maps") }
       end
 
-      it do
-        is_expected.to contain_exec('postfix_rebuild_virtual').only_with(
-          {
-            'command'     => '/usr/sbin/postmap hash:/etc/postfix/virtual',
-            'refreshonly' => true,
-            'subscribe'   => 'File[postfix_virtual]',
-            'notify'      => 'Service[postfix_service]'
-          },
-        )
+      context "on #{os} with #{map}_maps_external set to valid value when with main_#{map}_maps set to valid value" do
+        let(:params) { { "#{map}_maps_external": true, "main_#{map}_maps": '/test/ing' } }
+
+        it { is_expected.to contain_file('postfix_main.cf').with_content(%r{#{map}_maps = hash:/test/ing}) }
+        it { is_expected.not_to contain_file("postfix_#{map}_maps") }
       end
-      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{virtual_alias_maps = hash:/etc/postfix/virtual}) }
-    end
-
-    context "on #{os} with virtual_aliases_external set to valid true" do
-      let(:params) { { virtual_aliases_external: true } }
-
-      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{virtual_alias_maps = hash:/etc/postfix/virtual}) }
-    end
-
-    context "on #{os} with virtual_custom set to valid array" do
-      let(:params) do
-        {
-          virtual_custom:    ['line1', 'line2'],
-        }
-      end
-
-      content = <<-END.gsub(%r{^\s+\|}, '')
-        |# This file is being maintained by Puppet.
-        |# DO NOT EDIT
-        |
-        |line1
-        |line2
-      END
-
-      it { is_expected.to contain_file('postfix_virtual').with_content(content) }
-      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{virtual_alias_maps = hash:/etc/postfix/virtual}) }
-    end
-
-    context "on #{os} with virtual_aliases set to valid {test1@test.ing => test1.ing, test2@test.ing => test2.ing}" do
-      let(:params) { { virtual_aliases: { 'test1@test.ing' => 'test1.ing', 'test2@test.ing' => ['test21.ing', 'test22.ing'] } } }
-
-      content = <<-END.gsub(%r{^\s+\|}, '')
-        |# This file is being maintained by Puppet.
-        |# DO NOT EDIT
-        |
-        |test1@test.ing		test1.ing
-        |test2@test.ing		test21.ing,test22.ing
-      END
-
-      it { is_expected.to contain_file('postfix_virtual').with_content(content) }
-      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{virtual_alias_maps = hash:/etc/postfix/virtual}) }
-    end
-
-    context "on #{os} with canonical_db_type set to valid regexp when database has content" do
-      let(:params) do
-        {
-          canonical_db_type: 'regexp',
-          canonical_maps:    { 'user1' => 'user1@test.ing' },
-        }
-      end
-
-      it { is_expected.not_to contain_exec('postfix_rebuild_canonical_maps') }
-      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{canonical_maps = regexp:/etc/postfix/canonical}) }
-    end
-
-    context "on #{os} with virtual_db_type set to valid lmdb when database has content" do
-      let(:params) do
-        {
-          virtual_db_type: 'lmdb',
-          virtual_aliases: { 'user1' => 'user1@here.tld' },
-        }
-      end
-
-      it { is_expected.to contain_exec('postfix_rebuild_virtual').with_command('/usr/sbin/postmap lmdb:/etc/postfix/virtual') }
-      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{virtual_alias_maps = lmdb:/etc/postfix/virtual}) }
-    end
-
-    context "on #{os} with virtual_custom set to valid array" do
-      let(:params) do
-        {
-          virtual_custom: ['line1', 'line2'],
-        }
-      end
-
-      content = <<-END.gsub(%r{^\s+\|}, '')
-        |# This file is being maintained by Puppet.
-        |# DO NOT EDIT
-        |
-        |line1
-        |line2
-      END
-
-      it { is_expected.to contain_file('postfix_virtual').with_content(content) }
-      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{virtual_alias_maps = hash:/etc/postfix/virtual}) }
-    end
-
-    context "on #{os} with virtual_db_type set to valid lmdb when database has content" do
-      let(:params) do
-        {
-          virtual_db_type: 'lmdb',
-          virtual_aliases: { 'test@test.ing' => 'test.ing' },
-        }
-      end
-
-      it { is_expected.to contain_exec('postfix_rebuild_virtual').with_command('/usr/sbin/postmap lmdb:/etc/postfix/virtual') }
-      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{virtual_alias_maps = lmdb:/etc/postfix/virtual}) }
-    end
-
-    context "on #{os} with virtual_db_type set to valid regexp when database has content" do
-      let(:params) do
-        {
-          virtual_db_type: 'regexp',
-          virtual_aliases: { 'test@test.ing' => 'test.ing' },
-        }
-      end
-
-      it { is_expected.not_to contain_exec('postfix_rebuild_virtual') }
-      it { is_expected.to contain_file('postfix_main.cf').with_content(%r{virtual_alias_maps = regexp:/etc/postfix/virtual}) }
     end
   end
 end

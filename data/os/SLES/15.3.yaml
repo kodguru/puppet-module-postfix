@@ -6,7 +6,7 @@ postfix::main_relay_domains: '$mydestination, lmdb:/etc/postfix/relay'
 postfix::main_smtpd_sender_restrictions: 'lmdb:/etc/postfix/access'
 postfix::canonical_db_type: 'lmdb'
 postfix::relocated_db_type: 'lmdb'
-postfix::virtual_db_type: 'lmdb'
+postfix::virtual_alias_db_type: 'lmdb'
 postfix::transport_db_type: 'lmdb'
 postfix::main_custom:
   delay_warning_time: '1h'

@@ -7,7 +7,7 @@ describe 'postfix' do
   describe 'with default values for parameters' do
     # add minor versions as they become supported
     # FIXME: need data for 15.0
-    [1, 2, 3, 4].each do |minor|
+    [1, 2, 3, 4, 5].each do |minor|
       context "running on SLES 15.#{minor}" do
         let :facts do
           {

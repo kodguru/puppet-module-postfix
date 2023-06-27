@@ -24,6 +24,7 @@ This module provides OS default values for these OSfamilies:
 
 # Version history #
 
+* 3.0.1 2023-06-27 Add support for SLES 15.5
 * 3.0.0 2023-06-09 Rename/align virtual aliases related parameter names:
                      - $virtual_aliases          becomes $virtual_alias_maps
                      - $virtual_aliases_external becomes $virtual_alias_maps_external
@@ -34,7 +35,7 @@ This module provides OS default values for these OSfamilies:
                    Drop support for strings for array type parameters
                    Add support for more Postfix parameters
                    Add support for new SLED/SLES 12 and 15
-                   Add support for 22.10
+                   Add support for Ubuntu 22.10
                    Use iteration for map file creation
 * 2.3.1 2023-01-27 Fix Suse default values
 * 2.3.0 2023-01-03 Add support for AlmaLinux 8/9 & Rocky 8/9
